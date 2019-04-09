@@ -11,6 +11,8 @@ public class Program
    private final List<Declaration> decls;
    private final List<Function> funcs;
    protected static HashMap<String, StructEntry> StructTable;
+   protected static HashMap<String, SymbolEntry> SymbolTable;
+   //TODO function table or add functions to symbol table?
 
 
    public Program(List<TypeDeclaration> types, List<Declaration> decls,
@@ -20,6 +22,7 @@ public class Program
       this.decls = decls;
       this.funcs = funcs;
       StructTable = CreateStructTable();
+      SymbolTable = CreateSymbolTable();
    }
 
    protected HashMap<String, StructEntry> CreateStructTable()
@@ -35,6 +38,16 @@ public class Program
          }
          table.put(sdec.name, new StructEntry(fieldMap));
 
+      }
+      return table;
+   }
+
+   protected HashMap<String, SymbolEntry> CreateSymbolTable()
+   {
+      HashMap<String, SymbolEntry> table = new HashMap<>();
+      for (Declaration dec : decls)
+      {
+         table.put(dec.name, new SymbolEntry(dec.type, Scope.GLOBAL));
       }
       return table;
    }
