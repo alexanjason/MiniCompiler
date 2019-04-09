@@ -1,4 +1,4 @@
-package ast;
+package ast.stmt;
 
 public interface Statement
 {

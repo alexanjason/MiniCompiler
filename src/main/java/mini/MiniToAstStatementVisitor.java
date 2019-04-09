@@ -1,3 +1,6 @@
+package mini;
+import ast.stmt.*;
+import ast.exp.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
@@ -20,7 +23,7 @@ public class MiniToAstStatementVisitor
    @Override
    public Statement visitAssignment(MiniParser.AssignmentContext ctx)
    {
-      Expression expression;
+      ast.exp.Expression expression;
 
       if (ctx.expression() != null)
       {

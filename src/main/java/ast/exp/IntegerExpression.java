@@ -1,4 +1,4 @@
-package ast;
+package ast.exp;
 
 public class IntegerExpression
    extends AbstractExpression

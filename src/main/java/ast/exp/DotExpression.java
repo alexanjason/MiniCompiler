@@ -1,4 +1,4 @@
-package ast;
+package ast.exp;
 
 public class DotExpression
    extends AbstractExpression

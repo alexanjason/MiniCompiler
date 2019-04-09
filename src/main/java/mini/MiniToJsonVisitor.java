@@ -1,3 +1,4 @@
+package mini;
 import javax.json.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 

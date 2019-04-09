@@ -1,10 +1,11 @@
 package ast;
+import ast.type.Type;
 
 public class Declaration
 {
-   private final int lineNum;
-   private final Type type;
-   private final String name;
+   protected final int lineNum;
+   protected final Type type;
+   protected final String name;
 
    public Declaration(int lineNum, Type type, String name)
    {

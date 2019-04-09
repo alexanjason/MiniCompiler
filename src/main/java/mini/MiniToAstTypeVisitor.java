@@ -1,4 +1,5 @@
-import ast.*;
+package mini;
+import ast.type.*;
 
 public class MiniToAstTypeVisitor
    extends MiniBaseVisitor<Type>

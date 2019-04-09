@@ -1,4 +1,4 @@
-package ast;
+package ast.exp;
 
 public abstract class AbstractExpression
    implements Expression

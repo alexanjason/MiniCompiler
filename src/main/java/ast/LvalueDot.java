@@ -1,4 +1,5 @@
 package ast;
+import ast.exp.Expression;
 
 public class LvalueDot
    implements Lvalue

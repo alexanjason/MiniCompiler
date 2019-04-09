@@ -1,7 +1,9 @@
+package mini;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.List;
 import java.util.ArrayList;
 
+import ast.type.Type;
 import ast.*;
 
 public class MiniToAstDeclarationsVisitor
@@ -26,7 +28,7 @@ public class MiniToAstDeclarationsVisitor
    private void addDeclarationsTo(MiniParser.DeclarationContext ctx,
       List<Declaration> decls)
    {
-      Type type = typeVisitor.visit(ctx.type());
+      ast.type.Type type = typeVisitor.visit(ctx.type());
 
       for (TerminalNode node : ctx.ID())
       {

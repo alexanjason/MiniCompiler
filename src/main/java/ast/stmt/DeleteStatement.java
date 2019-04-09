@@ -1,4 +1,5 @@
-package ast;
+package ast.stmt;
+import ast.exp.Expression;
 
 public class DeleteStatement
    extends AbstractStatement

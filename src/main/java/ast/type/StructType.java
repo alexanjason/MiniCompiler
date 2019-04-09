@@ -1,4 +1,4 @@
-package ast;
+package ast.type;
 
 public class StructType
    implements Type

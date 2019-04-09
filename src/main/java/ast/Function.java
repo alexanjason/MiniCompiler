@@ -1,5 +1,7 @@
 package ast;
 
+import ast.type.Type;
+import ast.stmt.Statement;
 import java.util.List;
 
 public class Function

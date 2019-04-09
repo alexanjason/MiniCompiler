@@ -1,3 +1,4 @@
+package mini;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -34,6 +35,8 @@ public class MiniCompiler
          MiniToAstProgramVisitor programVisitor =
             new MiniToAstProgramVisitor();
          ast.Program program = programVisitor.visit(tree);
+
+
 
          //SymbolTableBuilder tableBuilder = new SymbolTableBuilder();
          // does the compiler own the symbol table?

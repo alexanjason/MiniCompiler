@@ -1,4 +1,8 @@
+package mini;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import ast.type.*;
+import ast.stmt.*;
+
 
 import java.util.List;
 import java.util.ArrayList;

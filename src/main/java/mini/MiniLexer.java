@@ -1,6 +1,7 @@
 // Generated from Mini.g4 by ANTLR 4.7.1
 
    /* package declaration here */
+package mini;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,6 +11,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
+
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class MiniLexer extends Lexer {

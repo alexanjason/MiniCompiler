@@ -1,4 +1,6 @@
-package ast;
+package ast.stmt;
+import ast.exp.Expression;
+import ast.Lvalue;
 
 public class AssignmentStatement
    extends AbstractStatement

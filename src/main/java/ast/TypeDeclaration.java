@@ -4,9 +4,9 @@ import java.util.List;
 
 public class TypeDeclaration
 {
-   private final int lineNum;
-   private final String name;
-   private final List<Declaration> fields;
+   protected final int lineNum;
+   protected final String name;
+   protected final List<Declaration> fields;
 
    public TypeDeclaration(int lineNum, String name, List<Declaration> fields)
    {
