@@ -28,41 +28,24 @@ public class Function
       this.body = body;
    }
 
-   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
+   public void TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       symbolTables.newScope();
       symbolTables.addDecls(params, Scope.PARAM);
       symbolTables.addDecls(locals, Scope.LOCAL);
 
-      Type actualRetType = body.TypeCheck(structTable, symbolTables, retType);
+      Boolean returned = body.TypeCheck(structTable, symbolTables, retType);
 
       symbolTables.removeScope();
 
-      if (body.Returned())// || retType instanceof VoidType)
+      if (!(returned))
       {
-         /*
-         if (actualRetType.compareType(retType))
+         if (!(retType instanceof VoidType))
          {
-            return retType;
-         }
-         else
-         {
-            System.err.println(retType);
-            System.err.println(actualRetType);
-            System.err.println(lineNum + ": return type inconsistent with function declaration");
+            System.err.println(lineNum + ": return not found in function");
             System.exit(1);
-            return new ErrorType();
          }
-         */
-         // TODO checking already done in statement type checking?
-         return retType;
       }
-      else
-      {
-         System.err.println(lineNum + ": return not found in function");
-         System.exit(1);
-      }
-      return new ErrorType();
    }
 
 }

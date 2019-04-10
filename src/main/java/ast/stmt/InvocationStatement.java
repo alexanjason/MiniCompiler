@@ -17,13 +17,9 @@ public class InvocationStatement
       this.expression = expression;
    }
 
-   public Boolean Returned()
+   public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
+      expression.TypeCheck(structTable, symbolTableList);
       return false;
-   }
-
-   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
-   {
-      return expression.TypeCheck(structTable, symbolTableList);
    }
 }

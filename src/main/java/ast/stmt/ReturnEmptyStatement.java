@@ -12,22 +12,13 @@ public class ReturnEmptyStatement
       super(lineNum);
    }
 
-   public Boolean Returned()
+   public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
-      return true;
-   }
-
-   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
-   {
-      if (retType instanceof VoidType)
-      {
-         return retType;
-      }
-      else
+      if (!(retType instanceof VoidType))
       {
          System.err.println(super.lineNum + ": non-void function returning void");
          System.exit(1);
       }
-      return new ErrorType();
+      return true;
    }
 }

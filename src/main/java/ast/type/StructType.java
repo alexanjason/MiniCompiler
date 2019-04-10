@@ -19,6 +19,7 @@ public class StructType
 
    public boolean compareType(Type type)
    {
+      // TODO ensure correct struct type
       return (type instanceof StructType || type instanceof NullType);
    }
 }

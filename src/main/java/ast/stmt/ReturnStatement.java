@@ -15,22 +15,13 @@ public class ReturnStatement
       this.expression = expression;
    }
 
-   public Boolean Returned()
+   public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
-      return true;
-   }
-
-   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
-   {
-      if (retType.compareType(expression.TypeCheck(structTable, symbolTableList)))
-      {
-         return retType;
-      }
-      else
+      if (!(retType.compareType(expression.TypeCheck(structTable, symbolTableList))))
       {
          System.err.println(super.lineNum + ": return type not consistent with function declaration");
          System.exit(1);
       }
-      return new ErrorType();
+      return true;
    }
 }

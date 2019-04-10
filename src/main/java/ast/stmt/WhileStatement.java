@@ -18,24 +18,19 @@ public class WhileStatement
       this.body = body;
    }
 
-   public Boolean Returned()
-   {
-      return body.Returned();
-   }
-
-   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
+   public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       Type guardType = guard.TypeCheck(structTable, symbolTableList);
 
       if (guardType instanceof BoolType)
       {
-         return body.TypeCheck(structTable, symbolTableList, retType);
+         body.TypeCheck(structTable, symbolTableList, retType);
       }
       else
       {
          System.out.println(super.lineNum + ": non boolean guard");
          System.exit(1);
       }
-      return new ErrorType();
+      return false;
    }
 }
