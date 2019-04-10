@@ -6,4 +6,6 @@ public class ErrorType implements Type {
     {
         return type instanceof ErrorType;
     }
+
+
 }

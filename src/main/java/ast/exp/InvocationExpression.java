@@ -4,7 +4,6 @@ import ast.StructTable;
 import ast.SymbolTableList;
 import ast.type.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InvocationExpression
@@ -39,7 +38,7 @@ public class InvocationExpression
       FunctionType funcType = (FunctionType) type;
       if (arguments.size() != funcType.numParams())
       {
-         System.err.println(super.lineNum + ": too few parameters to function " + name);
+         System.err.println(super.lineNum + ": incorrect number of parameters for function " + name);
          System.exit(1);
       }
 

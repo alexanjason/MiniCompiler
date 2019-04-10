@@ -7,4 +7,6 @@ public class BoolType
     {
         return type instanceof BoolType;
     }
+
+
 }

@@ -13,7 +13,6 @@ public class SymbolTableList {
     {
         this.list = new LinkedList<>();
         CreateSymbolTable(prog);
-        //list.addFirst(CreateSymbolTable(prog));
     }
 
     public boolean contains(String name)

@@ -34,22 +34,35 @@ public class Function
       symbolTables.addDecls(params, Scope.PARAM);
       symbolTables.addDecls(locals, Scope.LOCAL);
 
-      boolean returned = false;
-      body.TypeCheck(structTable, symbolTables, retType);
+      Type actualRetType = body.TypeCheck(structTable, symbolTables, retType);
 
       symbolTables.removeScope();
 
-      // TODO ensure void functions do not attempt to return value
-      if (returned || retType instanceof VoidType)
+      if (body.Returned())// || retType instanceof VoidType)
       {
+         /*
+         if (actualRetType.compareType(retType))
+         {
+            return retType;
+         }
+         else
+         {
+            System.err.println(retType);
+            System.err.println(actualRetType);
+            System.err.println(lineNum + ": return type inconsistent with function declaration");
+            System.exit(1);
+            return new ErrorType();
+         }
+         */
+         // TODO checking already done in statement type checking?
          return retType;
       }
       else
       {
-         System.err.println("Return not found in function " + name + " line " + lineNum);
+         System.err.println(lineNum + ": return not found in function");
          System.exit(1);
-         return new ErrorType();
       }
+      return new ErrorType();
    }
 
 }

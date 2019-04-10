@@ -49,7 +49,8 @@ public class BlockStatement
             }
          }
       }
-      return new ErrorType();
+
+      return null;
    }
 
    public static BlockStatement emptyBlock()

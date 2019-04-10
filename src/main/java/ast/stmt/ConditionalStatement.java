@@ -23,6 +23,12 @@ public class ConditionalStatement
 
    public Boolean Returned()
    {
+      // TODO what if one block returns and the other doesn't?
+      if (thenBlock.Returned() && elseBlock.Returned())
+      {
+         return true;
+      }
+      // TODO ???
       return false;
    }
 
@@ -36,19 +42,22 @@ public class ConditionalStatement
       {
          // TODO then and else only have to have same type if returning?
          // TODO if not returning what are their type?
-         if (thenType.compareType(elseType))
+         if ((elseType != null) && (thenType.compareType(elseType)))
          {
             return thenType;
          }
          else
          {
-            System.out.println(super.lineNum + ": then and else must return same type");
-            System.exit(1);
+            if (thenBlock.Returned() && elseBlock.Returned())
+            {
+               System.err.println(super.lineNum + ": then and else must have same return type");
+               System.exit(1);
+            }
          }
       }
       else
       {
-         System.out.println(super.lineNum + ": non boolean guard");
+         System.err.println(super.lineNum + ": non boolean guard");
          System.exit(1);
       }
       return new ErrorType();
