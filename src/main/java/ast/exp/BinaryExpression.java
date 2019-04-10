@@ -1,5 +1,9 @@
 package ast.exp;
 
+import ast.StructTable;
+import ast.SymbolTableList;
+import ast.type.*;
+
 public class BinaryExpression
    extends AbstractExpression
 {
@@ -14,6 +18,72 @@ public class BinaryExpression
       this.operator = operator;
       this.left = left;
       this.right = right;
+   }
+
+   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
+   {
+      // get types of left and right
+      Type lType = left.TypeCheck(structTable, symbolTables);
+      Type rType = right.TypeCheck(structTable, symbolTables);
+
+      // equality require integers or structures (both sides must be same type)
+      if (operator == Operator.EQ || operator == Operator.NE)
+      {
+         if (lType instanceof IntType || lType instanceof StructType || lType instanceof NullType)
+         {
+            if (lType.compareType(rType))
+            {
+               return new BoolType();
+            }
+            else
+            {
+               System.err.println(super.lineNum + ": equality require same types");
+               System.exit(1);
+            }
+         }
+         else
+         {
+            System.err.println(super.lineNum + ": equality operators require integers or structures");
+            System.exit(1);
+         }
+      }
+
+      // boolean require booleans
+      else if (operator == Operator.AND || operator == Operator.OR)
+      {
+         if (lType instanceof IntType && rType instanceof IntType)
+         {
+            return new BoolType();
+         }
+         else
+         {
+            System.err.println(super.lineNum + ": boolean operators require booleans");
+            System.exit(1);
+         }
+      }
+
+      // arithmetic and relational require integers
+      else
+      {
+         if (lType instanceof IntType && rType instanceof IntType)
+         {
+            if (operator == Operator.DIVIDE || operator == Operator.TIMES ||
+                    operator == Operator.MINUS || operator == Operator.PLUS) {
+               return new IntType();
+            }
+            else
+            {
+               return new BoolType();
+            }
+         }
+         else
+         {
+            System.err.println(super.lineNum + ": arithmetic and relational operators require integers");
+            System.exit(1);
+         }
+      }
+
+      return new ErrorType();
    }
 
    public static BinaryExpression create(int lineNum, String opStr,

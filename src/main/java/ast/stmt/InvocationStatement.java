@@ -1,5 +1,8 @@
 package ast.stmt;
+import ast.StructTable;
+import ast.SymbolTableList;
 import ast.exp.Expression;
+import ast.type.Type;
 
 import java.util.List;
 
@@ -12,5 +15,15 @@ public class InvocationStatement
    {
       super(lineNum);
       this.expression = expression;
+   }
+
+   public Boolean Returned()
+   {
+      return false;
+   }
+
+   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
+   {
+      return expression.TypeCheck(structTable, symbolTableList);
    }
 }

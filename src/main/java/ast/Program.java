@@ -2,17 +2,15 @@ package ast;
 
 import ast.type.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Program
 {
-   private final List<TypeDeclaration> types;
-   private final List<Declaration> decls;
-   private final List<Function> funcs;
-   protected static HashMap<String, StructEntry> StructTable;
-   protected static HashMap<String, SymbolEntry> SymbolTable;
+   protected final List<TypeDeclaration> types;
+   protected final List<Declaration> decls;
+   protected final List<Function> funcs;
+   protected static StructTable structTable;
+   protected static SymbolTableList symbolTables;
 
    public Program(List<TypeDeclaration> types, List<Declaration> decls,
       List<Function> funcs)
@@ -20,59 +18,21 @@ public class Program
       this.types = types;
       this.decls = decls;
       this.funcs = funcs;
-      StructTable = CreateStructTable();
-      SymbolTable = CreateSymbolTable();
+      structTable = new StructTable(this);
+      symbolTables = new SymbolTableList(this);
+      // TODO Redeclarations of the same sort of identifier are not allowed, i.e.,
+      //  there cannot be two global variables with the same name, two formal paramters
+      //  for a function with the same name, two variables local to a function
+      //  with the same name, two functions with the same name, two structure
+      //  declarations with the same name,or two fields within a structure with the
+      //  same name.
    }
 
-   protected HashMap<String, StructEntry> CreateStructTable()
+   public void TypeCheck()
    {
-      HashMap<String, StructEntry> table = new HashMap<>();
-
-      for (TypeDeclaration sdec : types)
-      {
-         HashMap<String, Type> fieldMap = new HashMap<>();
-         for (Declaration dec : sdec.fields)
-         {
-            fieldMap.put(dec.name, dec.type);
-         }
-         table.put(sdec.name, new StructEntry(fieldMap));
-
-      }
-
-      return table;
-   }
-
-   protected HashMap<String, SymbolEntry> CreateSymbolTable()
-   {
-      HashMap<String, SymbolEntry> table = new HashMap<>();
-
-      for (Declaration dec : decls)
-      {
-         table.put(dec.name, new SymbolEntry(dec.type, Scope.GLOBAL));
-      }
-
-      boolean hasMain = false;
       for (Function func : funcs)
       {
-         List<Type> paramList = new ArrayList<>();
-         for (Declaration dec : func.params)
-         {
-            paramList.add(dec.type);
-         }
-
-         table.put(func.name, new SymbolEntry(new FunctionType(paramList, func.retType), Scope.GLOBAL));
-         if (func.name.equals("main"))
-         {
-            hasMain = true;
-         }
+         func.TypeCheck(structTable, symbolTables);
       }
-
-      if (!hasMain)
-      {
-         System.err.println("No main function");
-         System.exit(1);
-      }
-
-      return table;
    }
 }

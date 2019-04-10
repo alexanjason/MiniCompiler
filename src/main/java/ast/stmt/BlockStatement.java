@@ -1,5 +1,10 @@
 package ast.stmt;
 
+import ast.StructTable;
+import ast.SymbolTableList;
+import ast.type.ErrorType;
+import ast.type.Type;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,6 +17,39 @@ public class BlockStatement
    {
       super(lineNum);
       this.statements = statements;
+   }
+
+   public Boolean Returned()
+   {
+      for (Statement stmt : statements)
+      {
+         if (stmt.Returned())
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
+   {
+      for (Statement stmt : statements)
+      {
+         Type ret = stmt.TypeCheck(structTable, symbolTableList, retType);
+         if (stmt instanceof ReturnEmptyStatement || stmt instanceof ReturnStatement)
+         {
+            if (ret.compareType(retType))
+            {
+               return ret;
+            }
+            else
+            {
+               System.err.println(super.lineNum + ": incorrect return type");
+               System.exit(1);
+            }
+         }
+      }
+      return new ErrorType();
    }
 
    public static BlockStatement emptyBlock()

@@ -36,10 +36,7 @@ public class MiniCompiler
             new MiniToAstProgramVisitor();
          ast.Program program = programVisitor.visit(tree);
 
-
-
-         //SymbolTableBuilder tableBuilder = new SymbolTableBuilder();
-         // does the compiler own the symbol table?
+         program.TypeCheck();
       }
    }
 

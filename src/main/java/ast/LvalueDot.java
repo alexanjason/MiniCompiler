@@ -1,5 +1,6 @@
 package ast;
 import ast.exp.Expression;
+import ast.type.*;
 
 public class LvalueDot
    implements Lvalue
@@ -13,5 +14,40 @@ public class LvalueDot
       this.lineNum = lineNum;
       this.left = left;
       this.id = id;
+   }
+
+   public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
+   {
+      // TODO I'm confused about what LvalueDot actually is...
+
+      // evaluate Expression left
+      Type leftType = left.TypeCheck(structTable, symbolTables);
+
+      // check that left is a struct
+      if (!(leftType instanceof StructType))
+      {
+         System.err.println(lineNum + ": Dot operator requires struct");
+         System.exit(1);
+      }
+
+      // check that struct contains field
+      String structName = ((StructType) leftType).GetName();
+      StructEntry entry = structTable.get(structName);
+
+      if (entry == null)
+      {
+         System.err.println("Struct " + structName + " not found");
+         System.exit(1);
+      }
+
+      Type fieldType = entry.getType(id);
+      if (fieldType == null)
+      {
+         System.err.println(lineNum + ": no field " + id + " in struct " + structName);
+         System.exit(1);
+      }
+
+      // return type of field
+      return fieldType;
    }
 }
