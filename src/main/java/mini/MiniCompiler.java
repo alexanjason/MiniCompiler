@@ -53,8 +53,10 @@ public class MiniCompiler
          }
          else if (_inputFile != null)
          {
-            System.err.println("too many files specified");
-            System.exit(1);
+            _inputFile = null;
+            _inputFile = args[i];
+            //System.err.println("too many files specified");
+            //System.exit(1);
          }
          else
          {
