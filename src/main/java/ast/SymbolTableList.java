@@ -71,6 +71,7 @@ public class SymbolTableList {
         HashMap<String, SymbolEntry> table = list.getFirst();
         for (Declaration dec : decls)
         {
+
             table.put(dec.name, new SymbolEntry(dec.type, scope));
         }
     }

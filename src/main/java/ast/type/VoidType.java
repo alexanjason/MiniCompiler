@@ -1,7 +1,6 @@
 package ast.type;
 
-public class VoidType
-   implements Type
+public class VoidType implements Type
 {
     public boolean compareType(Type type)
     {

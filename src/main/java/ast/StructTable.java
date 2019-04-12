@@ -21,7 +21,13 @@ public class StructTable {
             HashMap<String, Type> fieldMap = new HashMap<>();
             for (Declaration dec : sdec.fields)
             {
-                fieldMap.put(dec.name, dec.type);
+                if(!fieldMap.containsKey(dec.name)) {
+                    fieldMap.put(dec.name, dec.type);
+                }
+                else{
+                    System.err.println(dec.lineNum + ": Can't have declarations with same name");
+                    System.exit(1);
+                }
             }
             table.put(sdec.name, new StructEntry(fieldMap));
         }
