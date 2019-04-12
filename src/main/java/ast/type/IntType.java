@@ -1,7 +1,6 @@
 package ast.type;
 
-public class IntType
-   implements Type
+public class IntType implements Type
 {
     public boolean compareType(Type type)
     {

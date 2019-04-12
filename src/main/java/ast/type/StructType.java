@@ -1,7 +1,6 @@
 package ast.type;
 
-public class StructType
-   implements Type
+public class StructType implements Type
 {
    private final int lineNum;
    private final String name;

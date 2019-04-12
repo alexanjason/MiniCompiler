@@ -18,6 +18,16 @@ public class MiniCompiler
       if (parser.getNumberOfSyntaxErrors() == 0)
       {
          /*
+            This visitor will build an object representation of the AST
+            in Java using the provided classes.
+         */
+         MiniToAstProgramVisitor programVisitor = new MiniToAstProgramVisitor();
+         ast.Program program = programVisitor.visit(tree);
+
+
+         program.TypeCheck();
+
+         /*
             This visitor will create a JSON representation of the AST.
             This is primarily intended to allow use of languages other
             than Java.  The parser can thusly be used to generate JSON
@@ -27,16 +37,6 @@ public class MiniCompiler
          //MiniToJsonVisitor jsonVisitor = new MiniToJsonVisitor();
          //JsonValue json = jsonVisitor.visit(tree);
          //System.out.println(json);
-
-         /*
-            This visitor will build an object representation of the AST
-            in Java using the provided classes.
-         */
-         MiniToAstProgramVisitor programVisitor =
-            new MiniToAstProgramVisitor();
-         ast.Program program = programVisitor.visit(tree);
-
-         program.TypeCheck();
       }
    }
 
