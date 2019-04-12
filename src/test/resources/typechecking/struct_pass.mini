@@ -1,0 +1,27 @@
+struct A
+{
+   int i;
+};
+
+struct B
+{
+   int j;
+};
+
+fun main() int
+{
+   struct A a;
+   struct B b;
+
+   if (a == a)
+   {
+      print 1;
+   }
+
+   if (b != b)
+   {
+      print 2;
+   }
+
+   return 0;
+}

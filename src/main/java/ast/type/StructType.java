@@ -18,7 +18,13 @@ public class StructType implements Type
 
    public boolean compareType(Type type)
    {
-      // TODO ensure correct struct type
-      return (type instanceof StructType || type instanceof NullType);
+      if (type instanceof StructType)
+      {
+         return this.name.equals(((StructType) type).name);
+      }
+      else
+      {
+         return type instanceof NullType;
+      }
    }
 }

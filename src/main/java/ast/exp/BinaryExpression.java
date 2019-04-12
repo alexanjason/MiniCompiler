@@ -37,7 +37,7 @@ public class BinaryExpression
             }
             else
             {
-               System.err.println(super.lineNum + ": equality require same types");
+               System.err.println(super.lineNum + ": equality operators require same types");
                System.exit(1);
             }
          }
