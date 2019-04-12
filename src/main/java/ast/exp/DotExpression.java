@@ -21,7 +21,6 @@ public class DotExpression
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
-      // TODO difference between this and LvalueDot?
       // get type of expression left
       Type leftType = left.TypeCheck(structTable, symbolTables);
 
@@ -29,7 +28,7 @@ public class DotExpression
       if (!(leftType instanceof StructType))
       {
          System.err.println(lineNum + ": Dot operator requires struct");
-         System.exit(1);
+         System.exit(4);
       }
 
       // check that struct exists in structTable
@@ -39,7 +38,7 @@ public class DotExpression
       if (entry == null)
       {
          System.err.println(lineNum + ": struct " + structName + " not found");
-         System.exit(1);
+         System.exit(4);
       }
 
       // check type of struct field
@@ -47,7 +46,7 @@ public class DotExpression
       if (fieldType == null)
       {
          System.err.println(lineNum + ": no field " + id + " in struct " + structName);
-         System.exit(1);
+         System.exit(4);
       }
 
       // return type of field

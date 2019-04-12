@@ -43,7 +43,7 @@ public class Function
          if (!(retType instanceof VoidType))
          {
             System.err.println(lineNum + ": return not found in function");
-            System.exit(1);
+            System.exit(3);
          }
       }
    }

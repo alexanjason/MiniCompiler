@@ -38,13 +38,14 @@ public class BinaryExpression
             else
             {
                System.err.println(super.lineNum + ": equality operators require same types");
-               System.exit(1);
+               System.exit(4);
+
             }
          }
          else
          {
             System.err.println(super.lineNum + ": equality operators require integers or structures");
-            System.exit(1);
+            System.exit(4);
          }
       }
 
@@ -58,7 +59,7 @@ public class BinaryExpression
          else
          {
             System.err.println(super.lineNum + ": boolean operators require booleans");
-            System.exit(1);
+            System.exit(4);
          }
       }
 
@@ -79,7 +80,7 @@ public class BinaryExpression
          else
          {
             System.err.println(super.lineNum + ": arithmetic and relational operators require integers");
-            System.exit(1);
+            System.exit(4);
          }
       }
 

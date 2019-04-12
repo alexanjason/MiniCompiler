@@ -1,14 +1,22 @@
-
-import com.ginsberg.junit.exit.ExpectSystemExit;
 import mini.MiniCompiler;
 import org.junit.*;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
-import org.junit.jupiter.api.BeforeEach;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/*
+ERROR CODES
 
+1) no main
+2) redeclaration
+3) return error
+4) type mismatch
+5) non boolean guard
+6) not found
+7) incorrect invocation
+
+*/
 
 public class TypeChecking {
 
@@ -18,12 +26,6 @@ public class TypeChecking {
     public MiniCompiler mini = new MiniCompiler();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalErr = System.err;
-
-    @BeforeEach
-    public void beforeEachTest()
-    {
-        System.out.println("***");
-    }
 
     @Before public void before()
     {
@@ -52,16 +54,92 @@ public class TypeChecking {
     }
 
     @Test
-    @ExpectSystemExit
     public void StructFail()
     {
-        exit.expectSystemExit();
-        // TODO get this to work
+        exit.expectSystemExitWithStatus(4);
         MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/struct_fail.mini";
         String[] args = {file};
         mini.main(args);
-        assertEquals("16: equality operators require same types", errContent.toString());
+    }
+
+    @Test
+    public void ReturnTypeFailDotExp()
+    {
+        exit.expectSystemExitWithStatus(3);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_1.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void NonBoolGuardFailCondStmt()
+    {
+        exit.expectSystemExitWithStatus(5);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_2.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void ReturnTypeFail()
+    {
+        exit.expectSystemExitWithStatus(3);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_3.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void CompOpTypeFail()
+    {
+        exit.expectSystemExitWithStatus(4);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_4.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void TooManyArgsFail()
+    {
+        exit.expectSystemExitWithStatus(7);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_5.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void WrongTypeArgFail()
+    {
+        exit.expectSystemExitWithStatus(4);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_6.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void DotFail()
+    {
+        exit.expectSystemExitWithStatus(4);
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2_7.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void Ensure2Pass()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "typechecking/2.mini";
+        String[] args = {file};
+        mini.main(args);
     }
 
 

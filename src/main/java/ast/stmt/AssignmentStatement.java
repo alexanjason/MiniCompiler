@@ -31,7 +31,7 @@ public class AssignmentStatement
       if (!(lType.compareType(rType)))
       {
          System.out.println(super.lineNum + ": assignment, type mismatch");
-         System.exit(1);
+         System.exit(4);
       }
       return false;
    }

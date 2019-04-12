@@ -37,7 +37,7 @@ public class ConditionalStatement
       else
       {
          System.err.println(super.lineNum + ": non boolean guard");
-         System.exit(1);
+         System.exit(5);
       }
 
       return false;

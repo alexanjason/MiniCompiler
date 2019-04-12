@@ -29,7 +29,7 @@ public class WhileStatement
       else
       {
          System.out.println(super.lineNum + ": non boolean guard");
-         System.exit(1);
+         System.exit(5);
       }
       return false;
    }

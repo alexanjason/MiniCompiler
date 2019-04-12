@@ -20,7 +20,7 @@ public class ReturnStatement
       if (!(retType.compareType(expression.TypeCheck(structTable, symbolTableList))))
       {
          System.err.println(super.lineNum + ": return type not consistent with function declaration");
-         System.exit(1);
+         System.exit(3);
       }
       return true;
    }

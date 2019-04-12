@@ -30,7 +30,7 @@ public class UnaryExpression
             else
             {
                System.err.println(super.lineNum + ": not operator requires boolean operand");
-               System.exit(1);
+               System.exit(4);
             }
          case MINUS:
             if (operandType instanceof IntType)
@@ -40,7 +40,7 @@ public class UnaryExpression
             else
             {
                System.err.println(super.lineNum + ": minus operator requires integer operand");
-               System.exit(1);
+               System.exit(4);
             }
          default:
             return new ErrorType();

@@ -25,21 +25,21 @@ public class InvocationExpression
       if (!(symbolTables.contains(name)))
       {
          System.err.println(super.lineNum + ": function " + name + " not found");
-         System.exit(1);
+         System.exit(4);
       }
 
       Type type = symbolTables.typeOf(name);
       if (!(type instanceof FunctionType))
       {
          System.err.println(super.lineNum + ": cannot invoke " + name + ", not a function");
-         System.exit(1);
+         System.exit(4);
       }
 
       FunctionType funcType = (FunctionType) type;
       if (arguments.size() != funcType.numParams())
       {
          System.err.println(super.lineNum + ": incorrect number of parameters for function " + name);
-         System.exit(1);
+         System.exit(7);
       }
 
 
@@ -51,7 +51,7 @@ public class InvocationExpression
          if (!(expType.compareType(funcType.getParamType(i))))
          {
             System.err.println(super.lineNum + " incorrect parameter type");
-            System.exit(1);
+            System.exit(7);
          }
       }
 

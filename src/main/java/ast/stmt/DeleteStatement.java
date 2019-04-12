@@ -21,7 +21,7 @@ public class DeleteStatement
       if (!(expType instanceof StructType))
       {
          System.err.println(super.lineNum + ": can only delete structs");
-         System.exit(1);
+         System.exit(4);
       }
       return false;
    }
