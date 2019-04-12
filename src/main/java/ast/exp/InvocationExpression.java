@@ -42,15 +42,14 @@ public class InvocationExpression
          System.exit(7);
       }
 
-
       for (int i = 0; i < arguments.size(); i++)
       {
-         Expression exp = arguments.remove(i);
+         Expression exp = arguments.get(i);
          Type expType = exp.TypeCheck(structTable, symbolTables);
 
          if (!(expType.compareType(funcType.getParamType(i))))
          {
-            System.err.println(super.lineNum + " incorrect parameter type");
+            System.err.println(super.lineNum + ": incorrect parameter type ");
             System.exit(7);
          }
       }

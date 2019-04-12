@@ -52,7 +52,7 @@ public class BinaryExpression
       // boolean require booleans
       else if (operator == Operator.AND || operator == Operator.OR)
       {
-         if (lType instanceof IntType && rType instanceof IntType)
+         if (lType instanceof BoolType && rType instanceof BoolType)
          {
             return new BoolType();
          }

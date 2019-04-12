@@ -20,6 +20,11 @@ fun f(int i, struct B j) struct A
    return b.a.a.a.a;
 }
 
+fun random(bool randbool) bool
+{
+   return randbool;
+}
+
 fun foo(int n) int
 {
    if (n <= 0)
@@ -45,6 +50,7 @@ fun main() int
    bool b;
       int h;
    {
+      random(true);
       i = --2;
       if (i < g(1,null))
       {

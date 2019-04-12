@@ -19,6 +19,7 @@ public class InvocationStatement
 
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
+      // TODO System.out.println("stmt " + super.lineNum);
       expression.TypeCheck(structTable, symbolTableList);
       return false;
    }

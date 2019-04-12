@@ -15,7 +15,6 @@ ERROR CODES
 5) non boolean guard
 6) not found
 7) incorrect invocation
-
 */
 
 public class TypeChecking {
@@ -57,7 +56,7 @@ public class TypeChecking {
     public void StructFail()
     {
         exit.expectSystemExitWithStatus(4);
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/struct_fail.mini";
         String[] args = {file};
         mini.main(args);
@@ -67,7 +66,7 @@ public class TypeChecking {
     public void ReturnTypeFailDotExp()
     {
         exit.expectSystemExitWithStatus(3);
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/2_1.mini";
         String[] args = {file};
         mini.main(args);
@@ -77,7 +76,7 @@ public class TypeChecking {
     public void NonBoolGuardFailCondStmt()
     {
         exit.expectSystemExitWithStatus(5);
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/2_2.mini";
         String[] args = {file};
         mini.main(args);
@@ -87,7 +86,7 @@ public class TypeChecking {
     public void ReturnTypeFail()
     {
         exit.expectSystemExitWithStatus(3);
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/2_3.mini";
         String[] args = {file};
         mini.main(args);
@@ -117,7 +116,7 @@ public class TypeChecking {
     public void WrongTypeArgFail()
     {
         exit.expectSystemExitWithStatus(4);
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/2_6.mini";
         String[] args = {file};
         mini.main(args);
@@ -127,16 +126,16 @@ public class TypeChecking {
     public void DotFail()
     {
         exit.expectSystemExitWithStatus(4);
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/2_7.mini";
         String[] args = {file};
         mini.main(args);
     }
 
     @Test
-    public void Ensure2Pass()
+    public void Fixed2Pass()
     {
-        MiniCompiler mini = new MiniCompiler();
+        //MiniCompiler mini = new MiniCompiler();
         String file = "typechecking/2.mini";
         String[] args = {file};
         mini.main(args);
