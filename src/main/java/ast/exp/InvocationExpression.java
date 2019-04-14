@@ -29,6 +29,7 @@ public class InvocationExpression
       }
 
       Type type = symbolTables.typeOf(name);
+
       if (!(type instanceof FunctionType))
       {
          System.err.println(super.lineNum + ": cannot invoke " + name + ", not a function");

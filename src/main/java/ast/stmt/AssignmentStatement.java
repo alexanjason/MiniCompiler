@@ -27,7 +27,7 @@ public class AssignmentStatement
       // get type of expression
       Type rType = source.TypeCheck(structTable, symbolTableList);
 
-      // compare types (implemented in type?)
+      // compare types
       if (!(lType.compareType(rType)))
       {
          System.out.println(super.lineNum + ": assignment, type mismatch");

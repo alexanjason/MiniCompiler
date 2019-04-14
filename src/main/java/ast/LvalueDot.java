@@ -18,8 +18,6 @@ public class LvalueDot
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
-      // TODO I'm confused about what LvalueDot actually is...
-
       // evaluate Expression left
       Type leftType = left.TypeCheck(structTable, symbolTables);
 

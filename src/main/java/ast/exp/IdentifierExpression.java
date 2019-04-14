@@ -20,11 +20,6 @@ public class IdentifierExpression
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
-      // TODO modularize this?
-      if (structTable.contains(id))
-      {
-         return new StructType(super.lineNum, id);
-      }
       if (symbolTables.contains(id))
       {
          return symbolTables.typeOf(id);

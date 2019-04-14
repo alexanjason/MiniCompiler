@@ -16,15 +16,7 @@ public class LvalueId
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
-      // TODO what if there is a struct table entry and a
-      //  symbol table entry?
-
-      if (structTable.contains(id))
-      {
-         // TODO linenum?
-         return new StructType(lineNum, id);
-      }
-      else if (symbolTables.contains(id))
+      if (symbolTables.contains(id))
       {
          return symbolTables.typeOf(id);
       }

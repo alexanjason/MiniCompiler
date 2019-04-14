@@ -4,6 +4,7 @@ import org.junit.*;
 public class Benchmarks {
 
     //@Rule
+    //TODO
     //public MiniCompiler mini = new MiniCompiler();
 
     @Test
@@ -12,8 +13,7 @@ public class Benchmarks {
         MiniCompiler mini = new MiniCompiler();
         String file = "benchmarks/BenchMarkishTopics/BenchMarkishTopics.mini";
         String[] args = {file};
-        //mini.main(args);
-        // TODO fix - continue looking in symbol table if find symbol of wrong type
+        mini.main(args);
     }
 
     @Test
@@ -22,8 +22,7 @@ public class Benchmarks {
         MiniCompiler mini = new MiniCompiler();
         String file = "benchmarks/bert/bert.mini";
         String[] args = {file};
-        //mini.main(args);
-        // TODO fix - look in symbol table if correct type not found in struct table
+        mini.main(args);
     }
 
     @Test
@@ -112,6 +111,78 @@ public class Benchmarks {
     {
         MiniCompiler mini = new MiniCompiler();
         String file = "benchmarks/killerBubbles/killerBubbles.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void mile1()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/mile1/mile1.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void mixed()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/mixed/mixed.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void OptimizationBenchmark()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/OptimizationBenchmark/OptimizationBenchmark.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void primes()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/primes/primes.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void programBreaker()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/programBreaker/programBreaker.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void stats()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/stats/stats.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void TicTac()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/TicTac/TicTac.mini";
+        String[] args = {file};
+        mini.main(args);
+    }
+
+    @Test
+    public void wasteOfCycles()
+    {
+        MiniCompiler mini = new MiniCompiler();
+        String file = "benchmarks/wasteOfCycles/wasteOfCycles.mini";
         String[] args = {file};
         mini.main(args);
     }
