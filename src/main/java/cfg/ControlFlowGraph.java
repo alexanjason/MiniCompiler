@@ -271,34 +271,28 @@ public class ControlFlowGraph {
         return exitNode;
     }
 
-    private Instruction GetBinaryExpressionInst(BinaryExpression exp)
+    private Value AddBinaryExpression(BinaryExpression exp, BasicBlock currentBlock)
     {
-        /*
-           private final Operator operator;
-           private final Expression left;
-           private final Expression right;
-         */
-        // TIMES, DIVIDE, PLUS, MINUS, LT, GT, LE, GE, EQ, NE, AND, OR
         BinaryExpression.Operator op = exp.getOperator();
         if (op == BinaryExpression.Operator.TIMES)
         {
-            // TODO what to pass as left and right
-            //return new Mult(String left, String right);
+            Value leftLoc = AddExpression(exp.getLeft(), currentBlock);
+            Value rightLoc = AddExpression(exp.getRight(), currentBlock);
+            Value result = new StackLocation();
+            currentBlock.addInstruction(new Mult(result, leftLoc, rightLoc, new i32()));
+            return result;
         }
         else if (op == BinaryExpression.Operator.DIVIDE)
         {
-            // TODO what to pass as left and right
-            //return new Sdiv(String left, String right);
+            // TODO
         }
         else if (op == BinaryExpression.Operator.PLUS)
         {
-            // TODO what to pass as left and right
-            //return new Add(String left, String right);
+            // TODO
         }
         else if (op == BinaryExpression.Operator.MINUS)
         {
-            // TODO what to pass as left and right
-            //return new Sub(String left, String right);
+            // TODO
         }
         else if (op == BinaryExpression.Operator.LT)
         {
@@ -326,13 +320,11 @@ public class ControlFlowGraph {
         }
         else if (op == BinaryExpression.Operator.AND)
         {
-            // TODO what to pass as left and right
-            //return new And(String left, String right);
+            // TODO
         }
         else if (op == BinaryExpression.Operator.OR)
         {
-            // TODO what to pass as left and right
-            //return new Or(String left, String right);
+            // TODO
         }
         return null; // TODO remove
     }
@@ -343,8 +335,8 @@ public class ControlFlowGraph {
 
         if (exp instanceof BinaryExpression)
         {
-            // TODO
-            return null;
+            BinaryExpression bExp = (BinaryExpression) exp;
+            return AddBinaryExpression(bExp, currentBlock);
         }
         else if (exp instanceof DotExpression)
         {

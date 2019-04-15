@@ -25,6 +25,16 @@ public class BinaryExpression
       return operator;
    }
 
+   public Expression getLeft()
+   {
+      return this.left;
+   }
+
+   public Expression getRight()
+   {
+      return this.right;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       // get types of left and right
