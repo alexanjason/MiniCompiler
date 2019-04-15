@@ -1,7 +1,6 @@
 package llvm;
 
-public interface Instruction {
+public interface Value {
 
     String getString();
-
 }

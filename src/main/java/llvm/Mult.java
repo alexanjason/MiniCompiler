@@ -2,12 +2,19 @@ package llvm;
 
 public class Mult implements Instruction {
 
-    String left;
-    String right;
+    Value left;
+    Value right;
+    Type type;
 
-    public Mult(String left, String right)
+    public Mult(Value left, Value right, Type type)
     {
         this.left = left;
         this.right = right;
+        this.type = type;
+    }
+
+    public String getString()
+    {
+        return ("mul " + type.getString() + left.getString() + ", " + right.getString());
     }
 }

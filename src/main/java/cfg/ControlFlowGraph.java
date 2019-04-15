@@ -20,6 +20,7 @@ public class ControlFlowGraph {
 
     // nodes are basic blocks
     protected List<BasicBlock> nodeList;
+    // TODO POPULATE THIS LIST!!!!
 
     // (directed) edges denote flow between blocks
 
@@ -28,6 +29,7 @@ public class ControlFlowGraph {
         entryNode = new BasicBlock(null);
         exitNode = new BasicBlock(null); //TODO
         nodeList = new ArrayList<>();
+        nodeList.add(entryNode);
         BuildCFG(func);
     }
 
@@ -48,11 +50,32 @@ public class ControlFlowGraph {
         for (Declaration dec : params)
         {
             // Create allocation instruction
-            Instruction inst = new llvm.Allocate("_P_" + dec.getName(), dec.getType());
+            Instruction inst = new llvm.Allocate("_P_" + dec.getName(), convertType(dec.getType()));
 
             // Add allocation instruction to entry node
             entryNode.addInstruction(inst);
         }
+    }
+
+    private Type convertType(ast.type.Type astType)
+    {
+        if (astType instanceof ast.type.IntType)
+        {
+            return new i32();
+        }
+        else if (astType instanceof ast.type.BoolType)
+        {
+            return new i32(); // TODO deal with this
+        }
+        else if (astType instanceof ast.type.StructType)
+        {
+            ast.type.StructType sType = (ast.type.StructType) astType;
+            return new Struct(sType.GetName());
+        }
+        System.err.println("Undealt with type ahhh panic");
+        System.exit(8);
+        return null;
+
     }
 
     private void AddAllocateLocalsInst(List<Declaration> locals)
@@ -60,7 +83,7 @@ public class ControlFlowGraph {
         for (Declaration dec : locals)
         {
             // Create allocation instruction
-            Instruction inst = new llvm.Allocate(dec.getName(), dec.getType());
+            Instruction inst = new llvm.Allocate(dec.getName(), convertType(dec.getType()));
 
             // Add allocation instruction to entry node
             entryNode.addInstruction(inst);
@@ -90,10 +113,9 @@ public class ControlFlowGraph {
         }
         for (Statement stmt : block.getStatements())
         {
-            // TODO
             newCurBlock = AddStatement(stmt, newCurBlock);
         }
-        return currentBlock;
+        return newCurBlock;
 
     }
 
@@ -105,9 +127,16 @@ public class ControlFlowGraph {
             Lvalue lval = assignStmt.getTarget();
             Expression source = assignStmt.getSource();
 
-            Instruction inst = new Store(); // TODO
+            // TODO lval
+            Value lvalLoc = AddlVal(lval, currentBlock);
+            Value sourceLoc = AddExpression(source, currentBlock);
+
+            // TODO type????
+            Instruction inst = new Store(sourceLoc, new i32(), lvalLoc);
 
             currentBlock.addInstruction(inst);
+
+            return currentBlock;
         }
         else if (stmt instanceof BlockStatement)
         {
@@ -117,7 +146,7 @@ public class ControlFlowGraph {
         else if (stmt instanceof ConditionalStatement)
         {
             ConditionalStatement condStmt = (ConditionalStatement) stmt;
-            AddConditionalStmt(condStmt, currentBlock);
+            return AddConditionalStmt(condStmt, currentBlock);
         }
         else if (stmt instanceof DeleteStatement)
         {
@@ -131,8 +160,10 @@ public class ControlFlowGraph {
         else if (stmt instanceof InvocationStatement)
         {
             InvocationStatement invStmt = (InvocationStatement) stmt;
-            Instruction inst = GetExpressionInst(invStmt.getExpression());
-            currentBlock.addInstruction(inst);
+            //Instruction inst = GetExpressionInst(invStmt.getExpression());
+            //currentBlock.addInstruction(inst);
+            AddExpression(invStmt.getExpression(), currentBlock);
+            // TODO is this right?
         }
         else if (stmt instanceof PrintLnStatement)
         {
@@ -144,7 +175,9 @@ public class ControlFlowGraph {
         }
         else if (stmt instanceof ReturnEmptyStatement)
         {
-            currentBlock.addInstruction(new ReturnVoid());
+
+            //currentBlock.addInstruction(new ReturnVoid());
+
             // TODO exit block
         }
         else if (stmt instanceof ReturnStatement)
@@ -166,10 +199,6 @@ public class ControlFlowGraph {
 
     private BasicBlock AddConditionalStmt(ConditionalStatement stmt, BasicBlock currentBlock)
     {
-        // add guard to end of current block
-        currentBlock.addInstruction(GetExpressionInst(stmt.getGuard()));
-        // TODO comparison and branching
-
         // true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
@@ -180,6 +209,10 @@ public class ControlFlowGraph {
         BasicBlock elseEntryNode = new BasicBlock(predList);
         BasicBlock elseExitNode = AddStatement(stmt.getElseBlock(), elseEntryNode);
 
+        // add guard to end of current block
+        Value guardLoc = AddExpression(stmt.getGuard(), currentBlock);
+        currentBlock.addInstruction(new BrCond(guardLoc, thenEntryNode.label, elseEntryNode.label));
+
         // create exit block
         List<BasicBlock> predCondList = new ArrayList<>();
         predCondList.add(thenExitNode);
@@ -187,6 +220,20 @@ public class ControlFlowGraph {
         BasicBlock exitNode = new BasicBlock(predCondList);
 
         // join blocks
+        nodeList.add(thenEntryNode);
+        nodeList.add(elseEntryNode);
+        if (thenEntryNode != thenExitNode)
+        {
+            // TODO
+            nodeList.add(thenExitNode);
+        }
+        if (elseEntryNode != elseExitNode)
+        {
+            // TODO
+            nodeList.add(elseExitNode);
+        }
+        nodeList.add(exitNode);
+
         thenExitNode.successorList.add(exitNode);
         elseExitNode.successorList.add(exitNode);
 
@@ -290,7 +337,7 @@ public class ControlFlowGraph {
         return null; // TODO remove
     }
 
-    private Instruction GetExpressionInst(ast.exp.Expression exp)
+    private Value AddExpression(ast.exp.Expression exp, BasicBlock currentBlock)
     {
         // TODO could expressions yield multiple instructions?
 
@@ -356,6 +403,12 @@ public class ControlFlowGraph {
             return null;
         }
         //return null;
+    }
+
+    private Value AddlVal(ast.Lvalue lVal, BasicBlock currentBlock)
+    {
+        // TODO
+        return null;
     }
 
 }

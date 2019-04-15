@@ -1,11 +1,11 @@
-package cfg;
+package llvm;
 
-public class Label {
+public class StackLocation implements Value {
 
     static int increment = 0;
     private int id;
 
-    public Label()
+    public StackLocation()
     {
         this.id = increment;
         increment++;
@@ -13,6 +13,6 @@ public class Label {
 
     public String getString()
     {
-        return ("L" + id);
+        return ("%u" + this.id);
     }
 }
