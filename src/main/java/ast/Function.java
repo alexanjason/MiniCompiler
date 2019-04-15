@@ -43,6 +43,11 @@ public class Function
       return this.body;
    }
 
+   public Type getRetType()
+   {
+      return retType;
+   }
+
    public void TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       symbolTables.newScope();

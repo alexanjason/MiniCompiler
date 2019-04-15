@@ -72,7 +72,7 @@ public class ControlFlowGraph {
             ast.type.StructType sType = (ast.type.StructType) astType;
             return new Struct(sType.GetName());
         }
-        System.err.println("Undealt with type ahhh panic");
+        System.err.println("Undealt with type");
         System.exit(8);
         return null;
 
@@ -90,7 +90,7 @@ public class ControlFlowGraph {
         }
     }
 
-    private void AddBodyInst(ast.stmt.Statement body)
+    private void AddBodyInst(Statement body)
     {
          if (body instanceof BlockStatement)
          {
@@ -155,39 +155,46 @@ public class ControlFlowGraph {
             // TODO
             //  Instruction inst =
             //  currentBlock.addInstruction(inst);
+            return currentBlock;
 
         }
         else if (stmt instanceof InvocationStatement)
         {
             InvocationStatement invStmt = (InvocationStatement) stmt;
-            //Instruction inst = GetExpressionInst(invStmt.getExpression());
-            //currentBlock.addInstruction(inst);
             AddExpression(invStmt.getExpression(), currentBlock);
             // TODO is this right?
+            return currentBlock;
         }
         else if (stmt instanceof PrintLnStatement)
         {
             //TODO
+            return currentBlock;
         }
         else if (stmt instanceof PrintStatement)
         {
             //TODO
+            return currentBlock;
         }
         else if (stmt instanceof ReturnEmptyStatement)
         {
-
-            //currentBlock.addInstruction(new ReturnVoid());
-
-            // TODO exit block
+            currentBlock.addInstruction(new BrUncond(exitNode.label));
+            currentBlock.successorList.add(exitNode);
+            exitNode.predecessorList.add(currentBlock);
+            exitNode.addInstruction(new ReturnVoid());
+            nodeList.add(exitNode);
+            return exitNode;
         }
         else if (stmt instanceof ReturnStatement)
         {
             ReturnStatement retStmt = (ReturnStatement) stmt;
-            Instruction retExpInst = GetExpressionInst(retStmt.getExpression());
-            // TODO how do I get the return type?
-            //  currentBlock.addInstruction(new Return());
-
-            // TODO exit block
+            Value retExpVal = AddExpression(retStmt.getExpression(), currentBlock);
+            currentBlock.addInstruction(new BrUncond(exitNode.label));
+            currentBlock.successorList.add(exitNode);
+            exitNode.predecessorList.add(currentBlock);
+            // TODO how to get return type -> pass through?
+            exitNode.addInstruction(new Return(new i32(), retExpVal));
+            nodeList.add(exitNode);
+            return exitNode;
         }
         else if (stmt instanceof  WhileStatement)
         {
@@ -224,12 +231,12 @@ public class ControlFlowGraph {
         nodeList.add(elseEntryNode);
         if (thenEntryNode != thenExitNode)
         {
-            // TODO
+            // TODO ??
             nodeList.add(thenExitNode);
         }
         if (elseEntryNode != elseExitNode)
         {
-            // TODO
+            // TODO ??
             nodeList.add(elseExitNode);
         }
         nodeList.add(exitNode);
@@ -243,32 +250,37 @@ public class ControlFlowGraph {
 
     private BasicBlock AddWhileStatement(WhileStatement stmt, BasicBlock currentBlock)
     {
-        Instruction guardInst = GetExpressionInst(stmt.getGuard());
-
-        // add guard to end of current block
-        currentBlock.addInstruction(guardInst);
-
-        // add guard to end of true block
+        // create true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
         BasicBlock trueEntryNode = new BasicBlock(predList);
 
         Statement trueStmt = stmt.getBody();
-        BasicBlock trueExitNode = AddStatement(trueStmt, trueEntryNode); // TODO is this right?
+        BasicBlock trueExitNode = AddStatement(trueStmt, trueEntryNode);
 
-        trueExitNode.addInstruction(guardInst);
-
-        // TODO comparison and branching
-
-        // false block
+        // create false block
         List<BasicBlock> exitPredList = new ArrayList<>();
         exitPredList.add(trueExitNode);
         exitPredList.add(currentBlock);
-        BasicBlock exitNode = new BasicBlock(exitPredList);
-        exitNode.successorList.add(trueExitNode);
-        exitNode.successorList.add(currentBlock);
+        BasicBlock falseNode = new BasicBlock(exitPredList);
+        nodeList.add(trueEntryNode);
+        if (trueEntryNode != trueExitNode)
+        {
+            nodeList.add(trueExitNode);
+        }
+        nodeList.add(falseNode);
 
-        return exitNode;
+        // Get value of guard and add to current block
+        Value guardVal = AddExpression(stmt.getGuard(), currentBlock);
+        Instruction brInst = new BrCond(guardVal, trueEntryNode.label, falseNode.label);
+        currentBlock.addInstruction(brInst);
+        currentBlock.successorList.add(trueEntryNode);
+        currentBlock.successorList.add(falseNode);
+
+        // add guard to end of true block
+        trueExitNode.addInstruction(brInst);
+
+        return falseNode;
     }
 
     private Value AddBinaryExpression(BinaryExpression exp, BasicBlock currentBlock)
