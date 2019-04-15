@@ -15,6 +15,11 @@ public class DeleteStatement
       this.expression = expression;
    }
 
+   public Expression getExpression()
+   {
+      return expression;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       Type expType = expression.TypeCheck(structTable, symbolTableList);

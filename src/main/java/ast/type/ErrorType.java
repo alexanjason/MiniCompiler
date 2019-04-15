@@ -7,5 +7,11 @@ public class ErrorType implements Type {
         return type instanceof ErrorType;
     }
 
+    public String getLLVM()
+    {
+        System.err.println("Error type in CFG");
+        System.exit(8);
+        return "Error";
+    }
 
 }

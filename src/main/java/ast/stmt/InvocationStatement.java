@@ -17,6 +17,11 @@ public class InvocationStatement
       this.expression = expression;
    }
 
+   public Expression getExpression()
+   {
+      return expression;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       expression.TypeCheck(structTable, symbolTableList);

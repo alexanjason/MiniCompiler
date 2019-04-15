@@ -6,4 +6,9 @@ public class IntType implements Type
     {
         return type instanceof IntType;
     }
+
+    public String getLLVM()
+    {
+        return "i32";
+    }
 }

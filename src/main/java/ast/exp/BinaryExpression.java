@@ -20,6 +20,11 @@ public class BinaryExpression
       this.right = right;
    }
 
+   public Operator getOperator()
+   {
+      return operator;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       // get types of left and right

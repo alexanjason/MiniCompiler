@@ -34,6 +34,16 @@ public class BlockStatement
       return ret;
    }
 
+   public List<Statement> getStatements()
+   {
+      return this.statements;
+   }
+
+   public int getLineNum()
+   {
+      return super.lineNum;
+   }
+
    public static BlockStatement emptyBlock()
    {
       return new BlockStatement(-1, new ArrayList<>());

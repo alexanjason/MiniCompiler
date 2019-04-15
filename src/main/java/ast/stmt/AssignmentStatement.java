@@ -19,6 +19,16 @@ public class AssignmentStatement
       this.source = source;
    }
 
+   public Lvalue getTarget()
+   {
+      return this.target;
+   }
+
+   public Expression getSource()
+   {
+      return this.source;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       // get type of lvalue

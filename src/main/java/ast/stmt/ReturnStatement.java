@@ -15,6 +15,11 @@ public class ReturnStatement
       this.expression = expression;
    }
 
+   public Expression getExpression()
+   {
+      return expression;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       if (!(retType.compareType(expression.TypeCheck(structTable, symbolTableList))))

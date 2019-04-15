@@ -21,6 +21,21 @@ public class ConditionalStatement
       this.elseBlock = elseBlock;
    }
 
+   public Expression getGuard()
+   {
+      return this.guard;
+   }
+
+   public Statement getThenBlock()
+   {
+      return this.thenBlock;
+   }
+
+   public Statement getElseBlock()
+   {
+      return this.elseBlock;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       Type guardType = guard.TypeCheck(structTable, symbolTableList);
