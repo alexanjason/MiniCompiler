@@ -71,8 +71,14 @@ public class SymbolTableList {
         HashMap<String, SymbolEntry> table = list.getFirst();
         for (Declaration dec : decls)
         {
-
-            table.put(dec.name, new SymbolEntry(dec.type, scope));
+            if(!table.containsKey(dec.name)){
+                table.put(dec.name, new SymbolEntry(dec.type, scope));
+            }
+            else{
+                System.err.println(dec.lineNum + ": Can't have two formal paramters for a function with the same name, " +
+                        "or two variables local to a function with the same name");
+                System.exit(1);
+            }
         }
     }
 
