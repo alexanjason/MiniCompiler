@@ -15,13 +15,18 @@ public class DeleteStatement
       this.expression = expression;
    }
 
+   public Expression getExpression()
+   {
+      return expression;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       Type expType = expression.TypeCheck(structTable, symbolTableList);
       if (!(expType instanceof StructType))
       {
          System.err.println(super.lineNum + ": can only delete structs");
-         System.exit(1);
+         System.exit(4);
       }
       return false;
    }

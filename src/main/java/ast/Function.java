@@ -28,6 +28,21 @@ public class Function
       this.body = body;
    }
 
+   public List<Declaration> getParams()
+   {
+      return this.params;
+   }
+
+   public List<Declaration> getLocals()
+   {
+      return this.locals;
+   }
+
+   public Statement getBody()
+   {
+      return this.body;
+   }
+
    public void TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       symbolTables.newScope();
@@ -43,7 +58,7 @@ public class Function
          if (!(retType instanceof VoidType))
          {
             System.err.println(lineNum + ": return not found in function");
-            System.exit(1);
+            System.exit(3);
          }
       }
    }

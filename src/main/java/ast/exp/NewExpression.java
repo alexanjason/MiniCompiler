@@ -17,19 +17,12 @@ public class NewExpression
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
-      // TODO modularize this?
+      // TODO what is valid in a new expression
       if (structTable.contains(id))
       {
          return new StructType(super.lineNum, id);
       }
-      if (symbolTables.contains(id))
-      {
-         return symbolTables.typeOf(id);
-      }
-      if (id.equals("null"))
-      {
-         return new NullType();
-      }
+
       return new ErrorType();
    }
 }

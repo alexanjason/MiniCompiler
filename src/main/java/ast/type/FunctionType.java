@@ -34,4 +34,9 @@ public class FunctionType implements Type {
     {
         return returnType;
     }
+
+    public String getLLVM()
+    {
+        return "Function"; // TODO
+    }
 }

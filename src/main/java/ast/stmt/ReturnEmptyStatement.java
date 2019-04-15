@@ -17,7 +17,7 @@ public class ReturnEmptyStatement
       if (!(retType instanceof VoidType))
       {
          System.err.println(super.lineNum + ": non-void function returning void");
-         System.exit(1);
+         System.exit(3);
       }
       return true;
    }

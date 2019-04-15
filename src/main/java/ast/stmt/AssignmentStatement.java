@@ -19,6 +19,16 @@ public class AssignmentStatement
       this.source = source;
    }
 
+   public Lvalue getTarget()
+   {
+      return this.target;
+   }
+
+   public Expression getSource()
+   {
+      return this.source;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       // get type of lvalue
@@ -27,11 +37,11 @@ public class AssignmentStatement
       // get type of expression
       Type rType = source.TypeCheck(structTable, symbolTableList);
 
-      // compare types (implemented in type?)
+      // compare types
       if (!(lType.compareType(rType)))
       {
          System.out.println(super.lineNum + ": assignment, type mismatch");
-         System.exit(1);
+         System.exit(4);
       }
       return false;
    }

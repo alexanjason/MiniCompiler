@@ -26,7 +26,7 @@ public class StructTable {
                 }
                 else{
                     System.err.println(dec.lineNum + ": Can't have declarations with same name");
-                    System.exit(1);
+                    System.exit(2);
                 }
             }
             table.put(sdec.name, new StructEntry(fieldMap));

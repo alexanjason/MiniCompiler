@@ -21,6 +21,21 @@ public class ConditionalStatement
       this.elseBlock = elseBlock;
    }
 
+   public Expression getGuard()
+   {
+      return this.guard;
+   }
+
+   public Statement getThenBlock()
+   {
+      return this.thenBlock;
+   }
+
+   public Statement getElseBlock()
+   {
+      return this.elseBlock;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       Type guardType = guard.TypeCheck(structTable, symbolTableList);
@@ -37,7 +52,7 @@ public class ConditionalStatement
       else
       {
          System.err.println(super.lineNum + ": non boolean guard");
-         System.exit(1);
+         System.exit(5);
       }
 
       return false;

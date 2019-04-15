@@ -27,4 +27,9 @@ public class StructType implements Type
          return type instanceof NullType;
       }
    }
+
+   public String getLLVM()
+   {
+      return ("%struct." + this.name + "*");
+   }
 }

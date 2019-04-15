@@ -15,12 +15,17 @@ public class ReturnStatement
       this.expression = expression;
    }
 
+   public Expression getExpression()
+   {
+      return expression;
+   }
+
    public Boolean TypeCheck(StructTable structTable, SymbolTableList symbolTableList, Type retType)
    {
       if (!(retType.compareType(expression.TypeCheck(structTable, symbolTableList))))
       {
          System.err.println(super.lineNum + ": return type not consistent with function declaration");
-         System.exit(1);
+         System.exit(3);
       }
       return true;
    }
