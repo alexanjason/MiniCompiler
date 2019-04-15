@@ -3,12 +3,12 @@ package llvm;
 public class Icmp implements Instruction {
 
     private Value result;
-    private Value cond;
+    private String cond;
     private Type type;
     private Value op1;
     private Value op2;
 
-    public Icmp(Value result, Value cond, Type type, Value op1, Value op2) {
+    public Icmp(Value result, String cond, Type type, Value op1, Value op2) {
         this.result = result;
         this.cond = cond;
         this.type = type;
@@ -18,7 +18,7 @@ public class Icmp implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = icmp " + cond.getString() + " " +
+        return (result.getString() + " = icmp " + cond + " " +
                 type.getString() + " " + op1.getString() + " " + op2.getString());
     }
 }

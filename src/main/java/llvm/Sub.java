@@ -2,12 +2,14 @@ package llvm;
 
 public class Sub implements Instruction {
 
+    Value result;
     Value left;
     Value right;
     Type type;
 
-    public Sub (Value left, Value right, Type type)
+    public Sub (Value result, Value left, Value right, Type type)
     {
+        this.result = result;
         this.left = left;
         this.right = right;
         this.type = type;
@@ -15,6 +17,6 @@ public class Sub implements Instruction {
 
     public String getString()
     {
-        return ("sub " + type.getString() + left.getString() + ", " + right.getString());
+        return (result.getString() + " = sub " + type.getString() + left.getString() + ", " + right.getString());
     }
 }

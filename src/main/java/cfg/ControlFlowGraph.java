@@ -274,49 +274,58 @@ public class ControlFlowGraph {
     private Value AddBinaryExpression(BinaryExpression exp, BasicBlock currentBlock)
     {
         BinaryExpression.Operator op = exp.getOperator();
+        Value leftLoc = AddExpression(exp.getLeft(), currentBlock);
+        Value rightLoc = AddExpression(exp.getRight(), currentBlock);
+        Value result = new StackLocation();
         if (op == BinaryExpression.Operator.TIMES)
         {
-            Value leftLoc = AddExpression(exp.getLeft(), currentBlock);
-            Value rightLoc = AddExpression(exp.getRight(), currentBlock);
-            Value result = new StackLocation();
             currentBlock.addInstruction(new Mult(result, leftLoc, rightLoc, new i32()));
             return result;
         }
         else if (op == BinaryExpression.Operator.DIVIDE)
         {
-            // TODO
+            currentBlock.addInstruction(new Sdiv(result, leftLoc, rightLoc, new i32()));
+            return result;
         }
         else if (op == BinaryExpression.Operator.PLUS)
         {
-            // TODO
+            currentBlock.addInstruction(new Add(result, leftLoc, rightLoc, new i32()));
+            return result;
         }
         else if (op == BinaryExpression.Operator.MINUS)
         {
-            // TODO
+            currentBlock.addInstruction(new Sub(result, leftLoc, rightLoc, new i32()));
+            return result;
         }
         else if (op == BinaryExpression.Operator.LT)
         {
-            // TODO cmp
+            currentBlock.addInstruction(new Icmp(result, "slt", new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.GT)
         {
-            // TODO cmp
+            currentBlock.addInstruction(new Icmp(result, "sgt", new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.LE)
         {
-            // TODO cmp
+            currentBlock.addInstruction(new Icmp(result, "sle", new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.GE)
         {
-            // TODO cmp
+            currentBlock.addInstruction(new Icmp(result, "sge", new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.EQ)
         {
-            // TODO cmp
+            currentBlock.addInstruction(new Icmp(result, "eq", new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.NE)
         {
-            // TODO cmp
+            currentBlock.addInstruction(new Icmp(result, "ne", new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.AND)
         {
@@ -394,7 +403,6 @@ public class ControlFlowGraph {
             System.exit(8);
             return null;
         }
-        //return null;
     }
 
     private Value AddlVal(ast.Lvalue lVal, BasicBlock currentBlock)

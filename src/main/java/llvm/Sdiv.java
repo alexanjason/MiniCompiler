@@ -2,12 +2,14 @@ package llvm;
 
 public class Sdiv implements Instruction {
 
+    Value result;
     Value left;
     Value right;
     Type type;
 
-    public Sdiv(Value left, Value right, Type type)
+    public Sdiv(Value result, Value left, Value right, Type type)
     {
+        this.result = result;
         this.left = left;
         this.right = right;
         this.type = type;
@@ -15,6 +17,7 @@ public class Sdiv implements Instruction {
 
     public String getString()
     {
-        return ("sdiv " + type.getString() + left.getString() + ", " + right.getString());
+        return (result.getString() + " = sdiv " + type.getString() + left.getString()
+                + ", " + right.getString());
     }
 }
