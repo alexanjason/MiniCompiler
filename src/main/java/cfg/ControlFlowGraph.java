@@ -559,8 +559,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof DotExpression)
         {
-            DotExpression dexp = (DotExpression) exp;
-            return AddDotExpression(dexp, currentBlock);
+            DotExpression dotExp = (DotExpression) exp;
+            return AddDotExpression(dotExp, currentBlock);
         }
         else if (exp instanceof FalseExpression)
         {
