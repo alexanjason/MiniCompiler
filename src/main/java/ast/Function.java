@@ -48,6 +48,11 @@ public class Function
       return retType;
    }
 
+   public String getName()
+   {
+      return name;
+   }
+
    public void TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       symbolTables.newScope();

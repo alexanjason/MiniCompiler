@@ -2,6 +2,7 @@ package cfg;
 
 import llvm.Instruction;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,14 @@ public class BasicBlock {
         label = new Label(); // TODO
         successorList = new ArrayList<>();
         predecessorList = predList;//new ArrayList<>();
+    }
+
+    public void print(PrintStream stream)
+    {
+        for (Instruction inst : instructions)
+        {
+            stream.print(inst.getString());
+        }
     }
 
     public void addInstruction(Instruction inst)

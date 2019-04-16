@@ -28,6 +28,21 @@ public class Program
       //  same name.
    }
 
+   public List<Function> getFuncs()
+   {
+      return this.funcs;
+   }
+
+   public StructTable getStructTable()
+   {
+      return structTable;
+   }
+
+   public SymbolTableList getSymbolTables()
+   {
+      return symbolTables;
+   }
+
    public void TypeCheck()
    {
       for (Function func : funcs)

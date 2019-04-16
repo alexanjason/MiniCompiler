@@ -3,8 +3,10 @@ package cfg;
 import ast.*;
 import ast.exp.*;
 import ast.stmt.*;
+import ast.type.FunctionType;
 import llvm.*;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,29 +22,63 @@ public class ControlFlowGraph {
 
     // nodes are basic blocks
     protected List<BasicBlock> nodeList;
-    // TODO POPULATE THIS LIST!!!!
+
+    protected StructTable structTable;
+
+    protected SymbolTableList symbolTableList;
+
+    protected Function function;
 
     // (directed) edges denote flow between blocks
 
-    ControlFlowGraph(ast.Function func)
+    ControlFlowGraph(ast.Function func, StructTable structTable, SymbolTableList symbolTableList)
     {
+        this.structTable = structTable;
+        this.symbolTableList = symbolTableList;
+        this.function = func;
         entryNode = new BasicBlock(null);
         exitNode = new BasicBlock(null); //TODO
         nodeList = new ArrayList<>();
         nodeList.add(entryNode);
-        BuildCFG(func);
+        BuildCFG();
+
     }
 
-    private void BuildCFG(ast.Function func)
+    public void print(PrintStream stream)
+    {
+        printFunction(stream);
+        for (BasicBlock block : nodeList)
+        {
+            block.print(stream);
+        }
+    }
+
+    public void printFunction(PrintStream stream)
+    {
+        Type retType = convertType(function.getRetType());
+        stream.print("define " + retType.getString() + "@"
+                + function.getName() + "(");
+        for (Declaration dec : function.getParams())
+        {
+            stream.print(convertType(dec.getType()).getString());
+            stream.print(" ");
+            stream.print("%" + dec.getName());
+            stream.print(" ");
+        }
+        stream.print(")\n");
+        stream.print("{\n");
+    }
+
+    private void BuildCFG()
     {
         // allocate params
-        AddAllocateParamsInst(func.getParams());
+        AddAllocateParamsInst(function.getParams());
 
         // allocate locals
-        AddAllocateLocalsInst(func.getLocals());
+        AddAllocateLocalsInst(function.getLocals());
 
         // create instructions from body
-        AddBodyInst(func.getBody());
+        AddBodyInst(function.getBody());
     }
 
     private void AddAllocateParamsInst(List<Declaration> params)
@@ -127,12 +163,12 @@ public class ControlFlowGraph {
             Lvalue lval = assignStmt.getTarget();
             Expression source = assignStmt.getSource();
 
-            // TODO lval
             Value lvalLoc = AddlVal(lval, currentBlock);
             Value sourceLoc = AddExpression(source, currentBlock);
 
-            // TODO type????
-            Instruction inst = new Store(sourceLoc, new i32(), lvalLoc);
+            // TODO there's got to be a better way
+            Type lvalType = convertType(lval.TypeCheck(structTable, symbolTableList));
+            Instruction inst = new Store(sourceLoc, lvalType, lvalLoc);
 
             currentBlock.addInstruction(inst);
 
@@ -151,10 +187,7 @@ public class ControlFlowGraph {
         else if (stmt instanceof DeleteStatement)
         {
             DeleteStatement delStmt = (DeleteStatement) stmt;
-
             // TODO
-            //  Instruction inst =
-            //  currentBlock.addInstruction(inst);
             return currentBlock;
 
         }
@@ -191,8 +224,8 @@ public class ControlFlowGraph {
             currentBlock.addInstruction(new BrUncond(exitNode.label));
             currentBlock.successorList.add(exitNode);
             exitNode.predecessorList.add(currentBlock);
-            // TODO how to get return type -> pass through?
-            exitNode.addInstruction(new Return(new i32(), retExpVal));
+            Type retType = convertType(function.getRetType());
+            exitNode.addInstruction(new Return(retType, retExpVal));
             nodeList.add(exitNode);
             return exitNode;
         }
@@ -231,12 +264,12 @@ public class ControlFlowGraph {
         nodeList.add(elseEntryNode);
         if (thenEntryNode != thenExitNode)
         {
-            // TODO ??
+            // TODO does this work??
             nodeList.add(thenExitNode);
         }
         if (elseEntryNode != elseExitNode)
         {
-            // TODO ??
+            // TODO does this work??
             nodeList.add(elseExitNode);
         }
         nodeList.add(exitNode);
@@ -266,6 +299,7 @@ public class ControlFlowGraph {
         nodeList.add(trueEntryNode);
         if (trueEntryNode != trueExitNode)
         {
+            // TODO does this work?
             nodeList.add(trueExitNode);
         }
         nodeList.add(falseNode);
@@ -332,20 +366,22 @@ public class ControlFlowGraph {
         else if (op == BinaryExpression.Operator.EQ)
         {
             currentBlock.addInstruction(new Icmp(result, "eq", new i32(), leftLoc, rightLoc));
+            // TODO could be struct
             return result;
         }
         else if (op == BinaryExpression.Operator.NE)
         {
             currentBlock.addInstruction(new Icmp(result, "ne", new i32(), leftLoc, rightLoc));
+            // TODO could be struct
             return result;
         }
         else if (op == BinaryExpression.Operator.AND)
         {
-            // TODO
+            // TODO bool type which is just i32
         }
         else if (op == BinaryExpression.Operator.OR)
         {
-            // TODO
+            // TODO bool type which is just i32
         }
         return null; // TODO remove
     }

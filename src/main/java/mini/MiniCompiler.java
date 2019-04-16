@@ -1,9 +1,9 @@
 package mini;
+import ast.StructTable;
+import ast.SymbolTableList;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-
-import java.io.*;
-import javax.json.JsonValue;
+import cfg.*;
 
 public class MiniCompiler
 {
@@ -27,16 +27,9 @@ public class MiniCompiler
 
          program.TypeCheck();
 
-         /*
-            This visitor will create a JSON representation of the AST.
-            This is primarily intended to allow use of languages other
-            than Java.  The parser can thusly be used to generate JSON
-            and the next phase of the compiler can read the JSON to build
-            a language-specific AST representation.
-         */
-         //MiniToJsonVisitor jsonVisitor = new MiniToJsonVisitor();
-         //JsonValue json = jsonVisitor.visit(tree);
-         //System.out.println(json);
+         // TODO test once fully implemented
+         //ControlFlowGraphList cfgList = new ControlFlowGraphList(program);
+         //cfgList.print(System.out);
       }
    }
 
