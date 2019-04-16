@@ -19,6 +19,14 @@ public class DotExpression
       this.id = id;
    }
 
+   public Expression getLeft() {
+      return left;
+   }
+
+   public String getId() {
+      return id;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       // get type of expression left

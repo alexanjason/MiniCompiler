@@ -350,6 +350,20 @@ public class ControlFlowGraph {
         return null; // TODO remove
     }
 
+
+    private Value AddDotExpression(DotExpression exp, BasicBlock currentBlock)
+    {
+        Value leftLoc = AddExpression(exp.getLeft(), currentBlock);
+        Value result = new StackLocation();
+
+        currentBlock.addInstruction(new GetElementPtr(result, null, null, new i32(), 0, new i32(), null));
+        //TODO: determine what to pass for typePtr, ptrVal, index  ^
+        //TODO: Determine initType and indexType - currently just assuming i32
+
+        return result;
+
+    }
+
     private Value AddExpression(ast.exp.Expression exp, BasicBlock currentBlock)
     {
         // TODO could expressions yield multiple instructions?
@@ -361,8 +375,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof DotExpression)
         {
-            // TODO
-            return null;
+            DotExpression dotExp = (DotExpression) exp;
+            return AddDotExpression(dotExp, currentBlock);
         }
         else if (exp instanceof FalseExpression)
         {
