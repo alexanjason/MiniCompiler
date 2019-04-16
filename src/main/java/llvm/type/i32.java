@@ -11,4 +11,9 @@ public class i32 implements Type {
     {
         return "0";
     }
+
+    public int getSize()
+    {
+        return 32;
+    }
 }

@@ -22,6 +22,6 @@ public class Icmp implements Instruction {
     public String getString()
     {
         return (result.getString() + " = icmp " + cond + " " +
-                type.getString() + " " + op1.getString() + " " + op2.getString());
+                type.getString() + " " + op1.getString() + ", " + op2.getString());
     }
 }

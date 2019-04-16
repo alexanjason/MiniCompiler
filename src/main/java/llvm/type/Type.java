@@ -6,4 +6,6 @@ public interface Type {
 
     String getDefault();
 
+    int getSize();
+
 }

@@ -20,7 +20,7 @@ public class Store implements Instruction {
 
     public String getString()
     {
-        return ("store " + type.getString() + "*" + value.toString() + ", " + type.getString() + "**" + ptr.getString());
+        return ("store " + type.getString() + " " + value.getString() + ", " + type.getString() + "* " + ptr.getString());
     }
 
 }

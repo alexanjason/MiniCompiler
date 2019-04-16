@@ -58,7 +58,7 @@ public class ControlFlowGraphList {
                 stream.print(controlFlowGraphs.get(0).convertType(dec.getType()).getString());
                 if (i != size - 1)
                 {
-                    stream.print(" ");
+                    stream.print(", ");
                 }
                 i++;
             }

@@ -20,6 +20,6 @@ public class Sub implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = sub " + type.getString() + left.getString() + ", " + right.getString());
+        return (result.getString() + " = sub " + type.getString() + " " + left.getString() + ", " + right.getString());
     }
 }

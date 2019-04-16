@@ -1,9 +1,12 @@
 package ast.prog;
 
 import ast.type.Type;
+
+import java.util.Collection;
 import java.util.HashMap;
 
 public class StructEntry {
+
     private HashMap<String, StructField> fieldTable;
 
     StructEntry(HashMap<String, StructField> table)
@@ -19,6 +22,11 @@ public class StructEntry {
     public int getFieldIndex(String field)
     {
         return fieldTable.get(field).index;
+    }
+
+    public Collection<StructField> getFields()
+    {
+        return fieldTable.values();
     }
 
 }

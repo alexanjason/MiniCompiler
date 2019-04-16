@@ -3,10 +3,12 @@ package llvm.type;
 public class Struct implements Type {
 
     String name;
+    int size;
 
-    public Struct(String name)
+    public Struct(String name, int size)
     {
         this.name = name;
+        this.size = size;
     }
 
     public String getString()
@@ -17,5 +19,10 @@ public class Struct implements Type {
     public String getDefault()
     {
         return "null";
+    }
+
+    public int getSize()
+    {
+        return size;
     }
 }

@@ -26,14 +26,14 @@ public class Call implements Instruction {
     {
         int size = paramVals.size();
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(result.getString() + " = call " + retType.getString() + "@" + name + "(");
+        strBuilder.append(result.getString() + " = call " + retType.getString() + " @" + name + "(");
         for (int i = 0; i < size; i++)
         {
             strBuilder.append(paramTypes.get(i).getString());
             strBuilder.append(" ");
             strBuilder.append(paramVals.get(i).getString());
 
-            if (i == size - 1)
+            if (i != size - 1)
             {
                 strBuilder.append(", ");
             }

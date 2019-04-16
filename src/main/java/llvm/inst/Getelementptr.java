@@ -20,7 +20,7 @@ public class Getelementptr implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = " + type.getString() + " " +
+        return (result.getString() + " = getelementptr " + type.getString() + " " +
                 base.getString() + ", i1 0, i32" + index);
     }
 }

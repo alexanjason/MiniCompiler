@@ -20,7 +20,7 @@ public class Mult implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = mul " + type.getString() +
+        return (result.getString() + " = mul " + type.getString() + " " +
                 left.getString() + ", " + right.getString());
     }
 }

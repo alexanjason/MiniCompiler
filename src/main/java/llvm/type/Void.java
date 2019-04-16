@@ -13,4 +13,9 @@ public class Void implements Type {
     {
         return "void";
     }
+
+    public int getSize()
+    {
+        return 0;
+    }
 }

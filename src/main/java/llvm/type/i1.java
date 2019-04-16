@@ -11,4 +11,9 @@ public class i1 implements Type {
         return "0";
     }
 
+    public int getSize()
+    {
+        return 1;
+    }
+
 }

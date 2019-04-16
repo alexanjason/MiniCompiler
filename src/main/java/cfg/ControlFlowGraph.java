@@ -6,14 +6,8 @@ import ast.stmt.*;
 import ast.type.FunctionType;
 import ast.type.StructType;
 import llvm.inst.*;
-import llvm.type.Struct;
-import llvm.type.Type;
-import llvm.type.Void;
-import llvm.type.i32;
-import llvm.value.Immediate;
-import llvm.value.Local;
-import llvm.value.StackLocation;
-import llvm.value.Value;
+import llvm.type.*;
+import llvm.value.*;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -47,6 +41,11 @@ public class ControlFlowGraph {
         this.function = func;
         entryNode = new BasicBlock(new ArrayList<>());
         exitNode = new BasicBlock(new ArrayList<>());
+        Value result = new StackLocation();
+        Type type = convertType(function.getRetType());
+        Value retVal = new Local("_retval");
+        exitNode.addInstruction(new Load(type, result, retVal));
+        exitNode.addInstruction(new Return(type, result));
         nodeList = new ArrayList<>();
         nodeList.add(entryNode);
         BuildCFG();
@@ -120,11 +119,24 @@ public class ControlFlowGraph {
         else if (astType instanceof ast.type.StructType)
         {
             ast.type.StructType sType = (ast.type.StructType) astType;
-            return new Struct(sType.GetName());
+            String name = sType.GetName();
+
+            /* // TODO this is super broken and probs shouldn't be implemented here
+            System.err.println(name);
+            StructEntry entry = structTable.get(name);
+
+            int size = 0;
+            for (StructField field : entry.getFields())
+            {
+                size += convertType(field.getType()).getSize();
+            }
+            */
+            int size = 0; // TODO
+            return new Struct(name, size);
         }
         else if (astType instanceof ast.type.VoidType)
         {
-            return new Void();
+            return new llvm.type.Void();
         }
         System.out.println(astType);
         System.err.println("Undealt with type");
@@ -165,6 +177,7 @@ public class ControlFlowGraph {
         if (block.getLineNum() == -1)
         {
             // TODO body is empty block
+            //return null;
         }
         for (Statement stmt : block.getStatements())
         {
@@ -176,23 +189,14 @@ public class ControlFlowGraph {
 
     private Value AddlVal(Lvalue lVal, BasicBlock currentBlock)
     {
-        // TODO
-        /*
-           LvalueDot
-           private final int lineNum;
-           private final Expression left;
-           private final String id;
-
-           LvalueId
-
-           private final int lineNum;
-           private final String id;
-         */
         if (lVal instanceof LvalueDot)
         {
+            // TODO extra load instruction???
             LvalueDot valDot = (LvalueDot) lVal;
             Expression lExp = valDot.getLeft();
             String id = valDot.getId();
+            System.out.println("lExp " + lExp);
+            System.out.println("id " + id);
 
             // get type (struct) of left expression
             ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
@@ -219,12 +223,10 @@ public class ControlFlowGraph {
         }
         else if (lVal instanceof LvalueId)
         {
+
             LvalueId valId = (LvalueId) lVal;
             String id = valId.getId();
-            Value result = new StackLocation();
-            Type type = convertType(symbolTableList.typeOf(id));
-            currentBlock.addInstruction(new Load(type, result, new Local(id)));
-            return result;
+            return new Local(id);
         }
 
         return null;
@@ -233,7 +235,9 @@ public class ControlFlowGraph {
     private BasicBlock AddAssignmentStatement(AssignmentStatement stmt, BasicBlock currentBlock)
     {
         Lvalue lval = stmt.getTarget();
+        // TODO extra load System.err.println("lval: " + lval);
         Expression source = stmt.getSource();
+        // TODO extra load System.err.println("source: " + source);
 
         Value lvalLoc = AddlVal(lval, currentBlock);
         Value sourceLoc = AddExpression(source, currentBlock);
@@ -317,25 +321,32 @@ public class ControlFlowGraph {
     private BasicBlock AddReturnStmt(ReturnStatement retStmt, BasicBlock currentBlock)
     {
         Value retExpVal = AddExpression(retStmt.getExpression(), currentBlock);
+        Value retVal = new Local("_retval");
+        Type type = convertType(function.getRetType());
+        currentBlock.addInstruction(new Store(retExpVal, type, retVal));
         currentBlock.addInstruction(new BrUncond(exitNode.label));
         currentBlock.successorList.add(exitNode);
         exitNode.predecessorList.add(currentBlock);
-        Type retType = convertType(function.getRetType());
-        exitNode.addInstruction(new Return(retType, retExpVal));
         nodeList.add(exitNode);
         return exitNode;
     }
 
     private BasicBlock AddConditionalStmt(ConditionalStatement stmt, BasicBlock currentBlock)
     {
-        // true block
+        // create true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
         BasicBlock thenEntryNode = new BasicBlock(predList);
+        // link true block to current block
+        currentBlock.successorList.add(thenEntryNode);
+        nodeList.add(thenEntryNode);
         BasicBlock thenExitNode = AddStatement(stmt.getThenBlock(), thenEntryNode);
 
         // false block
         BasicBlock elseEntryNode = new BasicBlock(predList);
+        // link false block to current block
+        currentBlock.successorList.add(elseEntryNode);
+        nodeList.add(elseEntryNode);
         BasicBlock elseExitNode = AddStatement(stmt.getElseBlock(), elseEntryNode);
 
         // add guard to end of current block
@@ -343,30 +354,32 @@ public class ControlFlowGraph {
         currentBlock.addInstruction(new BrCond(guardLoc, thenEntryNode.label, elseEntryNode.label));
 
         // create exit block
+        // TODO when nothing after conditional statement, this creates a empty node
         List<BasicBlock> predCondList = new ArrayList<>();
         predCondList.add(thenExitNode);
         predCondList.add(elseExitNode);
-        BasicBlock exitNode = new BasicBlock(predCondList);
+        BasicBlock condExitNode = new BasicBlock(predCondList);
 
-        // join blocks
-        nodeList.add(thenEntryNode);
-        nodeList.add(elseEntryNode);
         if (thenEntryNode != thenExitNode)
         {
             // TODO does this work??
-            nodeList.add(thenExitNode);
+            //System.err.println(thenEntryNode.label.getString() + " " + thenExitNode.label.getString());
+            //nodeList.add(thenExitNode);
         }
         if (elseEntryNode != elseExitNode)
         {
             // TODO does this work??
-            nodeList.add(elseExitNode);
+            //System.err.println(elseEntryNode.label.getString() + " " + elseExitNode.label.getString());
+            //nodeList.add(elseExitNode);
         }
-        nodeList.add(exitNode);
+        nodeList.add(condExitNode);
 
-        thenExitNode.successorList.add(exitNode);
-        elseExitNode.successorList.add(exitNode);
+        thenExitNode.successorList.add(condExitNode);
+        elseExitNode.successorList.add(condExitNode);
 
-        return exitNode;
+        System.err.println(condExitNode.label.getString());
+
+        return condExitNode;
 
     }
 
@@ -553,6 +566,23 @@ public class ControlFlowGraph {
         return result;
     }
 
+    private Value AddNewExpression(NewExpression exp, BasicBlock currentBlock)
+    {
+        StructEntry entry = structTable.get(exp.getId());
+        // TODO there's a better way than converting type
+        Type type = convertType(new StructType(-1, exp.getId()));
+
+        List<Value> paramVals = new ArrayList<>();
+        // TODO convert bit size to whatever malloc takes
+        paramVals.add(new Immediate(Integer.toString(type.getSize())));
+        List<Type> paramTypes = new ArrayList<>();
+        paramTypes.add(new i32());
+
+        Value result = new StackLocation();
+        currentBlock.addInstruction(new Call(result, new i8(), "malloc", paramTypes, paramVals));
+        return result;
+    }
+
     private Value AddExpression(ast.exp.Expression exp, BasicBlock currentBlock)
     {
         if (exp instanceof BinaryExpression)
@@ -585,8 +615,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof NewExpression)
         {
-            // TODO
-            return null;
+            NewExpression newExp = (NewExpression) exp;
+            return AddNewExpression(newExp, currentBlock);
         }
         else if (exp instanceof NullExpression)
         {

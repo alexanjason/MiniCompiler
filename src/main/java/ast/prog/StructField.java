@@ -12,4 +12,9 @@ public class StructField {
         this.type = type;
         this.index = index;
     }
+
+    public Type getType()
+    {
+        return this.type;
+    }
 }

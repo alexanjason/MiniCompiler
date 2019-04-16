@@ -15,6 +15,11 @@ public class NewExpression
       this.id = id;
    }
 
+   public String getId()
+   {
+      return id;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       // TODO what is valid in a new expression
