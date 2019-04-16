@@ -7,9 +7,4 @@ public class BoolType implements Type
         return type instanceof BoolType;
     }
 
-    public String getLLVM()
-    {
-        return "i32";
-    }
-
 }

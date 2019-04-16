@@ -1,7 +1,7 @@
 package ast.exp;
 
-import ast.StructTable;
-import ast.SymbolTableList;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
 import ast.type.*;
 
 public class NewExpression
@@ -23,6 +23,8 @@ public class NewExpression
          return new StructType(super.lineNum, id);
       }
 
-      return new ErrorType();
+      System.err.println("NewExpression 26");
+      return null;
+      //return new ErrorType();
    }
 }

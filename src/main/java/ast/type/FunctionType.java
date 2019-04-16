@@ -1,7 +1,5 @@
 package ast.type;
 
-import ast.Function;
-
 import java.util.List;
 
 public class FunctionType implements Type {
@@ -35,8 +33,4 @@ public class FunctionType implements Type {
         return returnType;
     }
 
-    public String getLLVM()
-    {
-        return "Function"; // TODO
-    }
 }

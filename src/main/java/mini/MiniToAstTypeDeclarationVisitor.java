@@ -2,7 +2,8 @@ package mini;
 import java.util.List;
 import java.util.ArrayList;
 
-import ast.*;
+import ast.prog.Declaration;
+import ast.prog.TypeDeclaration;
 
 public class MiniToAstTypeDeclarationVisitor
    extends MiniBaseVisitor<TypeDeclaration>

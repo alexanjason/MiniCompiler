@@ -1,10 +1,9 @@
 package ast.exp;
 
-import ast.StructTable;
-import ast.SymbolTableList;
-import ast.type.ErrorType;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
+//import ast.type.ErrorType;
 import ast.type.NullType;
-import ast.type.StructType;
 import ast.type.Type;
 
 public class IdentifierExpression
@@ -28,6 +27,13 @@ public class IdentifierExpression
       {
          return new NullType();
       }
-      return new ErrorType();
+      System.err.println("IdentifierExpression 31");
+      return null;
+      //return new ErrorType();
+   }
+
+   public String getId()
+   {
+      return this.id;
    }
 }

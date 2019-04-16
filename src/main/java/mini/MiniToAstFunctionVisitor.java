@@ -1,13 +1,12 @@
 package mini;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import ast.prog.Declaration;
+import ast.prog.Function;
 import ast.type.*;
 import ast.stmt.*;
 
 
 import java.util.List;
 import java.util.ArrayList;
-
-import ast.*;
 
 public class MiniToAstFunctionVisitor
    extends MiniBaseVisitor<Function>

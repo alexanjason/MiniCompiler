@@ -1,8 +1,8 @@
 package ast.exp;
 
-import ast.StructEntry;
-import ast.StructTable;
-import ast.SymbolTableList;
+import ast.prog.StructEntry;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
 import ast.type.StructType;
 import ast.type.Type;
 
@@ -17,6 +17,16 @@ public class DotExpression
       super(lineNum);
       this.left = left;
       this.id = id;
+   }
+
+   public Expression getLeft()
+   {
+      return left;
+   }
+
+   public String getId()
+   {
+      return id;
    }
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)

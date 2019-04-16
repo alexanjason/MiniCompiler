@@ -7,10 +7,4 @@ public class VoidType implements Type
         return type instanceof VoidType;
     }
 
-    public String getLLVM()
-    {
-        System.err.println("Void type in CFG");
-        System.exit(8);
-        return "Void";
-    }
 }

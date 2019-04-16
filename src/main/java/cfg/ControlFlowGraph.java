@@ -1,10 +1,19 @@
 package cfg;
 
-import ast.*;
 import ast.exp.*;
+import ast.prog.*;
 import ast.stmt.*;
 import ast.type.FunctionType;
-import llvm.*;
+import ast.type.StructType;
+import llvm.inst.*;
+import llvm.type.Struct;
+import llvm.type.Type;
+import llvm.type.Void;
+import llvm.type.i32;
+import llvm.value.Immediate;
+import llvm.value.Local;
+import llvm.value.StackLocation;
+import llvm.value.Value;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -31,17 +40,16 @@ public class ControlFlowGraph {
 
     // (directed) edges denote flow between blocks
 
-    ControlFlowGraph(ast.Function func, StructTable structTable, SymbolTableList symbolTableList)
+    ControlFlowGraph(Function func, StructTable structTable, SymbolTableList symbolTableList)
     {
         this.structTable = structTable;
         this.symbolTableList = symbolTableList;
         this.function = func;
-        entryNode = new BasicBlock(null);
-        exitNode = new BasicBlock(null); //TODO
+        entryNode = new BasicBlock(new ArrayList<>());
+        exitNode = new BasicBlock(new ArrayList<>());
         nodeList = new ArrayList<>();
         nodeList.add(entryNode);
         BuildCFG();
-
     }
 
     public void print(PrintStream stream)
@@ -86,14 +94,15 @@ public class ControlFlowGraph {
         for (Declaration dec : params)
         {
             // Create allocation instruction
-            Instruction inst = new llvm.Allocate("_P_" + dec.getName(), convertType(dec.getType()));
+            Type type = convertType(dec.getType());
+            Instruction inst = new Allocate("_P_" + dec.getName(), type);
 
             // Add allocation instruction to entry node
             entryNode.addInstruction(inst);
         }
     }
 
-    private Type convertType(ast.type.Type astType)
+    public Type convertType(ast.type.Type astType)
     {
         if (astType instanceof ast.type.IntType)
         {
@@ -108,6 +117,11 @@ public class ControlFlowGraph {
             ast.type.StructType sType = (ast.type.StructType) astType;
             return new Struct(sType.GetName());
         }
+        else if (astType instanceof ast.type.VoidType)
+        {
+            return new Void();
+        }
+        System.out.println(astType);
         System.err.println("Undealt with type");
         System.exit(8);
         return null;
@@ -119,7 +133,7 @@ public class ControlFlowGraph {
         for (Declaration dec : locals)
         {
             // Create allocation instruction
-            Instruction inst = new llvm.Allocate(dec.getName(), convertType(dec.getType()));
+            Instruction inst = new Allocate(dec.getName(), convertType(dec.getType()));
 
             // Add allocation instruction to entry node
             entryNode.addInstruction(inst);
@@ -155,24 +169,84 @@ public class ControlFlowGraph {
 
     }
 
+    private Value AddlVal(Lvalue lVal, BasicBlock currentBlock)
+    {
+        // TODO
+        /*
+           LvalueDot
+           private final int lineNum;
+           private final Expression left;
+           private final String id;
+
+           LvalueId
+
+           private final int lineNum;
+           private final String id;
+         */
+        if (lVal instanceof LvalueDot)
+        {
+            LvalueDot valDot = (LvalueDot) lVal;
+            Expression lExp = valDot.getLeft();
+            String id = valDot.getId();
+
+            // get type (struct) of left expression
+            ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
+            StructType structType = (StructType) lType;
+            Type sType = convertType(lType);
+
+            // add base address instruction
+            Value baseAddr = new StackLocation();
+            Value localLoc = AddExpression(lExp, currentBlock);
+            currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
+
+            // add offset address instruction
+            Value offsetAddr = new StackLocation();
+            StructEntry entry = structTable.get(structType.GetName());
+            int index = entry.getFieldIndex(id);
+            currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, baseAddr, index));
+
+            // add dot instruction
+            Value result = new StackLocation();
+            Type fieldType = convertType(entry.getType(id));
+            currentBlock.addInstruction(new Load(fieldType, result, offsetAddr));
+            return result;
+
+        }
+        else if (lVal instanceof LvalueId)
+        {
+            LvalueId valId = (LvalueId) lVal;
+            String id = valId.getId();
+            Value result = new StackLocation();
+            Type type = convertType(symbolTableList.typeOf(id));
+            currentBlock.addInstruction(new Load(type, result, new Local(id)));
+            return result;
+        }
+
+        return null;
+    }
+
+    private BasicBlock AddAssignmentStatement(AssignmentStatement stmt, BasicBlock currentBlock)
+    {
+        Lvalue lval = stmt.getTarget();
+        Expression source = stmt.getSource();
+
+        Value lvalLoc = AddlVal(lval, currentBlock);
+        Value sourceLoc = AddExpression(source, currentBlock);
+
+        // TODO there's got to be a better way
+        Type lvalType = convertType(lval.TypeCheck(structTable, symbolTableList));
+        currentBlock.addInstruction(new Store(sourceLoc, lvalType, lvalLoc));
+
+        return currentBlock;
+    }
+
     private BasicBlock AddStatement(ast.stmt.Statement stmt, BasicBlock currentBlock)
     {
         if (stmt instanceof AssignmentStatement)
         {
             AssignmentStatement assignStmt = (AssignmentStatement) stmt;
-            Lvalue lval = assignStmt.getTarget();
-            Expression source = assignStmt.getSource();
 
-            Value lvalLoc = AddlVal(lval, currentBlock);
-            Value sourceLoc = AddExpression(source, currentBlock);
-
-            // TODO there's got to be a better way
-            Type lvalType = convertType(lval.TypeCheck(structTable, symbolTableList));
-            Instruction inst = new Store(sourceLoc, lvalType, lvalLoc);
-
-            currentBlock.addInstruction(inst);
-
-            return currentBlock;
+            return AddAssignmentStatement(assignStmt, currentBlock);
         }
         else if (stmt instanceof BlockStatement)
         {
@@ -210,24 +284,12 @@ public class ControlFlowGraph {
         }
         else if (stmt instanceof ReturnEmptyStatement)
         {
-            currentBlock.addInstruction(new BrUncond(exitNode.label));
-            currentBlock.successorList.add(exitNode);
-            exitNode.predecessorList.add(currentBlock);
-            exitNode.addInstruction(new ReturnVoid());
-            nodeList.add(exitNode);
-            return exitNode;
+            return AddEmptyReturnStmt(currentBlock);
         }
         else if (stmt instanceof ReturnStatement)
         {
             ReturnStatement retStmt = (ReturnStatement) stmt;
-            Value retExpVal = AddExpression(retStmt.getExpression(), currentBlock);
-            currentBlock.addInstruction(new BrUncond(exitNode.label));
-            currentBlock.successorList.add(exitNode);
-            exitNode.predecessorList.add(currentBlock);
-            Type retType = convertType(function.getRetType());
-            exitNode.addInstruction(new Return(retType, retExpVal));
-            nodeList.add(exitNode);
-            return exitNode;
+            return AddReturnStmt(retStmt, currentBlock);
         }
         else if (stmt instanceof  WhileStatement)
         {
@@ -235,6 +297,28 @@ public class ControlFlowGraph {
             return AddWhileStatement(whileStmt, currentBlock);
         }
         return currentBlock;
+    }
+
+    private BasicBlock AddEmptyReturnStmt(BasicBlock currentBlock)
+    {
+        currentBlock.addInstruction(new BrUncond(exitNode.label));
+        currentBlock.successorList.add(exitNode);
+        exitNode.predecessorList.add(currentBlock);
+        exitNode.addInstruction(new ReturnVoid());
+        nodeList.add(exitNode);
+        return exitNode;
+    }
+
+    private BasicBlock AddReturnStmt(ReturnStatement retStmt, BasicBlock currentBlock)
+    {
+        Value retExpVal = AddExpression(retStmt.getExpression(), currentBlock);
+        currentBlock.addInstruction(new BrUncond(exitNode.label));
+        currentBlock.successorList.add(exitNode);
+        exitNode.predecessorList.add(currentBlock);
+        Type retType = convertType(function.getRetType());
+        exitNode.addInstruction(new Return(retType, retExpVal));
+        nodeList.add(exitNode);
+        return exitNode;
     }
 
     private BasicBlock AddConditionalStmt(ConditionalStatement stmt, BasicBlock currentBlock)
@@ -338,11 +422,43 @@ public class ControlFlowGraph {
         return result;
     }
 
+    private Value AddIdentifierExpression(IdentifierExpression exp, BasicBlock currentBlock)
+    {
+        String id = exp.getId();
+        Type type = convertType(symbolTableList.typeOf(id));
+        Value result = new StackLocation();
+        Value pointer = new Local(id);
+        currentBlock.addInstruction(new Load(type, result, pointer));
+        return result;
+    }
+
+    private Value AddUnaryExpression(UnaryExpression uExp, BasicBlock currentBlock)
+    {
+        UnaryExpression.Operator op = uExp.getOperator();
+        Value rVal = AddExpression(uExp.getOperand(), currentBlock);
+        Value result = new StackLocation();
+
+        switch(op)
+        {
+            case NOT:
+                currentBlock.addInstruction(new Xor(new i32(), new Immediate("true"), rVal, result));
+                return result;
+            case MINUS:
+                currentBlock.addInstruction(new Mult(result, new Immediate("-1"), rVal, new i32()));
+                return result;
+            default:
+                System.err.println("No type matched unary expression");
+        }
+        return null;
+    }
+
     private Value AddBinaryExpression(BinaryExpression exp, BasicBlock currentBlock)
     {
         BinaryExpression.Operator op = exp.getOperator();
         Value leftLoc = AddExpression(exp.getLeft(), currentBlock);
         Value rightLoc = AddExpression(exp.getRight(), currentBlock);
+        System.out.println("350 " + exp.getLeft());
+        System.out.println("351 " + exp.getRight());
         Value result = new StackLocation();
         if (op == BinaryExpression.Operator.TIMES)
         {
@@ -407,10 +523,35 @@ public class ControlFlowGraph {
         return null; // TODO remove
     }
 
+    private Value AddDotExpression(DotExpression exp, BasicBlock currentBlock)
+    {
+        // get type (struct) of left expression
+        Expression lExp = exp.getLeft();
+        // TODO there's got to be a better way
+        ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
+        StructType structType = (StructType) lType;
+        Type sType = convertType(lType);
+
+        // add base address instruction
+        Value baseAddr = new StackLocation();
+        Value localLoc = AddExpression(lExp, currentBlock);
+        currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
+
+        // add offset address instruction
+        Value offsetAddr = new StackLocation();
+        StructEntry entry = structTable.get(structType.GetName());
+        int index = entry.getFieldIndex(exp.getId());
+        currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, baseAddr, index));
+
+        // add dot instruction
+        Value result = new StackLocation();
+        Type fieldType = convertType(entry.getType(exp.getId()));
+        currentBlock.addInstruction(new Load(fieldType, result, offsetAddr));
+        return result;
+    }
+
     private Value AddExpression(ast.exp.Expression exp, BasicBlock currentBlock)
     {
-        // TODO could expressions yield multiple instructions?
-
         if (exp instanceof BinaryExpression)
         {
             BinaryExpression bExp = (BinaryExpression) exp;
@@ -418,8 +559,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof DotExpression)
         {
-            // TODO
-            return null;
+            DotExpression dexp = (DotExpression) exp;
+            return AddDotExpression(dexp, currentBlock);
         }
         else if (exp instanceof FalseExpression)
         {
@@ -427,8 +568,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof IdentifierExpression)
         {
-            // TODO
-            return null;
+            IdentifierExpression iExp = (IdentifierExpression) exp;
+            return AddIdentifierExpression(iExp, currentBlock);
         }
         else if (exp instanceof IntegerExpression)
         {
@@ -459,8 +600,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof UnaryExpression)
         {
-            // TODO
-            return null;
+            UnaryExpression uExp = (UnaryExpression) exp;
+            return AddUnaryExpression(uExp, currentBlock);
         }
         else
         {
@@ -468,12 +609,6 @@ public class ControlFlowGraph {
             System.exit(8);
             return null;
         }
-    }
-
-    private Value AddlVal(ast.Lvalue lVal, BasicBlock currentBlock)
-    {
-        // TODO
-        return null;
     }
 
 }

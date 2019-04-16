@@ -1,4 +1,6 @@
 package mini;
+import ast.prog.Program;
+import cfg.ControlFlowGraphList;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -19,14 +21,13 @@ public class MiniCompiler
             in Java using the provided classes.
          */
          MiniToAstProgramVisitor programVisitor = new MiniToAstProgramVisitor();
-         ast.Program program = programVisitor.visit(tree);
-
+         Program program = programVisitor.visit(tree);
 
          program.TypeCheck();
 
          // TODO test once fully implemented
-         //ControlFlowGraphList cfgList = new ControlFlowGraphList(program);
-         //cfgList.print(System.out);
+         ControlFlowGraphList cfgList = new ControlFlowGraphList(program);
+         cfgList.print(System.out);
       }
    }
 

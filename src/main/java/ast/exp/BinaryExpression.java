@@ -1,7 +1,7 @@
 package ast.exp;
 
-import ast.StructTable;
-import ast.SymbolTableList;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
 import ast.type.*;
 
 public class BinaryExpression
@@ -99,7 +99,9 @@ public class BinaryExpression
          }
       }
 
-      return new ErrorType();
+      System.err.println("BinaryExpression 102");
+      return null;
+      //return new ErrorType();
    }
 
    public static BinaryExpression create(int lineNum, String opStr,

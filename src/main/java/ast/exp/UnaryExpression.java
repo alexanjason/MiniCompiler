@@ -1,7 +1,7 @@
 package ast.exp;
 
-import ast.StructTable;
-import ast.SymbolTableList;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
 import ast.type.*;
 
 public class UnaryExpression
@@ -15,6 +15,16 @@ public class UnaryExpression
       super(lineNum);
       this.operator = operator;
       this.operand = operand;
+   }
+
+   public Operator getOperator()
+   {
+      return operator;
+   }
+
+   public Expression getOperand()
+   {
+      return operand;
    }
 
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
@@ -43,7 +53,9 @@ public class UnaryExpression
                System.exit(4);
             }
          default:
-            return new ErrorType();
+            System.err.println("UnaryExpression 46");
+            //return new ErrorType();
+            return null;
 
       }
    }

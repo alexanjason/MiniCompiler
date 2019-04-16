@@ -1,8 +1,8 @@
 package ast.stmt;
 
-import ast.StructTable;
-import ast.SymbolTableList;
-import ast.type.ErrorType;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
+//import ast.type.ErrorType;
 import ast.type.Type;
 
 import java.util.List;

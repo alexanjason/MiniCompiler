@@ -1,5 +1,6 @@
 package ast.type;
 
+/*
 // TODO keep this or no?
 public class ErrorType implements Type {
     public boolean compareType(Type type)
@@ -7,11 +8,5 @@ public class ErrorType implements Type {
         return type instanceof ErrorType;
     }
 
-    public String getLLVM()
-    {
-        System.err.println("Error type in CFG");
-        System.exit(8);
-        return "Error";
-    }
-
 }
+*/

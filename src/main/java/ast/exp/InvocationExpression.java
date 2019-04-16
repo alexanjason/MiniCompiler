@@ -1,7 +1,7 @@
 package ast.exp;
 
-import ast.StructTable;
-import ast.SymbolTableList;
+import ast.prog.StructTable;
+import ast.prog.SymbolTableList;
 import ast.type.*;
 
 import java.util.List;

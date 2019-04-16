@@ -1,12 +1,9 @@
 package mini;
 import ast.stmt.*;
 import ast.exp.*;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import ast.*;
 
 public class MiniToAstStatementVisitor
    extends MiniBaseVisitor<Statement>

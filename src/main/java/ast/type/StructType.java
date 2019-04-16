@@ -28,8 +28,4 @@ public class StructType implements Type
       }
    }
 
-   public String getLLVM()
-   {
-      return ("%struct." + this.name + "*");
-   }
 }
