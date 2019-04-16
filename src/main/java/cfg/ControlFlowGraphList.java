@@ -34,10 +34,12 @@ public class ControlFlowGraphList {
     public void print(PrintStream stream)
     {
         printTypes(program.getTypes(), stream);
+        stream.println();
         printDecls(program.getDecls(), stream);
 
         for (ControlFlowGraph cfg : controlFlowGraphs)
         {
+            stream.println();
             cfg.print(stream);
         }
     }
@@ -48,10 +50,17 @@ public class ControlFlowGraphList {
         for (TypeDeclaration tdec : decls)
         {
             stream.print("%struct." + tdec.getName() + " = type {");
+            int i = 0;
+            int size = tdec.getFields().size();
             for (Declaration dec : tdec.getFields())
             {
                 // TODO how i access convertType here is very strange
-                stream.print(controlFlowGraphs.get(0).convertType(dec.getType()).getString() + " ");
+                stream.print(controlFlowGraphs.get(0).convertType(dec.getType()).getString());
+                if (i != size - 1)
+                {
+                    stream.print(" ");
+                }
+                i++;
             }
             stream.print("}\n");
         }

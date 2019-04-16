@@ -9,9 +9,7 @@ public class Store implements Instruction {
 
     Value ptr;
     Value value;
-    Type type; //TODO
-
-    // store %struct.foo* %u3, %struct.foo** %unused
+    Type type;
 
     public Store(Value value, Type type, Value ptr)
     {
@@ -22,10 +20,6 @@ public class Store implements Instruction {
 
     public String getString()
     {
-        System.out.println("Store 25");
-        System.out.println("type: " + type.getString());
-        System.out.println("value: " + value.getString());
-        System.out.println("ptr: " + ptr.getString());
         return ("store " + type.getString() + "*" + value.toString() + ", " + type.getString() + "**" + ptr.getString());
     }
 

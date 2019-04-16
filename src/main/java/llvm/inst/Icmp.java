@@ -21,10 +21,6 @@ public class Icmp implements Instruction {
 
     public String getString()
     {
-        System.out.println("cond " + cond);
-        System.out.println("type " + type.getString());
-        System.out.println("op1 " + op1.getString()); // TODO
-        System.out.println("op2 " + op2.getString());
         return (result.getString() + " = icmp " + cond + " " +
                 type.getString() + " " + op1.getString() + " " + op2.getString());
     }

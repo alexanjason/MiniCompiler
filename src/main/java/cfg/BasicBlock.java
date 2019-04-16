@@ -30,9 +30,10 @@ public class BasicBlock {
 
     public void print(PrintStream stream)
     {
+        stream.println(label.getString() + ":");
         for (Instruction inst : instructions)
         {
-            stream.println(inst.getString());
+            stream.println("\t" + inst.getString());
         }
     }
 

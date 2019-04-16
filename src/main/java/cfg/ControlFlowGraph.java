@@ -64,14 +64,19 @@ public class ControlFlowGraph {
     public void printFunction(PrintStream stream)
     {
         Type retType = convertType(function.getRetType());
-        stream.print("define " + retType.getString() + "@"
+        stream.print("define " + retType.getString() + " @"
                 + function.getName() + "(");
+        int i = 0;
+        int size = function.getParams().size();
         for (Declaration dec : function.getParams())
         {
             stream.print(convertType(dec.getType()).getString());
             stream.print(" ");
             stream.print("%" + dec.getName());
-            stream.print(" ");
+            if (i != size - 1) {
+                stream.print(", ");
+            }
+            i++;
         }
         stream.print(")\n");
         stream.print("{\n");
@@ -457,8 +462,6 @@ public class ControlFlowGraph {
         BinaryExpression.Operator op = exp.getOperator();
         Value leftLoc = AddExpression(exp.getLeft(), currentBlock);
         Value rightLoc = AddExpression(exp.getRight(), currentBlock);
-        System.out.println("350 " + exp.getLeft());
-        System.out.println("351 " + exp.getRight());
         Value result = new StackLocation();
         if (op == BinaryExpression.Operator.TIMES)
         {

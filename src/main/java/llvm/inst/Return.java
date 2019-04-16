@@ -18,6 +18,6 @@ public class Return implements Instruction {
 
     public String getString()
     {
-        return ("ret " + type.getString() + value.getString());
+        return ("ret " + type.getString() + " " + value.getString());
     }
 }
