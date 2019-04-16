@@ -402,8 +402,7 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof FalseExpression)
         {
-            // TODO
-            return null;
+            return new Immediate("false");
         }
         else if (exp instanceof IdentifierExpression)
         {
@@ -412,8 +411,7 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof IntegerExpression)
         {
-            // TODO
-            return null;
+            return new Immediate(((IntegerExpression) exp).getValue());
         }
         else if (exp instanceof InvocationExpression)
         {
@@ -427,8 +425,7 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof NullExpression)
         {
-            // TODO
-            return null;
+            return new Immediate("null");
         }
         else if (exp instanceof ReadExpression)
         {
@@ -437,8 +434,7 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof TrueExpression)
         {
-            // TODO
-            return null;
+            return new Immediate("true");
         }
         else if (exp instanceof UnaryExpression)
         {

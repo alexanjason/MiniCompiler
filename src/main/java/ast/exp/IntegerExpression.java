@@ -15,6 +15,11 @@ public class IntegerExpression
       this.value = value;
    }
 
+   public String getValue()
+   {
+      return value;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       return new IntType();

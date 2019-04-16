@@ -1,9 +1,6 @@
 package mini;
-import ast.StructTable;
-import ast.SymbolTableList;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-import cfg.*;
 
 public class MiniCompiler
 {
