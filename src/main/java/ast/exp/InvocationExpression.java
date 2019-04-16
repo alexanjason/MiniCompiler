@@ -20,6 +20,16 @@ public class InvocationExpression
       this.arguments = arguments;
    }
 
+   public List<Expression> getArguments()
+   {
+      return arguments;
+   }
+
+   public String getName()
+   {
+      return name;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       if (!(symbolTables.contains(name)))

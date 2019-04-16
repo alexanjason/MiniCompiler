@@ -317,6 +317,27 @@ public class ControlFlowGraph {
         return falseNode;
     }
 
+    private Value AddInvocationExpression(InvocationExpression exp, BasicBlock currentBlock)
+    {
+        List<Type> paramTypes = new ArrayList<>();
+        List<Value> paramVals = new ArrayList<>();
+        String fName = exp.getName();
+        FunctionType fType = (FunctionType) symbolTableList.typeOf(fName);
+        Type retType = convertType(fType.getReturnType());
+
+        int i = 0;
+        for (Expression pExp : exp.getArguments())
+        {
+            paramVals.add(AddExpression(pExp, currentBlock));
+            paramTypes.add(convertType(fType.getParamType(i)));
+            i++;
+        }
+        Value result = new StackLocation();
+        Instruction callInst = new Call(result, retType, fName, paramTypes, paramVals);
+        currentBlock.addInstruction(callInst);
+        return result;
+    }
+
     private Value AddBinaryExpression(BinaryExpression exp, BasicBlock currentBlock)
     {
         BinaryExpression.Operator op = exp.getOperator();
@@ -415,8 +436,8 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof InvocationExpression)
         {
-            // TODO
-            return null;
+            InvocationExpression invExp = (InvocationExpression) exp;
+            return AddInvocationExpression(invExp, currentBlock);
         }
         else if (exp instanceof NewExpression)
         {
