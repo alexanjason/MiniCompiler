@@ -20,7 +20,9 @@ public class Getelementptr implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = getelementptr " + type.getString() + " " +
-                base.getString() + ", i1 0, i32" + index);
+        String typeStr = type.getString();
+        String typeStrNotPtr = typeStr.substring(0, typeStr.length() - 1);
+        return (result.getString() + " = getelementptr " + typeStrNotPtr + ", " + typeStr + " " +
+        base.getString() + ", i1 0, i32 " + index);
     }
 }

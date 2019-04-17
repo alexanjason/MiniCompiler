@@ -7,6 +7,7 @@ import ast.type.FunctionType;
 import ast.type.StructType;
 import llvm.inst.*;
 import llvm.type.*;
+import llvm.type.Void;
 import llvm.value.*;
 
 import java.io.PrintStream;
@@ -44,10 +45,18 @@ public class ControlFlowGraph {
         Value result = new StackLocation();
         Type type = convertType(function.getRetType());
         // TODO put this retval business in a class? Value?
-        entryNode.addInstruction(new Allocate("_retval_", type));
-        Value retVal = new Local("_retval_");
-        exitNode.addInstruction(new Load(type, result, retVal));
-        exitNode.addInstruction(new Return(type, result));
+        if (!(type instanceof Void))
+        {
+            Value retVal = new Local("%_retval_");
+            entryNode.addInstruction(new Allocate("_retval_", type));
+            exitNode.addInstruction(new Load(type, result, retVal));
+            exitNode.addInstruction(new Return(type, result));
+        }
+        else
+        {
+            exitNode.addInstruction(new ReturnVoid());
+        }
+
         nodeList = new ArrayList<>();
         nodeList.add(entryNode);
         BuildCFG();
@@ -191,6 +200,46 @@ public class ControlFlowGraph {
 
     }
 
+    private Value AddDotExpression(DotExpression exp, BasicBlock currentBlock)
+    {
+        // get type (struct) of left expression
+        Expression lExp = exp.getLeft();
+        // TODO there's got to be a better way
+        ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
+        StructType structType = (StructType) lType;
+        Type sType = convertType(lType);
+
+        // add base address instruction
+        Value baseAddr = new StackLocation();
+        Value localLoc = AddExpression(lExp, currentBlock);
+        /*
+        Value localLoc;
+        if (lExp instanceof IdentifierExpression)
+        {
+            IdentifierExpression iExp = (IdentifierExpression) lExp;
+            localLoc = new Local(iExp.getId());
+        }
+        else
+        {
+            localLoc = AddExpression(lExp, currentBlock);
+        }
+        */
+        // TODO this adds extra load instruction when middle of . expression
+        //currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
+
+        // add offset address instruction
+        Value offsetAddr = new StackLocation();
+        StructEntry entry = structTable.get(structType.GetName());
+        int index = entry.getFieldIndex(exp.getId());
+        currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, baseAddr, index));
+
+        // add dot instruction
+        Value result = new StackLocation();
+        Type fieldType = convertType(entry.getType(exp.getId()));
+        currentBlock.addInstruction(new Load(fieldType, result, offsetAddr));
+        return result;
+    }
+
     private Value AddlVal(Lvalue lVal, BasicBlock currentBlock)
     {
         if (lVal instanceof LvalueDot)
@@ -209,8 +258,19 @@ public class ControlFlowGraph {
 
             // add base address instruction
             Value baseAddr = new StackLocation();
-            Value localLoc = AddExpression(lExp, currentBlock);
-            currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
+            //Value localLoc = AddExpression(lExp, currentBlock);
+            Value localLoc;
+            if (lExp instanceof IdentifierExpression)
+            {
+                IdentifierExpression iExp = (IdentifierExpression) lExp;
+                localLoc = new Local(iExp.getId());
+            }
+            else
+            {
+                localLoc = AddExpression(lExp, currentBlock);
+            }
+            // TODO extra instruction
+            //currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
 
             // add offset address instruction
             Value offsetAddr = new StackLocation();
@@ -229,15 +289,22 @@ public class ControlFlowGraph {
         {
             LvalueId valId = (LvalueId) lVal;
             String id = valId.getId();
+            return getLocalFromId(id);
+            /*
             Scope scope = symbolTableList.scopeOf(id);
             if (scope == Scope.PARAM)
             {
-                return new Local("_P_" + id);
+                return new Local("%_P_" + id);
+            }
+            else if (scope == Scope.GLOBAL)
+            {
+                return new Local("@" + id);
             }
             else
             {
-                return new Local(id);
+                return new Local("%" + id);
             }
+            */
         }
 
         return null;
@@ -342,6 +409,7 @@ public class ControlFlowGraph {
 
     private BasicBlock AddEmptyReturnStmt(BasicBlock currentBlock)
     {
+        System.err.println("add empty");
         currentBlock.addInstruction(new BrUncond(exitNode.label));
         currentBlock.successorList.add(exitNode);
         exitNode.predecessorList.add(currentBlock);
@@ -353,7 +421,7 @@ public class ControlFlowGraph {
     private BasicBlock AddReturnStmt(ReturnStatement retStmt, BasicBlock currentBlock)
     {
         Value retExpVal = AddExpression(retStmt.getExpression(), currentBlock);
-        Value retVal = new Local("_retval_");
+        Value retVal = new Local("%_retval_");
         Type type = convertType(function.getRetType());
         currentBlock.addInstruction(new Store(retExpVal, type, retVal));
         currentBlock.addInstruction(new BrUncond(exitNode.label));
@@ -479,13 +547,31 @@ public class ControlFlowGraph {
         return result;
     }
 
+    private Value getLocalFromId(String id)
+    {
+        Scope scope = symbolTableList.scopeOf(id);
+        if (scope == Scope.PARAM)
+        {
+            return new Local("%_P_" + id);
+        }
+        else if (scope == Scope.GLOBAL)
+        {
+            return new Local("@" + id);
+        }
+        else
+        {
+            return new Local("%" + id);
+        }
+    }
+
     private Value AddIdentifierExpression(IdentifierExpression exp, BasicBlock currentBlock)
     {
         String id = exp.getId();
         Type type = convertType(symbolTableList.typeOf(id));
         Value result = new StackLocation();
         Scope scope = symbolTableList.scopeOf(id);
-        Value pointer;
+        Value pointer = getLocalFromId(id);
+        /*
         if (scope == Scope.PARAM)
         {
             pointer = new Local("_P_" + id);
@@ -494,6 +580,8 @@ public class ControlFlowGraph {
         {
             pointer = new Local(id);
         }
+        */
+
         currentBlock.addInstruction(new Load(type, result, pointer));
         return result;
     }
@@ -592,33 +680,6 @@ public class ControlFlowGraph {
             System.exit(8);
             return null;
         }
-    }
-
-    private Value AddDotExpression(DotExpression exp, BasicBlock currentBlock)
-    {
-        // get type (struct) of left expression
-        Expression lExp = exp.getLeft();
-        // TODO there's got to be a better way
-        ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
-        StructType structType = (StructType) lType;
-        Type sType = convertType(lType);
-
-        // add base address instruction
-        Value baseAddr = new StackLocation();
-        Value localLoc = AddExpression(lExp, currentBlock);
-        currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
-
-        // add offset address instruction
-        Value offsetAddr = new StackLocation();
-        StructEntry entry = structTable.get(structType.GetName());
-        int index = entry.getFieldIndex(exp.getId());
-        currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, baseAddr, index));
-
-        // add dot instruction
-        Value result = new StackLocation();
-        Type fieldType = convertType(entry.getType(exp.getId()));
-        currentBlock.addInstruction(new Load(fieldType, result, offsetAddr));
-        return result;
     }
 
     private Value AddNewExpression(NewExpression exp, BasicBlock currentBlock)

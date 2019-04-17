@@ -91,7 +91,7 @@ public class ControlFlowGraphList {
         for (Declaration dec : decls)
         {
             Type type = controlFlowGraphs.get(0).convertType(dec.getType());
-            stream.println("@" + dec.getName() + " = common global " + type.getString() + " " + type.getDefault() + ", align 8");
+            stream.println("@" + dec.getName() + " = common global " + type.getString() + " " + type.getDefault() + ", align 4");
         }
     }
 

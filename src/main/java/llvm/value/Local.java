@@ -11,6 +11,6 @@ public class Local implements Value {
 
     public String getString()
     {
-        return ("%" + id);
+        return (id);
     }
 }
