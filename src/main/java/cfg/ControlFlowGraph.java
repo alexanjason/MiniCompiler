@@ -62,40 +62,10 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
-    public void print(PrintStream stream)
-    {
-        printFunction(stream);
-        for (BasicBlock block : nodeList)
-        {
-            block.print(stream);
-        }
-        stream.print("}\n");
-    }
-
-    public void printFunction(PrintStream stream)
-    {
-        Type retType = convertType(function.getRetType());
-        stream.print("define " + retType.getString() + " @"
-                + function.getName() + "(");
-        int i = 0;
-        int size = function.getParams().size();
-        for (Declaration dec : function.getParams())
-        {
-            stream.print(convertType(dec.getType()).getString());
-            stream.print(" ");
-            stream.print("%" + dec.getName());
-            if (i != size - 1) {
-                stream.print(", ");
-            }
-            i++;
-        }
-        stream.print(")\n");
-        stream.print("{\n");
-    }
-
     private void BuildCFG()
     {
         // allocate params
+        // TODO load params into alloca locs
         AddAllocateParamsInst(function.getParams());
 
         // allocate locals
@@ -103,6 +73,24 @@ public class ControlFlowGraph {
 
         // create instructions from body
         AddBodyInst(function.getBody());
+    }
+
+    private void AddBodyInst(Statement body)
+    {
+        if (body instanceof BlockStatement)
+        {
+            BlockStatement block = (BlockStatement) body;
+            BasicBlock lastBlock = AddBlockStatement(block, entryNode);
+            if (lastBlock == null)
+            {
+                entryNode.addInstruction(new BrUncond(exitNode.label));
+            }
+            nodeList.add(exitNode);
+        }
+        else
+        {
+            System.err.println("Function body not a BlockStatement");
+        }
     }
 
     private void AddAllocateParamsInst(List<Declaration> params)
@@ -133,16 +121,20 @@ public class ControlFlowGraph {
             ast.type.StructType sType = (ast.type.StructType) astType;
             String name = sType.GetName();
 
-            /* // TODO this is super broken and probs shouldn't be implemented here
+             // TODO this is super broken and probs shouldn't be implemented here
+            /*
             System.err.println(name);
             StructEntry entry = structTable.get(name);
 
             int size = 0;
+            System.out.println("SIZE OF GETFIELD: " + entry.getFields().size());
             for (StructField field : entry.getFields())
             {
+                System.out.println("field type: " + field.getType());
                 size += convertType(field.getType()).getSize();
             }
             */
+
             int size = 0; // TODO
             return new Struct(name, size);
         }
@@ -169,28 +161,14 @@ public class ControlFlowGraph {
         }
     }
 
-    private void AddBodyInst(Statement body)
-    {
-         if (body instanceof BlockStatement)
-         {
-             BlockStatement block = (BlockStatement) body;
-             AddBlockStatement(block, entryNode);
-             nodeList.add(exitNode);
-         }
-         else
-         {
-             System.err.println("Function body not a BlockStatement");
-         }
-    }
-
     private BasicBlock AddBlockStatement(BlockStatement block, BasicBlock currentBlock)
     {
         BasicBlock newCurBlock = currentBlock;
 
-        if (block.getLineNum() == -1)
+        if ((block.getLineNum() == -1) || (block.getStatements().size() == 0))
         {
             // TODO body is empty block
-            //return null;
+            return null;
         }
         for (Statement stmt : block.getStatements())
         {
@@ -210,28 +188,13 @@ public class ControlFlowGraph {
         Type sType = convertType(lType);
 
         // add base address instruction
-        Value baseAddr = new StackLocation();
         Value localLoc = AddExpression(lExp, currentBlock);
-        /*
-        Value localLoc;
-        if (lExp instanceof IdentifierExpression)
-        {
-            IdentifierExpression iExp = (IdentifierExpression) lExp;
-            localLoc = new Local(iExp.getId());
-        }
-        else
-        {
-            localLoc = AddExpression(lExp, currentBlock);
-        }
-        */
-        // TODO this adds extra load instruction when middle of . expression
-        //currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
 
         // add offset address instruction
         Value offsetAddr = new StackLocation();
         StructEntry entry = structTable.get(structType.GetName());
         int index = entry.getFieldIndex(exp.getId());
-        currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, baseAddr, index));
+        currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, localLoc, index));
 
         // add dot instruction
         Value result = new StackLocation();
@@ -244,21 +207,15 @@ public class ControlFlowGraph {
     {
         if (lVal instanceof LvalueDot)
         {
-            // TODO extra load instruction???
             LvalueDot valDot = (LvalueDot) lVal;
             Expression lExp = valDot.getLeft();
             String id = valDot.getId();
-            // TODO System.out.println("lExp " + lExp);
-            // TODO System.out.println("id " + id);
 
             // get type (struct) of left expression
             ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
             StructType structType = (StructType) lType;
             Type sType = convertType(lType);
 
-            // add base address instruction
-            Value baseAddr = new StackLocation();
-            //Value localLoc = AddExpression(lExp, currentBlock);
             Value localLoc;
             if (lExp instanceof IdentifierExpression)
             {
@@ -269,20 +226,14 @@ public class ControlFlowGraph {
             {
                 localLoc = AddExpression(lExp, currentBlock);
             }
-            // TODO extra instruction
-            //currentBlock.addInstruction(new Load(sType, baseAddr, localLoc));
 
             // add offset address instruction
             Value offsetAddr = new StackLocation();
             StructEntry entry = structTable.get(structType.GetName());
             int index = entry.getFieldIndex(id);
-            currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, baseAddr, index));
+            currentBlock.addInstruction(new Getelementptr(offsetAddr, sType, localLoc, index));
 
-            // add dot instruction
-            Value result = new StackLocation();
-            Type fieldType = convertType(entry.getType(id));
-            currentBlock.addInstruction(new Load(fieldType, result, offsetAddr));
-            return result;
+            return offsetAddr;
 
         }
         else if (lVal instanceof LvalueId)
@@ -290,21 +241,6 @@ public class ControlFlowGraph {
             LvalueId valId = (LvalueId) lVal;
             String id = valId.getId();
             return getLocalFromId(id);
-            /*
-            Scope scope = symbolTableList.scopeOf(id);
-            if (scope == Scope.PARAM)
-            {
-                return new Local("%_P_" + id);
-            }
-            else if (scope == Scope.GLOBAL)
-            {
-                return new Local("@" + id);
-            }
-            else
-            {
-                return new Local("%" + id);
-            }
-            */
         }
 
         return null;
@@ -321,10 +257,7 @@ public class ControlFlowGraph {
     private BasicBlock AddAssignmentStatement(AssignmentStatement stmt, BasicBlock currentBlock)
     {
         Lvalue lval = stmt.getTarget();
-        // TODO extra load System.err.println("lval: " + lval);
         Expression source = stmt.getSource();
-        // TODO extra load System.err.println("source: " + source);
-
         Value lvalLoc = AddlVal(lval, currentBlock);
         Value sourceLoc = AddExpression(source, currentBlock);
 
@@ -457,7 +390,10 @@ public class ControlFlowGraph {
         // TODO when nothing after conditional statement, this creates a empty node
         List<BasicBlock> predCondList = new ArrayList<>();
         predCondList.add(thenExitNode);
-        predCondList.add(elseExitNode);
+        if (elseExitNode != null)
+        {
+            predCondList.add(elseExitNode);
+        }
         BasicBlock condExitNode = new BasicBlock(predCondList);
 
         /*
@@ -479,7 +415,10 @@ public class ControlFlowGraph {
         //System.err.println(elseExitNode.label.getString());
         //System.err.println(thenExitNode.label.getString());
         thenExitNode.successorList.add(condExitNode);
-        elseExitNode.successorList.add(condExitNode);
+        if (elseExitNode != null)
+        {
+            elseExitNode.successorList.add(condExitNode);
+        }
 
         // TODO extra block
         //System.err.println(condExitNode.label.getString());
@@ -569,18 +508,7 @@ public class ControlFlowGraph {
         String id = exp.getId();
         Type type = convertType(symbolTableList.typeOf(id));
         Value result = new StackLocation();
-        Scope scope = symbolTableList.scopeOf(id);
         Value pointer = getLocalFromId(id);
-        /*
-        if (scope == Scope.PARAM)
-        {
-            pointer = new Local("_P_" + id);
-        }
-        else
-        {
-            pointer = new Local(id);
-        }
-        */
 
         currentBlock.addInstruction(new Load(type, result, pointer));
         return result;
@@ -759,6 +687,37 @@ public class ControlFlowGraph {
             System.exit(8);
             return null;
         }
+    }
+
+    public void print(PrintStream stream)
+    {
+        printFunction(stream);
+        for (BasicBlock block : nodeList)
+        {
+            block.print(stream);
+        }
+        stream.print("}\n");
+    }
+
+    public void printFunction(PrintStream stream)
+    {
+        Type retType = convertType(function.getRetType());
+        stream.print("define " + retType.getString() + " @"
+                + function.getName() + "(");
+        int i = 0;
+        int size = function.getParams().size();
+        for (Declaration dec : function.getParams())
+        {
+            stream.print(convertType(dec.getType()).getString());
+            stream.print(" ");
+            stream.print("%" + dec.getName());
+            if (i != size - 1) {
+                stream.print(", ");
+            }
+            i++;
+        }
+        stream.print(")\n");
+        stream.print("{\n");
     }
 
 }

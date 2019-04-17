@@ -33,12 +33,6 @@ public class MiniCompiler
          // TODO clean this up
          System.out.println(_inputFile);
          String [] splitStr = _inputFile.split(Pattern.quote("."));
-         /*
-         for (String s : splitStr)
-         {
-            System.out.println(s);
-         }
-         */
          String llvmFile = splitStr[0] + ".ll";
          System.out.println(llvmFile);
          PrintStream fStream = null;
