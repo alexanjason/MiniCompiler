@@ -35,6 +35,27 @@ public class SymbolTableList {
         return false;
     }
 
+    public Scope scopeOf(String name)
+    {
+        // TODO optimize
+        if (list.getFirst().containsKey(name))
+        {
+            return list.getFirst().get(name).scope;
+        }
+        else
+        {
+            for (HashMap<String, SymbolEntry> map : list)
+            {
+                if (map.containsKey(name) && map.get(name).scope == Scope.GLOBAL)
+                {
+                    return map.get(name).scope;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public Type typeOf(String name)
     {
         // TODO optimize

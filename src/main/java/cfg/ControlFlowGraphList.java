@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.prog.*;
+import llvm.inst.Print;
 import llvm.type.Type;
 
 public class ControlFlowGraphList {
@@ -31,6 +32,22 @@ public class ControlFlowGraphList {
         }
     }
 
+    private void printHelpers(PrintStream stream)
+    {
+        // TODO should this be more than just a string dump?
+        StringBuilder sb = new StringBuilder();
+        sb.append("declare i8* @malloc(i32)\n");
+        sb.append("declare void @free(i8*)\n");
+        sb.append("declare i32 @printf(i8*, ...)\n");
+        sb.append("declare i32 @scanf(i8*, ...)\n");
+        sb.append("@.println = private unnamed_addr constant [5 x i8] c\"%ld" + '\\' + "0A" + '\\' + "00\", align 1\n");
+        sb.append("@.print = private unnamed_addr constant [5 x i8] c\"%ld" + '\\' + "00\", align 1\n");
+        sb.append("@.read = private unnamed_addr constant [4 x i8] c\"%ld" + '\\' + "00\", align 1\n");
+        //sb.append("@.read_scratch = common global i32 0, align 8\n");
+
+        stream.print(sb.toString());
+    }
+
     public void print(PrintStream stream)
     {
         printTypes(program.getTypes(), stream);
@@ -42,6 +59,8 @@ public class ControlFlowGraphList {
             stream.println();
             cfg.print(stream);
         }
+        stream.print("\n");
+        printHelpers(stream);
     }
 
     public void printTypes(List<TypeDeclaration> decls, PrintStream stream)

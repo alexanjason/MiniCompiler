@@ -30,10 +30,13 @@ public class BasicBlock {
 
     public void print(PrintStream stream)
     {
-        stream.println(label.getString() + ":");
-        for (Instruction inst : instructions)
+        // TODO debug to get rid of empty blocks so this isn't necessary
+        if (instructions.size() != 0)
         {
-            stream.println("\t" + inst.getString());
+            stream.println(label.getString() + ":");
+            for (Instruction inst : instructions) {
+                stream.println("\t" + inst.getString());
+            }
         }
     }
 

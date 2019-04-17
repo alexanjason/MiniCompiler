@@ -4,6 +4,9 @@ import cfg.ControlFlowGraphList;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import java.io.PrintStream;
+import java.util.regex.Pattern;
+
 public class MiniCompiler
 {
    public static void main(String[] args)
@@ -25,9 +28,30 @@ public class MiniCompiler
 
          program.TypeCheck();
 
-         // TODO test once fully implemented
          ControlFlowGraphList cfgList = new ControlFlowGraphList(program);
-         cfgList.print(System.out);
+         cfgList.print(System.out); // for debugging
+         // TODO clean this up
+         System.out.println(_inputFile);
+         String [] splitStr = _inputFile.split(Pattern.quote("."));
+         /*
+         for (String s : splitStr)
+         {
+            System.out.println(s);
+         }
+         */
+         String llvmFile = splitStr[0] + ".ll";
+         System.out.println(llvmFile);
+         PrintStream fStream = null;
+         try
+         {
+            fStream = new PrintStream(llvmFile);
+         }
+         catch (java.io.FileNotFoundException ex)
+         {
+            System.err.println("file not found");
+            System.exit(-1);
+         }
+         cfgList.print(fStream);
       }
    }
 

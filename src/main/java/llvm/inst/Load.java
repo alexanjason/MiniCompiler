@@ -17,6 +17,6 @@ public class Load implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = load " + type.getString() + "* " + pointer.getString());
+        return (result.getString() + " = load " + type.getString() + ", " + type.getString() + "* " + pointer.getString());
     }
 }

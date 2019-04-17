@@ -18,6 +18,6 @@ public class BrCond implements Instruction {
 
     public String getString()
     {
-        return ("br i1 " + cond.getString() + ", label " + ifTrue.getString() + ", label " + ifFalse.getString());
+        return ("br i1 " + cond.getString() + ", label %" + ifTrue.getString() + ", label %" + ifFalse.getString());
     }
 }

@@ -13,6 +13,6 @@ public class Label {
 
     public String getString()
     {
-        return ("L" + id);
+        return ("LU" + id);
     }
 }

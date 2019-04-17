@@ -13,6 +13,6 @@ public class BrUncond implements Instruction {
 
     public String getString()
     {
-        return ("br label " + dest.getString());
+        return ("br label %" + dest.getString());
     }
 }

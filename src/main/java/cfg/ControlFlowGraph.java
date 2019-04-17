@@ -43,7 +43,9 @@ public class ControlFlowGraph {
         exitNode = new BasicBlock(new ArrayList<>());
         Value result = new StackLocation();
         Type type = convertType(function.getRetType());
-        Value retVal = new Local("_retval");
+        // TODO put this retval business in a class? Value?
+        entryNode.addInstruction(new Allocate("_retval_", type));
+        Value retVal = new Local("_retval_");
         exitNode.addInstruction(new Load(type, result, retVal));
         exitNode.addInstruction(new Return(type, result));
         nodeList = new ArrayList<>();
@@ -58,6 +60,7 @@ public class ControlFlowGraph {
         {
             block.print(stream);
         }
+        stream.print("}\n");
     }
 
     public void printFunction(PrintStream stream)
@@ -163,6 +166,7 @@ public class ControlFlowGraph {
          {
              BlockStatement block = (BlockStatement) body;
              AddBlockStatement(block, entryNode);
+             nodeList.add(exitNode);
          }
          else
          {
@@ -195,8 +199,8 @@ public class ControlFlowGraph {
             LvalueDot valDot = (LvalueDot) lVal;
             Expression lExp = valDot.getLeft();
             String id = valDot.getId();
-            System.out.println("lExp " + lExp);
-            System.out.println("id " + id);
+            // TODO System.out.println("lExp " + lExp);
+            // TODO System.out.println("id " + id);
 
             // get type (struct) of left expression
             ast.type.Type lType = lExp.TypeCheck(structTable, symbolTableList);
@@ -223,13 +227,28 @@ public class ControlFlowGraph {
         }
         else if (lVal instanceof LvalueId)
         {
-
             LvalueId valId = (LvalueId) lVal;
             String id = valId.getId();
-            return new Local(id);
+            Scope scope = symbolTableList.scopeOf(id);
+            if (scope == Scope.PARAM)
+            {
+                return new Local("_P_" + id);
+            }
+            else
+            {
+                return new Local(id);
+            }
         }
 
         return null;
+    }
+
+    private BasicBlock AddDeleteStmt(DeleteStatement delStmt, BasicBlock currentBlock)
+    {
+        Value result = AddExpression(delStmt.getExpression(), currentBlock);
+        // TODO reuse call? issue: free has no result
+        currentBlock.addInstruction(new Free(result));
+        return currentBlock;
     }
 
     private BasicBlock AddAssignmentStatement(AssignmentStatement stmt, BasicBlock currentBlock)
@@ -246,6 +265,22 @@ public class ControlFlowGraph {
         Type lvalType = convertType(lval.TypeCheck(structTable, symbolTableList));
         currentBlock.addInstruction(new Store(sourceLoc, lvalType, lvalLoc));
 
+        return currentBlock;
+    }
+
+    private BasicBlock AddPrintLnStmt(PrintLnStatement pStmt, BasicBlock currentBlock)
+    {
+        Value expVal = AddExpression(pStmt.getExpression(), currentBlock);
+        // TODO implement PrintLn better
+        currentBlock.addInstruction(new PrintLn(expVal, new i32()));
+        return currentBlock;
+    }
+
+    private BasicBlock AddPrintStmt(PrintStatement pStmt, BasicBlock currentBlock)
+    {
+        Value expVal = AddExpression(pStmt.getExpression(), currentBlock);
+        // TODO implement Print better
+        currentBlock.addInstruction(new Print(expVal, new i32()));
         return currentBlock;
     }
 
@@ -270,26 +305,23 @@ public class ControlFlowGraph {
         else if (stmt instanceof DeleteStatement)
         {
             DeleteStatement delStmt = (DeleteStatement) stmt;
-            // TODO
-            return currentBlock;
-
+            return AddDeleteStmt(delStmt, currentBlock);
         }
         else if (stmt instanceof InvocationStatement)
         {
             InvocationStatement invStmt = (InvocationStatement) stmt;
             AddExpression(invStmt.getExpression(), currentBlock);
-            // TODO is this right?
             return currentBlock;
         }
         else if (stmt instanceof PrintLnStatement)
         {
-            //TODO
-            return currentBlock;
+            PrintLnStatement pStmt = (PrintLnStatement) stmt;
+            return AddPrintLnStmt(pStmt, currentBlock);
         }
         else if (stmt instanceof PrintStatement)
         {
-            //TODO
-            return currentBlock;
+            PrintStatement pStmt = (PrintStatement) stmt;
+            return AddPrintStmt(pStmt, currentBlock);
         }
         else if (stmt instanceof ReturnEmptyStatement)
         {
@@ -314,20 +346,20 @@ public class ControlFlowGraph {
         currentBlock.successorList.add(exitNode);
         exitNode.predecessorList.add(currentBlock);
         exitNode.addInstruction(new ReturnVoid());
-        nodeList.add(exitNode);
+        //nodeList.add(exitNode);
         return exitNode;
     }
 
     private BasicBlock AddReturnStmt(ReturnStatement retStmt, BasicBlock currentBlock)
     {
         Value retExpVal = AddExpression(retStmt.getExpression(), currentBlock);
-        Value retVal = new Local("_retval");
+        Value retVal = new Local("_retval_");
         Type type = convertType(function.getRetType());
         currentBlock.addInstruction(new Store(retExpVal, type, retVal));
         currentBlock.addInstruction(new BrUncond(exitNode.label));
         currentBlock.successorList.add(exitNode);
         exitNode.predecessorList.add(currentBlock);
-        nodeList.add(exitNode);
+        //nodeList.add(exitNode);
         return exitNode;
     }
 
@@ -360,6 +392,8 @@ public class ControlFlowGraph {
         predCondList.add(elseExitNode);
         BasicBlock condExitNode = new BasicBlock(predCondList);
 
+        /*
+        // TODO is this needed?
         if (thenEntryNode != thenExitNode)
         {
             // TODO does this work??
@@ -372,12 +406,15 @@ public class ControlFlowGraph {
             //System.err.println(elseEntryNode.label.getString() + " " + elseExitNode.label.getString());
             //nodeList.add(elseExitNode);
         }
+        */
         nodeList.add(condExitNode);
-
+        //System.err.println(elseExitNode.label.getString());
+        //System.err.println(thenExitNode.label.getString());
         thenExitNode.successorList.add(condExitNode);
         elseExitNode.successorList.add(condExitNode);
 
-        System.err.println(condExitNode.label.getString());
+        // TODO extra block
+        //System.err.println(condExitNode.label.getString());
 
         return condExitNode;
 
@@ -399,11 +436,13 @@ public class ControlFlowGraph {
         exitPredList.add(currentBlock);
         BasicBlock falseNode = new BasicBlock(exitPredList);
         nodeList.add(trueEntryNode);
+        /*
         if (trueEntryNode != trueExitNode)
         {
-            // TODO does this work?
+            // TODO is this needed?
             nodeList.add(trueExitNode);
         }
+        */
         nodeList.add(falseNode);
 
         // Get value of guard and add to current block
@@ -445,7 +484,16 @@ public class ControlFlowGraph {
         String id = exp.getId();
         Type type = convertType(symbolTableList.typeOf(id));
         Value result = new StackLocation();
-        Value pointer = new Local(id);
+        Scope scope = symbolTableList.scopeOf(id);
+        Value pointer;
+        if (scope == Scope.PARAM)
+        {
+            pointer = new Local("_P_" + id);
+        }
+        else
+        {
+            pointer = new Local(id);
+        }
         currentBlock.addInstruction(new Load(type, result, pointer));
         return result;
     }
@@ -530,13 +578,20 @@ public class ControlFlowGraph {
         }
         else if (op == BinaryExpression.Operator.AND)
         {
-            // TODO bool type which is just i32
+            currentBlock.addInstruction(new And(result, new i32(), leftLoc, rightLoc));
+            return result;
         }
         else if (op == BinaryExpression.Operator.OR)
         {
-            // TODO bool type which is just i32
+            currentBlock.addInstruction(new Or(result, new i32(), leftLoc, rightLoc));
+            return result;
         }
-        return null; // TODO remove
+        else
+        {
+            System.err.println("No match in BinaryExpression");
+            System.exit(8);
+            return null;
+        }
     }
 
     private Value AddDotExpression(DotExpression exp, BasicBlock currentBlock)
@@ -624,8 +679,9 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof ReadExpression)
         {
-            // TODO
-            return null;
+            Value result = new StackLocation();
+            currentBlock.addInstruction(new Read(result));
+            return result;
         }
         else if (exp instanceof TrueExpression)
         {
