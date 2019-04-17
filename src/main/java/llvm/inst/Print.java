@@ -16,8 +16,8 @@ public class Print implements Instruction {
 
     public String getString()
     {
-        return ("call i32 (i8*, ...)* @print(i8* getelementptr inbounds ([5 x i8]* @.println, i32 0, i32 0), " +
-                type.getString() + val.getString());
+        return ("call i32 (i8*, ...)* @print(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @.println, i32 0, i32 0), " +
+                type.getString() + " " + val.getString() + ")");
     }
 
 }

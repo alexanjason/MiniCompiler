@@ -99,10 +99,16 @@ public class ControlFlowGraph {
         {
             // Create allocation instruction
             Type type = convertType(dec.getType());
-            Instruction inst = new Allocate("_P_" + dec.getName(), type);
+            String param = "_P_" + dec.getName();
+            Value localParam = new Local("%" + param);
+            Instruction inst = new Allocate(param, type);
 
             // Add allocation instruction to entry node
             entryNode.addInstruction(inst);
+
+            // load param into allocated location
+            Value actualParam = new Local("%" + dec.getName());
+            entryNode.addInstruction(new Store(actualParam, type, localParam));
         }
     }
 
@@ -121,21 +127,15 @@ public class ControlFlowGraph {
             ast.type.StructType sType = (ast.type.StructType) astType;
             String name = sType.GetName();
 
-             // TODO this is super broken and probs shouldn't be implemented here
-            /*
-            System.err.println(name);
+             // TODO probs shouldn't be implemented here
             StructEntry entry = structTable.get(name);
 
             int size = 0;
-            System.out.println("SIZE OF GETFIELD: " + entry.getFields().size());
             for (StructField field : entry.getFields())
             {
-                System.out.println("field type: " + field.getType());
-                size += convertType(field.getType()).getSize();
+                size += 4;
             }
-            */
 
-            int size = 0; // TODO
             return new Struct(name, size);
         }
         else if (astType instanceof ast.type.VoidType)
@@ -415,6 +415,13 @@ public class ControlFlowGraph {
         //System.err.println(elseExitNode.label.getString());
         //System.err.println(thenExitNode.label.getString());
         thenExitNode.successorList.add(condExitNode);
+        // TODO hack?
+        if (condExitNode.label != exitNode.label)
+        {
+            // TODO need to branch
+            //thenExitNode.addInstruction(new BrUncond(condExitNode.label));
+        }
+
         if (elseExitNode != null)
         {
             elseExitNode.successorList.add(condExitNode);
