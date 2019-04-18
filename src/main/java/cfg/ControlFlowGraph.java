@@ -175,7 +175,6 @@ public class ControlFlowGraph {
             newCurBlock = AddStatement(stmt, newCurBlock);
         }
         return newCurBlock;
-
     }
 
     private Value AddDotExpression(DotExpression exp, BasicBlock currentBlock)
@@ -347,7 +346,6 @@ public class ControlFlowGraph {
         currentBlock.successorList.add(exitNode);
         exitNode.predecessorList.add(currentBlock);
         exitNode.addInstruction(new ReturnVoid());
-        //nodeList.add(exitNode);
         return exitNode;
     }
 
@@ -360,7 +358,6 @@ public class ControlFlowGraph {
         currentBlock.addInstruction(new BrUncond(exitNode.label));
         currentBlock.successorList.add(exitNode);
         exitNode.predecessorList.add(currentBlock);
-        //nodeList.add(exitNode);
         return exitNode;
     }
 
@@ -382,12 +379,7 @@ public class ControlFlowGraph {
         nodeList.add(elseEntryNode);
         BasicBlock elseExitNode = AddStatement(stmt.getElseBlock(), elseEntryNode);
 
-        // add guard to end of current block
-        Value guardLoc = AddExpression(stmt.getGuard(), currentBlock);
-        currentBlock.addInstruction(new BrCond(guardLoc, thenEntryNode.label, elseEntryNode.label));
-
         // create exit block
-        // TODO when nothing after conditional statement, this creates a empty node
         List<BasicBlock> predCondList = new ArrayList<>();
         predCondList.add(thenExitNode);
         if (elseExitNode != null)
@@ -396,42 +388,34 @@ public class ControlFlowGraph {
         }
         BasicBlock condExitNode = new BasicBlock(predCondList);
 
-        /*
-        // TODO is this needed?
-        if (thenEntryNode != thenExitNode)
+        if (thenExitNode != exitNode)
         {
-            // TODO does this work??
-            //System.err.println(thenEntryNode.label.getString() + " " + thenExitNode.label.getString());
-            //nodeList.add(thenExitNode);
+            thenExitNode.addInstruction(new BrUncond(condExitNode.label));
         }
-        if (elseEntryNode != elseExitNode)
+
+        // add guard to end of current block
+        Value guardLoc = AddExpression(stmt.getGuard(), currentBlock);
+        Label elseNodeLabel = elseEntryNode.label;
+        if (elseEntryNode.instructions.size() == 0)
         {
-            // TODO does this work??
-            //System.err.println(elseEntryNode.label.getString() + " " + elseExitNode.label.getString());
-            //nodeList.add(elseExitNode);
+            elseNodeLabel = condExitNode.label;
         }
-        */
+        currentBlock.addInstruction(new BrCond(guardLoc, thenEntryNode.label, elseNodeLabel));//elseEntryNode.label));
+
+        // create exit block
         nodeList.add(condExitNode);
-        //System.err.println(elseExitNode.label.getString());
-        //System.err.println(thenExitNode.label.getString());
         thenExitNode.successorList.add(condExitNode);
-        // TODO hack?
-        if (condExitNode.label != exitNode.label)
-        {
-            // TODO need to branch
-            //thenExitNode.addInstruction(new BrUncond(condExitNode.label));
-        }
 
         if (elseExitNode != null)
         {
             elseExitNode.successorList.add(condExitNode);
+            if (elseExitNode != exitNode)
+            {
+                elseExitNode.addInstruction(new BrUncond(condExitNode.label));
+            }
         }
 
-        // TODO extra block
-        //System.err.println(condExitNode.label.getString());
-
         return condExitNode;
-
     }
 
     private BasicBlock AddWhileStatement(WhileStatement stmt, BasicBlock currentBlock)
@@ -450,13 +434,6 @@ public class ControlFlowGraph {
         exitPredList.add(currentBlock);
         BasicBlock falseNode = new BasicBlock(exitPredList);
         nodeList.add(trueEntryNode);
-        /*
-        if (trueEntryNode != trueExitNode)
-        {
-            // TODO is this needed?
-            nodeList.add(trueExitNode);
-        }
-        */
         nodeList.add(falseNode);
 
         // Get value of guard and add to current block
@@ -488,7 +465,15 @@ public class ControlFlowGraph {
             i++;
         }
         Value result = new StackLocation();
-        Instruction callInst = new Call(result, retType, fName, paramTypes, paramVals);
+        Instruction callInst;
+        if (retType instanceof Void)
+        {
+            callInst = new CallVoid(retType, fName, paramTypes, paramVals);
+        }
+        else
+        {
+            callInst = new Call(result, retType, fName, paramTypes, paramVals);
+        }
         currentBlock.addInstruction(callInst);
         return result;
     }
@@ -629,8 +614,10 @@ public class ControlFlowGraph {
         List<Type> paramTypes = new ArrayList<>();
         paramTypes.add(new i32());
 
+        Value ptr = new StackLocation();
         Value result = new StackLocation();
-        currentBlock.addInstruction(new Call(result, new i8(), "malloc", paramTypes, paramVals));
+        currentBlock.addInstruction(new Call(ptr, new i8(), "malloc", paramTypes, paramVals));
+        currentBlock.addInstruction(new Bitcast(new i8(), type, ptr, result));
         return result;
     }
 

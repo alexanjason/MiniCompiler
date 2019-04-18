@@ -4,7 +4,7 @@ public class i8 implements Type {
 
     public String getString()
     {
-        return "*i8"; // TODO sloppy
+        return "i8*"; // TODO sloppy
     }
 
     public int getSize()

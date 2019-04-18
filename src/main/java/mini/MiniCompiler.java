@@ -29,7 +29,7 @@ public class MiniCompiler
          program.TypeCheck();
 
          ControlFlowGraphList cfgList = new ControlFlowGraphList(program);
-         cfgList.print(System.out); // for debugging
+         //cfgList.print(System.out); // for debugging
          // TODO clean this up
          System.out.println(_inputFile);
          String [] splitStr = _inputFile.split(Pattern.quote("."));

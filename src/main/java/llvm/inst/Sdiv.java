@@ -20,7 +20,7 @@ public class Sdiv implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = sdiv " + type.getString() + left.getString()
+        return (result.getString() + " = sdiv " + type.getString() + " " + left.getString()
                 + ", " + right.getString());
     }
 }

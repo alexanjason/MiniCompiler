@@ -20,7 +20,7 @@ public class Add implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = add " + type.getString() + left.getString()
+        return (result.getString() + " = add " + type.getString() + " " + left.getString()
                 + ", " + right.getString());
     }
 }
