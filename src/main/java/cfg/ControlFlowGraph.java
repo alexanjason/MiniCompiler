@@ -400,7 +400,9 @@ public class ControlFlowGraph {
         {
             elseNodeLabel = condExitNode.label;
         }
-        currentBlock.addInstruction(new BrCond(guardLoc, thenEntryNode.label, elseNodeLabel));//elseEntryNode.label));
+        Value extGuard = new StackLocation();
+        currentBlock.addInstruction(new Trunc(new i32(), guardLoc, new i1(), extGuard));
+        currentBlock.addInstruction(new BrCond(extGuard, thenEntryNode.label, elseNodeLabel));//elseEntryNode.label));
 
         // create exit block
         nodeList.add(condExitNode);
@@ -438,7 +440,9 @@ public class ControlFlowGraph {
 
         // Get value of guard and add to current block
         Value guardVal = AddExpression(stmt.getGuard(), currentBlock);
-        Instruction brInst = new BrCond(guardVal, trueEntryNode.label, falseNode.label);
+        Value extGuard = new StackLocation();
+        currentBlock.addInstruction(new Trunc(new i32(), guardVal, new i1(), extGuard));
+        Instruction brInst = new BrCond(extGuard, trueEntryNode.label, falseNode.label);
         currentBlock.addInstruction(brInst);
         currentBlock.successorList.add(trueEntryNode);
         currentBlock.successorList.add(falseNode);
@@ -554,44 +558,64 @@ public class ControlFlowGraph {
         }
         else if (op == BinaryExpression.Operator.LT)
         {
-            currentBlock.addInstruction(new Icmp(result, "slt", new i32(), leftLoc, rightLoc));
+            Value intResult = new StackLocation();
+            currentBlock.addInstruction(new Icmp(intResult, "slt", new i32(), leftLoc, rightLoc));
+            currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
             return result;
         }
         else if (op == BinaryExpression.Operator.GT)
         {
-            currentBlock.addInstruction(new Icmp(result, "sgt", new i32(), leftLoc, rightLoc));
+            Value intResult = new StackLocation();
+            currentBlock.addInstruction(new Icmp(intResult, "sgt", new i32(), leftLoc, rightLoc));
+            currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
             return result;
         }
         else if (op == BinaryExpression.Operator.LE)
         {
-            currentBlock.addInstruction(new Icmp(result, "sle", new i32(), leftLoc, rightLoc));
+            Value intResult = new StackLocation();
+            currentBlock.addInstruction(new Icmp(intResult, "sle", new i32(), leftLoc, rightLoc));
+            currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
             return result;
         }
         else if (op == BinaryExpression.Operator.GE)
         {
-            currentBlock.addInstruction(new Icmp(result, "sge", new i32(), leftLoc, rightLoc));
+            Value intResult = new StackLocation();
+            currentBlock.addInstruction(new Icmp(intResult, "sge", new i32(), leftLoc, rightLoc));
+            currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
             return result;
         }
         else if (op == BinaryExpression.Operator.EQ)
         {
-            currentBlock.addInstruction(new Icmp(result, "eq", new i32(), leftLoc, rightLoc));
+            Value intResult = new StackLocation();
+            currentBlock.addInstruction(new Icmp(intResult, "eq", new i32(), leftLoc, rightLoc));
             // TODO could be struct
+            currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
+
             return result;
         }
         else if (op == BinaryExpression.Operator.NE)
         {
-            currentBlock.addInstruction(new Icmp(result, "ne", new i32(), leftLoc, rightLoc));
+            Value intResult = new StackLocation();
+            currentBlock.addInstruction(new Icmp(intResult, "ne", new i32(), leftLoc, rightLoc));
             // TODO could be struct
+            currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
+
             return result;
         }
         else if (op == BinaryExpression.Operator.AND)
         {
+            //Value intResult = new StackLocation();
             currentBlock.addInstruction(new And(result, new i32(), leftLoc, rightLoc));
+            //currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
+
             return result;
         }
         else if (op == BinaryExpression.Operator.OR)
         {
+            //Value intResult = new StackLocation();
             currentBlock.addInstruction(new Or(result, new i32(), leftLoc, rightLoc));
+            //currentBlock.addInstruction(new Zext(new i1(), intResult, new i32(), result));
+
             return result;
         }
         else
@@ -662,8 +686,11 @@ public class ControlFlowGraph {
         }
         else if (exp instanceof ReadExpression)
         {
+            //Value ptrResult = new StackLocation();
             Value result = new StackLocation();
             currentBlock.addInstruction(new Read(result));
+            //Value nResult = new StackLocation();
+            //currentBlock.addInstruction(new Store(nResult, new i32(), result));
             return result;
         }
         else if (exp instanceof TrueExpression)

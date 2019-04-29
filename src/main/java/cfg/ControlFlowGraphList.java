@@ -41,7 +41,8 @@ public class ControlFlowGraphList {
         sb.append("declare i32 @scanf(i8*, ...)\n");
         sb.append("@.println = private unnamed_addr constant [5 x i8] c\"%ld" + '\\' + "0A" + '\\' + "00\", align 1\n");
         sb.append("@.print = private unnamed_addr constant [5 x i8] c\"%ld " + '\\' + "00\", align 1\n");
-        sb.append("@.read = private unnamed_addr constant [4 x i8] c\"%ld" + '\\' + "00\", align 1\n");
+        sb.append("declare i32 @read_util()\n");
+        //sb.append("@.read = private unnamed_addr constant [4 x i8] c\"%ld" + '\\' + "00\", align 1\n");
         //sb.append("@.read_scratch = common global i32 0, align 8\n");
 
         stream.print(sb.toString());
@@ -49,6 +50,7 @@ public class ControlFlowGraphList {
 
     public void print(PrintStream stream)
     {
+        //stream.print("target triple=\"i686\"\n");
         printTypes(program.getTypes(), stream);
         stream.println();
         printDecls(program.getDecls(), stream);
