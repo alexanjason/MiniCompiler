@@ -2,11 +2,8 @@ import mini.MiniCompiler;
 import org.junit.*;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
 
@@ -46,6 +43,8 @@ public class Benchmarks {
     boolean runAout(String wd)
     {
         ProcessBuilder aout = new ProcessBuilder("./a.out");
+        File inputFile = new File(wd + "/" + "input");
+        File outputFile = new File(wd + "/" + "output");
         File dir = new File(wd).getAbsoluteFile();
         aout.redirectErrorStream(true);
         aout.directory(dir);
@@ -54,16 +53,26 @@ public class Benchmarks {
             Process p = aout.start();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            writer.write("5\n");
 
-            // TODO figure out how to read output
-            /*
+            BufferedReader input = new BufferedReader(new FileReader(inputFile));
+            BufferedReader output = new BufferedReader(new FileReader(outputFile));
+
             String line;
-            while ((line = reader.readLine()) != null)
+            while ((line = input.readLine()) != null)
             {
-                System.out.println(line);
+                writer.write(line + "\n");
             }
-            */
+
+            writer.flush();
+            writer.close();
+
+            String aLine;
+            while ((line = output.readLine()) != null)
+            {
+                aLine = reader.readLine();
+                assertEquals("Output doesn't match", line, aLine);
+            }
+
         }
         catch(Exception e)
         {
@@ -136,14 +145,15 @@ public class Benchmarks {
         String file = "binaryConverter";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO a.out doesn't output anything
 
         runClang(dir, file + ".ll");
+
 
         if (!(runAout(dir)))
         {
             fail("a.out");
         }
+
     }
 
     @Test
@@ -154,7 +164,7 @@ public class Benchmarks {
         String file = "brett";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO true
+        // TODO undefined label
 
         runClang(dir, file + ".ll");
 
@@ -198,7 +208,6 @@ public class Benchmarks {
         {
             fail("a.out");
         }
-        // TODO some incorrect output
     }
 
     @Test
@@ -245,7 +254,7 @@ public class Benchmarks {
         String file = "hailstone";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO true
+        // TODO undefined label
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -333,10 +342,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
+
         if (!(runAout(dir)))
         {
             fail("a.out");
         }
+
         // TODO some incorrect output
     }
 
@@ -348,7 +359,7 @@ public class Benchmarks {
         String file = "primes";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO false
+
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -416,7 +427,7 @@ public class Benchmarks {
         String file = "wasteOfCycles";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO some incorrect input
+        // TODO some incorrect output
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))

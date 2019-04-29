@@ -9,18 +9,20 @@ public class Store implements Instruction {
 
     Value ptr;
     Value value;
-    Type type;
+    //Type type;
 
-    public Store(Value value, Type type, Value ptr)
+    public Store(Value value, Value ptr)
     {
         this.ptr = ptr;
         this.value = value;
-        this.type = type;
+        //this.type = type;
     }
 
     public String getString()
     {
-        return ("store " + type.getString() + " " + value.getString() + ", " + type.getString() + "* " + ptr.getString());
+        String valTypeStr = value.getType().getString();
+
+        return ("store " + valTypeStr + " " + value.getString() + ", " + valTypeStr + "* " + ptr.getString());
     }
 
 }

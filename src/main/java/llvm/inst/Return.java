@@ -7,17 +7,17 @@ public class Return implements Instruction {
 
     // ret <ty> <value>
 
-    Type type;
+    //Type type;
     Value value;
 
-    public Return(Type type, Value value)
+    public Return(Value value)
     {
-        this.type = type;
+        //this.type = type;
         this.value = value;
     }
 
     public String getString()
     {
-        return ("ret " + type.getString() + " " + value.getString());
+        return ("ret " + value.getType().getString() + " " + value.getString());
     }
 }

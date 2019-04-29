@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 public class MiniCompiler
 {
+   private static boolean stackBased = false;
+
    public static void main(String[] args)
    {
       parseParameters(args);
@@ -28,7 +30,7 @@ public class MiniCompiler
 
          program.TypeCheck();
 
-         ControlFlowGraphList cfgList = new ControlFlowGraphList(program);
+         ControlFlowGraphList cfgList = new ControlFlowGraphList(program, stackBased);
          //cfgList.print(System.out); // for debugging
          // TODO clean this up
          System.out.println(_inputFile);
@@ -57,8 +59,15 @@ public class MiniCompiler
       {
          if (args[i].charAt(0) == '-')
          {
-            System.err.println("unexpected option: " + args[i]);
-            System.exit(1);
+            if (args[i].equals("-stack"))
+            {
+               stackBased = true;
+            }
+            else
+            {
+               System.err.println("unexpected option: " + args[i]);
+               System.exit(1);
+            }
          }
          else if (_inputFile != null)
          {

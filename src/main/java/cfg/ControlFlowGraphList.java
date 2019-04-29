@@ -12,10 +12,12 @@ public class ControlFlowGraphList {
     protected List<ControlFlowGraph> controlFlowGraphs;
 
     protected Program program;
+    private boolean stackBased;
 
-    public ControlFlowGraphList(Program program)
+    public ControlFlowGraphList(Program program, boolean stack)
     {
         this.program = program;
+        this.stackBased = stack;
         controlFlowGraphs = new ArrayList<>();
         SymbolTableList symbolTables = program.getSymbolTables();
         for (Function func : program.getFuncs())
@@ -26,7 +28,7 @@ public class ControlFlowGraphList {
             symbolTables.addDecls(func.getParams(), Scope.PARAM);
             symbolTables.addDecls(func.getLocals(), Scope.LOCAL);
 
-            controlFlowGraphs.add(new ControlFlowGraph(func, program.getStructTable(), program.getSymbolTables()));
+            controlFlowGraphs.add(new ControlFlowGraph(func, program.getStructTable(), program.getSymbolTables(), stackBased));
             symbolTables.removeScope();
         }
     }
