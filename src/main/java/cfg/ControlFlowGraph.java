@@ -43,8 +43,9 @@ public class ControlFlowGraph {
         this.symbolTableList = symbolTableList;
         this.function = func;
         this.stackBased = stack;
-        entryNode = new BasicBlock(new ArrayList<>());
-        exitNode = new BasicBlock(new ArrayList<>());
+        entryNode = new BasicBlock(new ArrayList<>(), stackBased);
+        exitNode = new BasicBlock(new ArrayList<>(), stackBased);
+        entryNode.seal();
 
         Type type = convertType(function.getRetType());
         Value result = new StackLocation(type);
@@ -68,15 +69,36 @@ public class ControlFlowGraph {
 
     private void BuildCFG()
     {
-        // allocate params
-        // TODO load params into alloca locs
-        AddAllocateParamsInst(function.getParams());
+        if (stackBased)
+        {
+            // allocate params
+            AddAllocateParamsInst(function.getParams());
+            // allocate locals
+            AddAllocateLocalsInst(function.getLocals());
+        }
+        else
+        {
+            // add params to mapping
+            // TODO are parameters put into registers??
+            AddParamsToMapping(function.getParams());
 
-        // allocate locals
-        AddAllocateLocalsInst(function.getLocals());
+            // add locals to mapping
+            // TODO nothing to do here?
+        }
 
         // create instructions from body
         AddBodyInst(function.getBody());
+    }
+
+    private void AddParamsToMapping(List<Declaration> params)
+    {
+        for (Declaration dec : params)
+        {
+            Type type = convertType(dec.getType());
+            String name = dec.getName();
+            Value localParam = new Local(name, type);
+            entryNode.writeVariable(name, localParam);
+        }
     }
 
     private void AddBodyInst(Statement body)
@@ -89,11 +111,14 @@ public class ControlFlowGraph {
             {
                 entryNode.addInstruction(new BrUncond(exitNode.label));
             }
+
             nodeList.add(exitNode);
+            exitNode.seal();
         }
         else
         {
             System.err.println("Function body not a BlockStatement");
+            System.exit(-2);
         }
     }
 
@@ -368,17 +393,19 @@ public class ControlFlowGraph {
         // create true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
-        BasicBlock thenEntryNode = new BasicBlock(predList);
+        BasicBlock thenEntryNode = new BasicBlock(predList, stackBased);
         // link true block to current block
         currentBlock.successorList.add(thenEntryNode);
         nodeList.add(thenEntryNode);
+        thenEntryNode.seal();
         BasicBlock thenExitNode = AddStatement(stmt.getThenBlock(), thenEntryNode);
 
         // false block
-        BasicBlock elseEntryNode = new BasicBlock(predList);
+        BasicBlock elseEntryNode = new BasicBlock(predList, stackBased);
         // link false block to current block
         currentBlock.successorList.add(elseEntryNode);
         nodeList.add(elseEntryNode);
+        elseEntryNode.seal();
         BasicBlock elseExitNode = AddStatement(stmt.getElseBlock(), elseEntryNode);
 
         // create exit block
@@ -388,11 +415,12 @@ public class ControlFlowGraph {
         {
             predCondList.add(elseExitNode);
         }
-        BasicBlock condExitNode = new BasicBlock(predCondList);
+        BasicBlock condExitNode = new BasicBlock(predCondList, stackBased);
 
         if (thenExitNode != exitNode)
         {
             thenExitNode.addInstruction(new BrUncond(condExitNode.label));
+            thenExitNode.seal();
         }
 
         // add guard to end of current block
@@ -413,12 +441,15 @@ public class ControlFlowGraph {
         if (elseExitNode != null)
         {
             elseExitNode.successorList.add(condExitNode);
+            elseExitNode.seal();
             if (elseExitNode != exitNode)
             {
                 elseExitNode.addInstruction(new BrUncond(condExitNode.label));
             }
         }
 
+        // TODO is this where to seal?
+        condExitNode.seal();
         return condExitNode;
     }
 
@@ -427,7 +458,7 @@ public class ControlFlowGraph {
         // create true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
-        BasicBlock trueEntryNode = new BasicBlock(predList);
+        BasicBlock trueEntryNode = new BasicBlock(predList, stackBased);
 
         Statement trueStmt = stmt.getBody();
         BasicBlock trueExitNode = AddStatement(trueStmt, trueEntryNode);
@@ -436,7 +467,7 @@ public class ControlFlowGraph {
         List<BasicBlock> exitPredList = new ArrayList<>();
         exitPredList.add(trueExitNode);
         exitPredList.add(currentBlock);
-        BasicBlock falseNode = new BasicBlock(exitPredList);
+        BasicBlock falseNode = new BasicBlock(exitPredList, stackBased);
         nodeList.add(trueEntryNode);
         nodeList.add(falseNode);
 
@@ -456,6 +487,10 @@ public class ControlFlowGraph {
         Instruction brInstT = new BrCond(extGuardT, trueEntryNode.label, falseNode.label);
         trueExitNode.addInstruction(brInstT);
 
+        // TODO is this where to seal?
+        trueEntryNode.seal();
+        trueExitNode.seal();
+        falseNode.seal();
         return falseNode;
     }
 
