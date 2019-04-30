@@ -20,6 +20,10 @@ public class InvocationExpression
       this.arguments = arguments;
    }
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public List<Expression> getArguments()
    {
       return arguments;

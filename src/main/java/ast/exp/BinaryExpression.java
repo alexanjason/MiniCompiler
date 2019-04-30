@@ -20,6 +20,10 @@ public class BinaryExpression
       this.right = right;
    }
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public Operator getOperator()
    {
       return operator;

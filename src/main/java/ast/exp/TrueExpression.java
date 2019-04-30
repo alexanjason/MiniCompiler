@@ -12,6 +12,10 @@ public class TrueExpression
       super(lineNum);
    }
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public Type TypeCheck(StructTable structTable, SymbolTableList symbolTables)
    {
       return new BoolType();

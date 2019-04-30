@@ -15,6 +15,10 @@ public class NewExpression
       this.id = id;
    }
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public String getId()
    {
       return id;

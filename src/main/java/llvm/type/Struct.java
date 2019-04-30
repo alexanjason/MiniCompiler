@@ -25,4 +25,9 @@ public class Struct implements Type {
     {
         return size;
     }
+
+    public String getName()
+    {
+        return name;
+    }
 }

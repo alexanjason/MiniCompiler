@@ -17,4 +17,8 @@ public class NullExpression
       return new NullType();
 
    }
+
+   public int getLineNum() {
+      return super.lineNum;
+   }
 }

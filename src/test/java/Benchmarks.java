@@ -97,8 +97,6 @@ public class Benchmarks {
         {
             fail("a.out");
         }
-
-        // TODO null
     }
 
     @Test
@@ -109,7 +107,7 @@ public class Benchmarks {
         String file = "bert";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO null
+        // TODO undefined label
 
         runClang(dir, file + ".ll");
 
@@ -127,7 +125,6 @@ public class Benchmarks {
         String file = "biggest";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO getelementptr %
 
         runClang(dir, file + ".ll");
 
@@ -153,7 +150,6 @@ public class Benchmarks {
         {
             fail("a.out");
         }
-
     }
 
     @Test
@@ -172,7 +168,6 @@ public class Benchmarks {
         {
             fail("a.out");
         }
-
     }
 
     @Test
@@ -190,7 +185,6 @@ public class Benchmarks {
         {
             fail("a.out");
         }
-        // TODO getelementptr % maybe
     }
 
     @Test
@@ -219,7 +213,7 @@ public class Benchmarks {
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
 
-        // TODO cond exit blocks
+        // TODO undefined label: cond exit blocks
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -237,7 +231,8 @@ public class Benchmarks {
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
 
-        // TODO no percent on getelementptr when Local Value
+        // TODO empty block
+
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -271,7 +266,9 @@ public class Benchmarks {
         String file = "hanoi_benchmark";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO same getelementptr bug
+
+        // TODO empty block
+
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -288,7 +285,7 @@ public class Benchmarks {
         String file = "killerBubbles";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO same getelementptr bug
+        // TODO voodoo todo created this bug
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -305,7 +302,7 @@ public class Benchmarks {
         String file = "mile1";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO getelementptr bug
+
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -348,7 +345,7 @@ public class Benchmarks {
             fail("a.out");
         }
 
-        // TODO some incorrect output
+        // TODO incorrect output
     }
 
     @Test
@@ -393,7 +390,9 @@ public class Benchmarks {
         String file = "stats";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO same getelementptr bug
+
+        // TODO undefined label
+
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -410,7 +409,9 @@ public class Benchmarks {
         String file = "TicTac";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO getelementptr issue
+
+        // TODO empty block
+
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))
@@ -427,7 +428,7 @@ public class Benchmarks {
         String file = "wasteOfCycles";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO some incorrect output
+        // TODO incorrect output
         runClang(dir, file + ".ll");
 
         if (!(runAout(dir)))

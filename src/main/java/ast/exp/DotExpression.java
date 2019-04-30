@@ -19,6 +19,10 @@ public class DotExpression
       this.id = id;
    }
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public Expression getLeft()
    {
       return left;

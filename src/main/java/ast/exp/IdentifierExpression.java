@@ -11,6 +11,10 @@ public class IdentifierExpression
 {
    private final String id;
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public IdentifierExpression(int lineNum, String id)
    {
       super(lineNum);

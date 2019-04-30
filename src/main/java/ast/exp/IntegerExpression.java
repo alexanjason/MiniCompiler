@@ -9,6 +9,10 @@ public class IntegerExpression
 {
    private final String value;
 
+   public int getLineNum() {
+      return super.lineNum;
+   }
+
    public IntegerExpression(int lineNum, String value)
    {
       super(lineNum);
