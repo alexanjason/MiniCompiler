@@ -40,11 +40,11 @@ public class Benchmarks {
         }
     }
 
-    boolean runAout(String wd)
+    boolean runAout(String wd, String in, String out)
     {
         ProcessBuilder aout = new ProcessBuilder("./a.out");
-        File inputFile = new File(wd + "/" + "input");
-        File outputFile = new File(wd + "/" + "output");
+        File inputFile = new File(wd + "/" + in);
+        File outputFile = new File(wd + "/" + out);
         File dir = new File(wd).getAbsoluteFile();
         aout.redirectErrorStream(true);
         aout.directory(dir);
@@ -70,7 +70,7 @@ public class Benchmarks {
             while ((line = output.readLine()) != null)
             {
                 aLine = reader.readLine();
-                assertEquals("Output doesn't match", line, aLine);
+                assertEquals(output + " doesn't match", line, aLine);
             }
 
         }
@@ -93,7 +93,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -111,7 +116,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -128,7 +138,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -146,7 +161,12 @@ public class Benchmarks {
         runClang(dir, file + ".ll");
 
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -164,7 +184,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -181,7 +206,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -198,7 +228,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -216,7 +251,12 @@ public class Benchmarks {
         // TODO undefined label: cond exit blocks
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -235,7 +275,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -252,7 +297,12 @@ public class Benchmarks {
         // TODO undefined label
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -271,7 +321,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -288,7 +343,12 @@ public class Benchmarks {
         // TODO voodoo todo created this bug
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -305,7 +365,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -322,7 +387,12 @@ public class Benchmarks {
         // TODO empty block
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -340,7 +410,12 @@ public class Benchmarks {
         runClang(dir, file + ".ll");
 
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -359,7 +434,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -376,7 +456,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -395,7 +480,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -414,7 +504,12 @@ public class Benchmarks {
 
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
@@ -428,10 +523,15 @@ public class Benchmarks {
         String file = "wasteOfCycles";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO incorrect output
+
         runClang(dir, file + ".ll");
 
-        if (!(runAout(dir)))
+        if (!(runAout(dir,"input", "output")))
+        {
+            fail("a.out");
+        }
+
+        if (!(runAout(dir,"input.longer", "output.longer")))
         {
             fail("a.out");
         }
