@@ -8,7 +8,6 @@ import java.util.List;
 public class Call implements Instruction {
 
     Value result;
-    //Type retType;
     String name;
     List<Type> paramTypes;
     List<Value> paramVals;
@@ -16,7 +15,6 @@ public class Call implements Instruction {
     public Call(Value result, String name, List<Type> paramTypes, List<Value> paramVals)
     {
         this.result = result;
-        //this.retType = retType;
         this.name = name;
         this.paramTypes = paramTypes;
         this.paramVals = paramVals;

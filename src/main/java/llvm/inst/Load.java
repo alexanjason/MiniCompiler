@@ -5,12 +5,10 @@ import llvm.value.Value;
 
 public class Load implements Instruction {
 
-    //Type type;
     Value result;
     Value pointer;
 
     public Load(Value result, Value pointer) {
-        //this.type = type;
         this.result = result;
         this.pointer = pointer;
     }

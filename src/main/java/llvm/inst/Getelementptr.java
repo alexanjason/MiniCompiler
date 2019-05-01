@@ -6,14 +6,12 @@ import llvm.value.Value;
 public class Getelementptr implements Instruction {
 
     Value result;
-    //Type type;
     Value base;
     int index;
 
     public Getelementptr(Value result, Value base, int index)
     {
         this.result = result;
-        //this.type = type;
         this.base = base;
         this.index = index;
     }

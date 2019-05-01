@@ -9,13 +9,11 @@ public class Store implements Instruction {
 
     Value ptr;
     Value value;
-    //Type type;
 
     public Store(Value value, Value ptr)
     {
         this.ptr = ptr;
         this.value = value;
-        //this.type = type;
     }
 
     public String getString()

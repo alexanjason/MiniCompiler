@@ -6,15 +6,11 @@ import llvm.value.Value;
 
 public class Bitcast implements Instruction {
 
-    //Type from;
-    //Type to;
     Value val;
     Value result;
 
     public Bitcast(Value val, Value result)
     {
-        //this.from = from;
-        //this.to = to;
         this.val = val;
         this.result = result;
     }

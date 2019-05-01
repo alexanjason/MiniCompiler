@@ -150,7 +150,7 @@ public class StackBasedBenchmarks {
         String file = "bert";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO returning void when no explicit return
+        // TODO run on 32 bit
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -612,7 +612,7 @@ public class StackBasedBenchmarks {
             fail("a.out");
         }
 
-        // TODO incorrect output
+        // TODO test with 32 bit
     }
 
     @Test
@@ -690,7 +690,7 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO returning void when no explicit return
+        // TODO run on 32 bit
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;

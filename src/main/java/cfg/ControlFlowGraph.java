@@ -317,9 +317,9 @@ public class ControlFlowGraph {
                     localLoc = getLocalFromId(eId);
                 } else {
                     Type type = convertType(symbolTableList.typeOf(eId));
-                    //localLoc = currentBlock.readVariable(eId, type);
+                    localLoc = currentBlock.readVariable(eId, type);
                     //return new Local(id, type);
-                    localLoc = new Local(id, type);
+                    //localLoc = new Local(id, type);
                 }
             } else {
                 localLoc = AddExpression(lExp, currentBlock);
@@ -342,6 +342,7 @@ public class ControlFlowGraph {
             }
             // TODO voodoo
             currentBlock.addInstruction(new Load(loadedPtr, localLoc));
+            //loadedPtr = localLoc;
             currentBlock.addInstruction(new Getelementptr(offsetAddr, loadedPtr, index));
 
             return offsetAddr;
@@ -561,7 +562,7 @@ public class ControlFlowGraph {
         }
         else
         {
-            // TODO ahhhh
+            // TODO the battle of Fib vs BenchMarkish
             retBlock = exitBlock;
             nodeList.add(exitBlock);
             //retBlock = exitNode;
@@ -1037,6 +1038,8 @@ public class ControlFlowGraph {
             List<Value> emptyValList = new ArrayList<>();
             List<Type> emptyTypeList = new ArrayList<>();
             currentBlock.addInstruction(new Call(result,"read_util", emptyTypeList, emptyValList));
+            //currentBlock.addInstruction(new Read());
+            //currentBlock.addInstruction(new Load(result, new Global(".read_scratch", new i32())));
             return result;
         }
         else if (exp instanceof TrueExpression)

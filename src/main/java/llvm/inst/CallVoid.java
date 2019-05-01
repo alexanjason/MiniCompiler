@@ -8,14 +8,12 @@ import java.util.List;
 
 public class CallVoid implements Instruction {
 
-    //Type retType;
     String name;
     List<Type> paramTypes;
     List<Value> paramVals;
 
     public CallVoid(String name, List<Type> paramTypes, List<Value> paramVals)
     {
-        //this.retType = retType;
         this.name = name;
         this.paramTypes = paramTypes;
         this.paramVals = paramVals;

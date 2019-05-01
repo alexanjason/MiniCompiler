@@ -16,6 +16,7 @@ public class Benchmarks {
 
     //TODO
     //public MiniCompiler mini = new MiniCompiler();
+    /*
 
     String readHelper = "../../main/resources/read_util.c";
 
@@ -780,5 +781,6 @@ public class Benchmarks {
             fail("a.out");
         }
     }
+    */
 
 }
