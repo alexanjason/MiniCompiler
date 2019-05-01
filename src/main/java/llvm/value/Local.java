@@ -18,6 +18,11 @@ public class Local implements Value {
         return ("%" + id);
     }
 
+    public String getId()
+    {
+        return id;
+    }
+
     public Type getType()
     {
         return this.type;

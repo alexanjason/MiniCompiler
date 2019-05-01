@@ -9,10 +9,11 @@ import java.util.regex.Pattern;
 
 public class MiniCompiler
 {
-   private static boolean stackBased = false;
+   private static boolean stackBased;
 
    public static void main(String[] args)
    {
+      stackBased = false;
       parseParameters(args);
 
       CommonTokenStream tokens = new CommonTokenStream(createLexer());

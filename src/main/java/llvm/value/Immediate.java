@@ -13,6 +13,11 @@ public class Immediate implements Value {
         this.type = type;
     }
 
+    public String getId()
+    {
+        return val;
+    }
+
     public String getString()
     {
         return val;

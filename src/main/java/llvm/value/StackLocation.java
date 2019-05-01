@@ -15,6 +15,11 @@ public class StackLocation implements Value {
         this.type = type;
     }
 
+    public String getId()
+    {
+        return Integer.toString(id);
+    }
+
     public String getString()
     {
         return ("%u" + this.id);

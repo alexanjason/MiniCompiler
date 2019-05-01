@@ -1,5 +1,7 @@
 import mini.MiniCompiler;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
 
@@ -9,18 +11,41 @@ import static junit.framework.TestCase.fail;
 
 public class StackBasedBenchmarks {
 
-    //@Rule
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     //TODO
     //public MiniCompiler mini = new MiniCompiler();
 
-    String readHelper = "../../../../main/resources/read_util.c";
+    String readHelper = "../../main/resources/read_util.c";
 
-    void runClang(String wd, String file)
+    File runClang(String file)
     {
-        ProcessBuilder clang = new ProcessBuilder("clang", file, readHelper);
-        File dir = new File(wd).getAbsoluteFile();
+        File helper = new File(readHelper);
+        String path = null;
+        try
+        {
+            path = helper.getCanonicalPath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get helper path");
+        }
+
+        ProcessBuilder clang = new ProcessBuilder("clang", file, path);
         clang.redirectErrorStream(true);
+
+        File dir = null;
+        try {
+            dir = folder.newFolder("temp");
+        }
+        catch (Exception e)
+        {
+            System.err.println("Temp folder not created");
+        }
+
         clang.directory(dir);
+
         try
         {
             Process p = clang.start();
@@ -38,14 +63,15 @@ public class StackBasedBenchmarks {
             System.err.println("exception: " + e.getMessage());
             System.exit(-2);
         }
+        return dir;
     }
 
-    boolean runAout(String wd, String in, String out)
+    boolean runAout(String wd, String in, String out, File dir)
     {
         ProcessBuilder aout = new ProcessBuilder("./a.out");
         File inputFile = new File(wd + "/" + in);
         File outputFile = new File(wd + "/" + out);
-        File dir = new File(wd).getAbsoluteFile();
+
         aout.redirectErrorStream(true);
         aout.directory(dir);
         try
@@ -80,8 +106,8 @@ public class StackBasedBenchmarks {
             return false;
         }
         return true;
-        // TODO delete a.out when done so test doesn't false positive
     }
+
 
     @Test
     public void BenchMarkishTopics()
@@ -92,14 +118,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -113,16 +150,27 @@ public class StackBasedBenchmarks {
         String file = "bert";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO undefined label
+        // TODO returning void when no explicit return
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -137,14 +185,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -159,15 +218,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
+        File fol = runClang(abs);
 
-        if (!(runAout(dir,"input", "output")))
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -181,16 +250,28 @@ public class StackBasedBenchmarks {
         String file = "brett";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO undefined label
 
-        runClang(dir, file + ".ll");
+        // TODO voodoo?
 
-        if (!(runAout(dir,"input", "output")))
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
+
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -205,14 +286,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -227,14 +319,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -249,15 +352,26 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO undefined label: cond exit blocks
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        // TODO undefined label: cond exit blocks
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -272,16 +386,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO empty block
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        runClang(dir, file + ".ll");
+        File fol = runClang(abs);
 
-        if (!(runAout(dir,"input", "output")))
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -295,15 +418,28 @@ public class StackBasedBenchmarks {
         String file = "hailstone";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO undefined label
-        runClang(dir, file + ".ll");
 
-        if (!(runAout(dir,"input", "output")))
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
+
+        // TODO ret void but also instructions after ret void (weird!)
+
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -318,16 +454,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO empty block
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        runClang(dir, file + ".ll");
+        File fol = runClang(abs);
 
-        if (!(runAout(dir,"input", "output")))
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -342,14 +487,26 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
         // TODO voodoo todo created this bug
-        runClang(dir, file + ".ll");
 
-        if (!(runAout(dir,"input", "output")))
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
+
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -364,14 +521,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -385,15 +553,28 @@ public class StackBasedBenchmarks {
         String file = "mixed";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO empty block
-        runClang(dir, file + ".ll");
 
-        if (!(runAout(dir,"input", "output")))
+        // TODO voodoo?
+
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
+
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -408,15 +589,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
+        File fol = runClang(abs);
 
-        if (!(runAout(dir,"input", "output")))
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -433,14 +624,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -455,14 +657,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -477,16 +690,27 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO undefined label
+        // TODO returning void when no explicit return
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -501,16 +725,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO empty block
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        runClang(dir, file + ".ll");
+        File fol = runClang(abs);
 
-        if (!(runAout(dir,"input", "output")))
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }
@@ -525,14 +758,25 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        runClang(dir, file + ".ll");
+        File fileAbs = new File(dir + "/" + file + ".ll");
+        String abs = null;
+        try
+        {
+            abs = fileAbs.getAbsolutePath();
+        }
+        catch (Exception e)
+        {
+            System.err.println("can't get absolute path");
+        }
 
-        if (!(runAout(dir,"input", "output")))
+        File fol = runClang(abs);
+
+        if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
         }
 
-        if (!(runAout(dir,"input.longer", "output.longer")))
+        if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");
         }

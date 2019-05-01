@@ -1,5 +1,6 @@
 package llvm.value;
 
+import ast.exp.IntegerExpression;
 import llvm.inst.Instruction;
 import llvm.type.Type;
 
@@ -14,12 +15,22 @@ public class Register implements Value {
     Instruction def;
     List<Instruction> uses;
 
-    public Register(Type type, Instruction def)
+    public Register(Type type)
     {
         this.type = type;
         this.id = increment++;
-        this.def = def;
+        //this.def = def;
         this.uses = new ArrayList<>();
+    }
+
+    public String getId()
+    {
+        return Integer.toString(id);
+    }
+
+    public void addDef(Instruction def)
+    {
+        this.def = def;
     }
 
     public Type getType()

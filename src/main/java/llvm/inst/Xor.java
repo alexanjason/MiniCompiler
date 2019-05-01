@@ -20,6 +20,6 @@ public class Xor implements Instruction {
 
     public String getString()
     {
-        return (result.getString() + " = " + result.getType().getString() + op1.getString() + ", " + op2.getString());
+        return (result.getString() + " = xor " + result.getType().getString() + " " + op1.getString() + ", " + op2.getString());
     }
 }

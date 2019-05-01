@@ -7,4 +7,6 @@ public interface Value {
     Type getType();
 
     String getString();
+
+    String getId();
 }
