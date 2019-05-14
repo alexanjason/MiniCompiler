@@ -1,7 +1,11 @@
 package llvm.inst;
 
-import llvm.type.Type;
+import arm.Ldr;
+import llvm.value.Register;
 import llvm.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Load implements Instruction {
 
@@ -18,4 +22,15 @@ public class Load implements Instruction {
         String typeStr = result.getType().getString();
         return (result.getString() + " = load " + typeStr + ", " + typeStr + "* " + pointer.getString());
     }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        Register resultReg = (Register) result;
+        Register ptrReg = (Register) pointer;
+        list.add(new Ldr(resultReg, ptrReg));
+
+        return new ArrayList<>();
+    }
+
 }

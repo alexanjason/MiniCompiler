@@ -1,6 +1,7 @@
 package llvm.inst;
 
-import llvm.inst.Instruction;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReturnVoid implements Instruction {
 
@@ -9,5 +10,10 @@ public class ReturnVoid implements Instruction {
     public String getString()
     {
         return ("ret void");
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        return new ArrayList<>();
     }
 }

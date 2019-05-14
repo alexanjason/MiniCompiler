@@ -1,7 +1,13 @@
 package llvm.inst;
 
-import llvm.type.Type;
+import arm.*;
+import llvm.type.i32;
+import llvm.value.Immediate;
+import llvm.value.Register;
 import llvm.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Icmp implements Instruction {
 
@@ -21,5 +27,41 @@ public class Icmp implements Instruction {
     {
         return (result.getString() + " = icmp " + cond + " " +
                 op1.getType().getString() + " " + op1.getString() + ", " + op2.getString());
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        Register resultReg = (Register) result;
+        list.add(new Mov(resultReg, new Immediate("0", new i32())));
+        Register op1Reg = (Register) op1;
+        list.add(new Cmp(op1Reg, op2));
+        Immediate immTrue = new Immediate("1", new i32());
+        if (cond.equals("slt"))
+        {
+            list.add(new Movlt(resultReg, immTrue));
+        }
+        else if (cond.equals("sgt"))
+        {
+            list.add(new Movgt(resultReg, immTrue));
+        }
+        else if (cond.equals("sle"))
+        {
+            list.add(new Movle(resultReg, immTrue));
+        }
+        else if (cond.equals("sge"))
+        {
+            list.add(new Movge(resultReg, immTrue));
+        }
+        else if (cond.equals("eq"))
+        {
+            list.add(new Moveq(resultReg, immTrue));
+        }
+        else if (cond.equals("ne"))
+        {
+            list.add(new Movne(resultReg, immTrue));
+        }
+
+        return new ArrayList<>();
     }
 }

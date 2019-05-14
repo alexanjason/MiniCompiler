@@ -1,7 +1,11 @@
 package llvm.inst;
 
-import llvm.type.Type;
+import arm.Str;
+import llvm.value.Register;
 import llvm.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Store implements Instruction {
 
@@ -23,4 +27,13 @@ public class Store implements Instruction {
         return ("store " + valTypeStr + " " + value.getString() + ", " + valTypeStr + "* " + ptr.getString());
     }
 
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        // TODO handle immediate
+        Register ptrReg = (Register) ptr;
+        Register valueReg = (Register) value;
+        list.add(new Str(valueReg, ptrReg));
+        return list;
+    }
 }

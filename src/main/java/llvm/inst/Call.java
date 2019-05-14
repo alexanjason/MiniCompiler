@@ -1,14 +1,19 @@
 package llvm.inst;
 
+import arm.Bl;
+import arm.Mov;
 import llvm.type.Type;
+import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Call implements Instruction {
 
     Value result;
     String name;
+    // TODO should be list of parameter values?
     List<Type> paramTypes;
     List<Value> paramVals;
 
@@ -38,5 +43,20 @@ public class Call implements Instruction {
         }
         strBuilder.append(")");
         return strBuilder.toString();
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        for (int i = 0; i < paramVals.size(); i++)
+        {
+            // TODO does stack based still put args into regs?
+            list.add(new Mov(new Register(paramTypes.get(i), i), paramVals.get(i)));
+        }
+        list.add(new Bl(name));
+        Register r = (Register) result;
+        list.add(new Mov(r, new Register(result.getType(), 0)));
+
+        return list;
     }
 }

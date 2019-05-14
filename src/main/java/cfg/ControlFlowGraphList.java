@@ -77,7 +77,7 @@ public class ControlFlowGraphList {
             for (Declaration dec : tdec.getFields())
             {
                 // TODO how i access convertType here is very strange
-                stream.print(controlFlowGraphs.get(0).convertType(dec.getType()).getString());
+                stream.print(controlFlowGraphs.get(0).converter.convertType(dec.getType()).getString());
                 if (i != size - 1)
                 {
                     stream.print(", ");
@@ -93,7 +93,7 @@ public class ControlFlowGraphList {
         // @globalfoo = common global %struct.foo* null, align 8
         for (Declaration dec : decls)
         {
-            Type type = controlFlowGraphs.get(0).convertType(dec.getType());
+            Type type = controlFlowGraphs.get(0).converter.convertType(dec.getType());
             stream.println("@" + dec.getName() + " = common global " + type.getString() + " " + type.getDefault() + ", align 4");
         }
     }

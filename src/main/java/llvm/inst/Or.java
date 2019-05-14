@@ -1,7 +1,11 @@
 package llvm.inst;
 
+import llvm.value.Immediate;
+import llvm.value.Register;
 import llvm.value.Value;
-import llvm.type.Type;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Or implements Instruction {
 
@@ -20,5 +24,27 @@ public class Or implements Instruction {
     public String getString()
     {
         return (result.getString() + " = or " + result.getType().getString() + " " + op1.getString() + ", " + op2.getString());
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        Register r1 = (Register) result;
+
+        Register r2;
+
+        if (op1 instanceof Immediate)
+        {
+            r2 = ImmediateToRegister((Immediate)op1, list);
+        }
+        else
+        {
+            // TODO stack location???
+            r2 = (Register) op1;
+        }
+
+        list.add(new arm.Orr(r1, r2, op2));
+
+        return list;
     }
 }

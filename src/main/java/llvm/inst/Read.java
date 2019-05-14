@@ -1,4 +1,12 @@
+/*
 package llvm.inst;
+
+import arm.Bl;
+import arm.Mov;
+import llvm.value.Register;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Read implements Instruction{
 
@@ -14,3 +22,4 @@ public class Read implements Instruction{
 
     }
 }
+*/

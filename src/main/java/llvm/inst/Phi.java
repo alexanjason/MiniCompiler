@@ -1,7 +1,11 @@
 package llvm.inst;
 
+import arm.Mov;
 import cfg.Label;
 import llvm.type.Type;
+import llvm.type.i32;
+import llvm.value.Immediate;
+import llvm.value.Register;
 import llvm.value.Value;
 
 import java.util.ArrayList;
@@ -70,6 +74,17 @@ public class Phi implements Instruction {
         }
 
         return builder.toString();
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        // TODO literally no idea wtf
+        Register resReg = (Register) result;
+        Value phi = new Immediate("%phi" + id, new i32());
+        // TODO backwards???
+        list.add(new Mov(resReg, phi));
+        return list;
     }
 
 }

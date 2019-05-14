@@ -12,14 +12,21 @@ public class Register implements Value {
     Type type;
     static private int increment = 0;
     private int id;
-    Instruction def;
-    List<Instruction> uses;
+    Instruction def;            //TODO
+    List<Instruction> uses;     //TODO
 
     public Register(Type type)
     {
         this.type = type;
         this.id = increment++;
         //this.def = def;
+        this.uses = new ArrayList<>();
+    }
+
+    public Register(Type type, int num)
+    {
+        this.type = type;
+        this.id = num;
         this.uses = new ArrayList<>();
     }
 

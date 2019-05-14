@@ -1,6 +1,10 @@
 package llvm.inst;
 
+
 import llvm.type.Type;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Allocate implements Instruction {
 
@@ -18,5 +22,11 @@ public class Allocate implements Instruction {
     public String getString()
     {
         return ("%" + name + " = alloca " + type.getString());
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        // TODO mov or no instruction?
+        return new ArrayList<>();
     }
 }

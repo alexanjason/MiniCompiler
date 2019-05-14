@@ -1,8 +1,11 @@
 package llvm.inst;
 
-import llvm.inst.Instruction;
-import llvm.type.Type;
+import arm.Mov;
+import llvm.value.Register;
 import llvm.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bitcast implements Instruction {
 
@@ -20,4 +23,14 @@ public class Bitcast implements Instruction {
         return (result.getString() + " = bitcast " + val.getType().getString() + " " + val.getString() +
                 " to " + result.getType().getString());
     }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        Register r = (Register) result;
+        list.add(new Mov(r, val));
+        return list;
+    }
+
+
 }

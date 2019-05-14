@@ -1,9 +1,13 @@
 package llvm.inst;
 
+import arm.Bl;
+import arm.Mov;
 import llvm.type.Type;
 import llvm.type.Void;
+import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CallVoid implements Instruction {
@@ -38,5 +42,17 @@ public class CallVoid implements Instruction {
         }
         strBuilder.append(")");
         return strBuilder.toString();
+    }
+
+    public List<arm.Instruction> getArm()
+    {
+        List<arm.Instruction> list = new ArrayList<>();
+        for (int i = 0; i < paramVals.size(); i++)
+        {
+            list.add(new Mov(new Register(paramTypes.get(i)), paramVals.get(i)));
+        }
+        list.add(new Bl(name));
+
+        return list;
     }
 }
