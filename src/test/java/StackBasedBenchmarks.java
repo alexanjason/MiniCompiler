@@ -150,7 +150,6 @@ public class StackBasedBenchmarks {
         String file = "bert";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO run on 32 bit
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -165,6 +164,7 @@ public class StackBasedBenchmarks {
 
         File fol = runClang(abs);
 
+        // TODO run on 32 bit
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
@@ -250,8 +250,6 @@ public class StackBasedBenchmarks {
         String file = "brett";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-
-        // TODO voodoo?
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -430,8 +428,6 @@ public class StackBasedBenchmarks {
             System.err.println("can't get absolute path");
         }
 
-        // TODO ret void but also instructions after ret void (weird!)
-
         File fol = runClang(abs);
 
         if (!(runAout(dir,"input", "output", fol)))
@@ -486,7 +482,8 @@ public class StackBasedBenchmarks {
         String file = "killerBubbles";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-        // TODO voodoo todo created this bug
+
+        // TODO seg fault
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -501,6 +498,8 @@ public class StackBasedBenchmarks {
 
         File fol = runClang(abs);
 
+        fail("a.out");
+        /*
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
@@ -510,6 +509,7 @@ public class StackBasedBenchmarks {
         {
             fail("a.out");
         }
+        */
     }
 
     @Test
@@ -553,8 +553,6 @@ public class StackBasedBenchmarks {
         String file = "mixed";
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
-
-        // TODO voodoo?
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -602,6 +600,7 @@ public class StackBasedBenchmarks {
 
         File fol = runClang(abs);
 
+        // TODO test with 32 bit
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
@@ -611,8 +610,6 @@ public class StackBasedBenchmarks {
         {
             fail("a.out");
         }
-
-        // TODO test with 32 bit
     }
 
     @Test
@@ -690,8 +687,6 @@ public class StackBasedBenchmarks {
         String[] args = {dir + "/" + file + ".mini", "-stack"};
         mini.main(args);
 
-        // TODO run on 32 bit
-
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
         try
@@ -710,6 +705,7 @@ public class StackBasedBenchmarks {
             fail("a.out");
         }
 
+        // TODO run on 32 bit
         if (!(runAout(dir,"input.longer", "output.longer", fol)))
         {
             fail("a.out");

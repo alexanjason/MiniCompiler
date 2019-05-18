@@ -56,7 +56,9 @@ public class BasicBlock {
 
     public void writeVariable(String id, Value value)
     {
+        /*
         System.out.println(label.getString() + ": writeVariable: " + id + " " + value.getString() + " " + value);
+        */
         localMappings.put(id, value);
     }
 
@@ -79,18 +81,24 @@ public class BasicBlock {
         Value val;
         if (!sealed)
         {
+            /*
             System.out.println(label.getString() + " block not sealed: " + id);
+            */
             //val = new Local(id, type);
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
             reg.addDef(phi);
+            /*
             System.out.println(label.getString() + " adding to incomplete phis: " + phi.getString());
+            */
             incompletePhis.add(phi);
         }
         else if (predecessorList.size() == 0)
         {
+            /*
             System.out.println(label.getString() + " preds = 0 : " + id);
+            */
 
             // TODO set val to default of type
             val = new Immediate(type.getDefault(), type);//new Local(type.getDefault(), type);
@@ -100,13 +108,17 @@ public class BasicBlock {
         }
         else if (predecessorList.size() == 1)
         {
+            /*
             System.out.println(label.getString() + " preds = 1 : " + id);
+            */
 
             val = predecessorList.get(0).readVariable(id, type);
         }
         else
         {
+            /*
             System.out.println(label.getString() + " preds = *** : " + id);
+            */
             for (BasicBlock bb : predecessorList)
             {
                 if (bb != null)
@@ -136,7 +148,9 @@ public class BasicBlock {
         Phi phi = (Phi) inst;
         for (BasicBlock pred : predecessorList)
         {
+            /*
             System.out.println(label.getString() + ": addPhiOperands " + id + " pred: " + pred);
+            */
             phi.addEntry(pred.readVariable(id, type), pred.label);
         }
     }
@@ -151,7 +165,9 @@ public class BasicBlock {
             }
             else
             {
+                /*
                 System.out.println("sealing: " + label.getString());
+                */
                 for (Phi phi : incompletePhis)
                 {
                     addPhiOperands(phi.getId(), phi.getType(), phi);
@@ -185,9 +201,11 @@ public class BasicBlock {
 
     public void print(PrintStream stream)
     {
+        /*
         if (!stackBased) {
             printMappings();
         }
+        */
 
         // TODO debug to get rid of empty blocks so this isn't necessary
         if (instructions.size() != 0)

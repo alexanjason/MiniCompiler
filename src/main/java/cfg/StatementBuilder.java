@@ -1,7 +1,6 @@
 package cfg;
 
 import ast.exp.Expression;
-import ast.exp.IdentifierExpression;
 import ast.prog.StructEntry;
 import ast.prog.StructTable;
 import ast.prog.SymbolTableList;
@@ -86,69 +85,37 @@ public class StatementBuilder {
 
     private Value AddlVal(Lvalue lVal, BasicBlock currentBlock)
     {
-        if (lVal instanceof LvalueDot) {
+        if (lVal instanceof LvalueDot)
+        {
             LvalueDot valDot = (LvalueDot) lVal;
-            Expression lExp = valDot.getLeft();
             String id = valDot.getId();
+            // get type (struct) of left expression
+            Expression lExp = valDot.getLeft();
 
-            Value localLoc;
-            if (lExp instanceof IdentifierExpression) {
-                IdentifierExpression iExp = (IdentifierExpression) lExp;
-                String eId = iExp.getId();
-                //localLoc = getLocalFromId(eId);
-                /*
-                if (stackBased)
-                {
-                    localLoc = getLocalFromId(eId);
-                }
-                else
-                {
-                    Type type = convertType(symbolTableList.typeOf(eId));
-                    // TODO write variable instead - new register
-                    //localLoc = new Register(type);
-                    //localLoc = currentBlock.readVariable(eId, type);
-                    // TODO????
-                    localLoc = getLocalFromId(eId);
-                }
-                */
-
-
-                if (stackBased) {
-                    localLoc = expBuilder.getLocalFromId(eId);
-                } else {
-                    Type type = converter.convertType(symbolTableList.typeOf(eId));
-                    localLoc = currentBlock.readVariable(eId, type);
-                    //return new Local(id, type);
-                    //localLoc = new Local(id, type);
-                }
-            } else {
-                localLoc = expBuilder.AddExpression(lExp, currentBlock);
-            }
+            // add base address instruction
+            Value localLoc = expBuilder.AddExpression(lExp, currentBlock);
+            Type sType = localLoc.getType();
 
             // add offset address instruction
-            StructEntry entry = structTable.get(((Struct) localLoc.getType()).getName());
+            Value offsetAddr;
+            StructEntry entry = structTable.get(((Struct)sType).getName());
             int index = entry.getFieldIndex(id);
             Type fieldType = converter.convertType(entry.getType(id));
-            Value offsetAddr;
-            Value loadedPtr;
-            if (stackBased) {
+
+            if (stackBased)
+            {
                 offsetAddr = new StackLocation(fieldType);
-                loadedPtr = new StackLocation(localLoc.getType());
             }
             else
             {
                 offsetAddr = new Register(fieldType);
-                loadedPtr = new Register(localLoc.getType());
             }
-            // TODO voodoo
-            currentBlock.addInstruction(new Load(loadedPtr, localLoc));
-            //loadedPtr = localLoc;
-            currentBlock.addInstruction(new Getelementptr(offsetAddr, loadedPtr, index));
 
+
+            currentBlock.addInstruction(new Getelementptr(offsetAddr, localLoc, index));
             return offsetAddr;
-
         }
-        else if (lVal instanceof LvalueId)
+        else
         {
             LvalueId valId = (LvalueId) lVal;
             String id = valId.getId();
@@ -164,10 +131,7 @@ public class StatementBuilder {
                 //return currentBlock.readVariable(id, type);
                 return new Local(id, type);
             }
-
         }
-
-        return null;
     }
 
     private BasicBlock AddDeleteStmt(DeleteStatement delStmt, BasicBlock currentBlock)
