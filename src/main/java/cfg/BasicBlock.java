@@ -137,6 +137,13 @@ public class BasicBlock {
             reg.addDef(phi);
             phiInstructions.add(phi);
             writeVariable(id, val);
+
+            System.out.println("addPhiOperands " + label.getString());
+            for (BasicBlock b : predecessorList)
+            {
+                System.out.print(b.label.getString() + " ");
+            }
+
             addPhiOperands(id, type, phi);
         }
         writeVariable(id, val);
@@ -152,6 +159,7 @@ public class BasicBlock {
             System.out.println(label.getString() + ": addPhiOperands " + id + " pred: " + pred);
             */
             phi.addEntry(pred.readVariable(id, type), pred.label);
+
         }
     }
 
@@ -159,6 +167,7 @@ public class BasicBlock {
     {
         if (!stackBased)
         {
+            System.out.println("SEALING: " + label.getString());
             if (sealed)
             {
                 System.err.println(label.getString() + " already sealed");
@@ -170,6 +179,11 @@ public class BasicBlock {
                 */
                 for (Phi phi : incompletePhis)
                 {
+                    System.out.println("addPhiOperands " + label.getString());
+                    for (BasicBlock b : predecessorList)
+                    {
+                        System.out.print(b.label.getString() + " ");
+                    }
                     addPhiOperands(phi.getId(), phi.getType(), phi);
                     /*
                     //Phi phi = (Phi) inst;

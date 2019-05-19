@@ -152,7 +152,7 @@ public class ControlFlowGraph {
 
             nodeList.add(exitNode);
 
-            if (!stackBased)
+            if (!stackBased && !(type instanceof Void))
             {
                 //Type type = convertType(function.getRetType());
                 Value ret = exitNode.readVariable("_retval_", type);

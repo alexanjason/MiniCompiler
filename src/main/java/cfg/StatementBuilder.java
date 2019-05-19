@@ -73,9 +73,7 @@ public class StatementBuilder {
         }
         else
         {
-            //Local loc = (Local) lvalLoc;
-            System.out.println("writing: " + lvalLoc.getId() + " to " + currentBlock.label.getString());
-            System.out.println("sourceLoc " + sourceLoc.getString());
+            System.out.println("writing: " + lvalLoc.getId() + " to " + currentBlock.label.getString() + " : " + sourceLoc.getString());
             // TODO this is a serious hack lol
             currentBlock.writeVariable(lvalLoc.getId(), sourceLoc);
         }
@@ -393,10 +391,10 @@ public class StatementBuilder {
         BasicBlock trueEntryNode = new BasicBlock(predList, stackBased);
 
         // create false block
-        List<BasicBlock> exitPredList = new ArrayList<>();
+        //List<BasicBlock> exitPredList = new ArrayList<>();
         //exitPredList.add(trueExitNode);
-        exitPredList.add(currentBlock);
-        BasicBlock falseNode = new BasicBlock(exitPredList, stackBased);
+        //exitPredList.add(currentBlock);
+        BasicBlock falseNode = new BasicBlock(predList, stackBased);
         nodeList.add(trueEntryNode);
         nodeList.add(falseNode);
 
@@ -424,6 +422,7 @@ public class StatementBuilder {
         Statement trueStmt = stmt.getBody();
         BasicBlock trueExitNode = AddStatement(trueStmt, trueEntryNode);
         falseNode.predecessorList.add(trueExitNode);
+        trueEntryNode.predecessorList.add(trueExitNode);
 
         // add guard to end of true block
         Value guardValT = expBuilder.AddExpression(stmt.getGuard(), trueExitNode);

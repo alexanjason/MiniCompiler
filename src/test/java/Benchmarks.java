@@ -149,7 +149,6 @@ public class Benchmarks {
         String file = "bert";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO returning void when no explicit return
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -164,6 +163,7 @@ public class Benchmarks {
 
         File fol = runClang(abs);
 
+        // TODO run on 32 bit
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
@@ -249,8 +249,6 @@ public class Benchmarks {
         String file = "brett";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-
-        // TODO voodoo?
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -429,8 +427,6 @@ public class Benchmarks {
             System.err.println("can't get absolute path");
         }
 
-        // TODO ret void but also instructions after ret void (weird!)
-
         File fol = runClang(abs);
 
         if (!(runAout(dir,"input", "output", fol)))
@@ -466,6 +462,7 @@ public class Benchmarks {
 
         File fol = runClang(abs);
 
+        // TODO who knows, only a register issue
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
@@ -485,7 +482,6 @@ public class Benchmarks {
         String file = "killerBubbles";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-        // TODO voodoo todo created this bug
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -500,6 +496,7 @@ public class Benchmarks {
 
         File fol = runClang(abs);
 
+        // TODO seg fault? who knows
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
@@ -552,8 +549,6 @@ public class Benchmarks {
         String file = "mixed";
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
-
-        // TODO voodoo?
 
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
@@ -611,7 +606,7 @@ public class Benchmarks {
             fail("a.out");
         }
 
-        // TODO incorrect output
+        // TODO try on 32 bit
     }
 
     @Test
@@ -689,8 +684,6 @@ public class Benchmarks {
         String[] args = {dir + "/" + file + ".mini"};
         mini.main(args);
 
-        // TODO returning void when no explicit return
-
         File fileAbs = new File(dir + "/" + file + ".ll");
         String abs = null;
         try
@@ -704,6 +697,7 @@ public class Benchmarks {
 
         File fol = runClang(abs);
 
+        // TODO run on 32 bit
         if (!(runAout(dir,"input", "output", fol)))
         {
             fail("a.out");
