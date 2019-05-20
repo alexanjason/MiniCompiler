@@ -3,13 +3,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class StackBasedBenchmarks extends TestUtils {
+public class StackLLVMBenchmarks extends TestUtils {
 
     @Before
     public void setUp()
     {
         stack = true;
-        llvm = false;
+        llvm = true;
     }
 
     @Rule

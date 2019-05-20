@@ -3,13 +3,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class StackBasedBenchmarks extends TestUtils {
+public class RegisterLLVMBenchmarks extends TestUtils {
 
     @Before
     public void setUp()
     {
-        stack = true;
-        llvm = false;
+        stack = false;
+        llvm = true;
     }
 
     @Rule
@@ -19,6 +19,7 @@ public class StackBasedBenchmarks extends TestUtils {
     public void BenchMarkishTopics()
     {
         String name = "BenchMarkishTopics";
+        // TODO while loop multiple of same phi instruction
         runTest(folder, name);
     }
 

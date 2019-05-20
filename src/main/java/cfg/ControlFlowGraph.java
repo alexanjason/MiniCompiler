@@ -184,7 +184,15 @@ public class ControlFlowGraph {
         {
             block.print(stream, llvm);
         }
-        stream.print("}\n");
+        if (llvm)
+        {
+            stream.print("}\n");
+        }
+        else
+        {
+            stream.print("pop {fp, pc}");
+            stream.print(".size tailrecursive, .-tailrecursive");
+        }
     }
 
     public void printFunction(PrintStream stream, boolean llvm)
@@ -213,8 +221,8 @@ public class ControlFlowGraph {
             stream.println("\t.align 2");
             stream.println("\t.global " + function.getName());
             stream.println(function.getName() + ":");
+            stream.println("push {fp, lr}");
+            stream.println("add fp, sp, #4");
         }
-
     }
-
 }
