@@ -1,6 +1,7 @@
 *.ll
 *.out
 *.s
+*.DS_Store
 
 # Maven
 target/
