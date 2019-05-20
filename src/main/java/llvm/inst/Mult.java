@@ -1,5 +1,7 @@
 package llvm.inst;
 
+import llvm.value.Immediate;
+import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -29,11 +31,62 @@ public class Mult implements Instruction {
     {
         List<arm.Instruction> list = new ArrayList<>();
         Register r1 = (Register) result;
-        Register r2 = (Register) left;
-        Register r3 = (Register) right;
+        Register r3;
+        boolean rightLocal = false;
 
-        // TODO account for immediates
-        list.add(new arm.Mul(r1, r2, r3));
+        if (right instanceof Immediate)
+        {
+            r3 = ImmediateToRegister((Immediate)right, list);
+        }
+        else if (right instanceof Register)
+        {
+            r3 = (Register) right;
+        }
+        else if (right instanceof Local)
+        {
+            rightLocal = true;
+            r3 = null;
+        }
+        else
+        {
+            r3 = null;
+            System.err.println("Mult right error");
+        }
+
+        if (left instanceof Immediate)
+        {
+            Register r2 = ImmediateToRegister((Immediate)left, list);
+            if (rightLocal)
+            {
+                list.add(new arm.Mul(r1, (Local)right, r2));
+            }
+            else
+            {
+                list.add(new arm.Mul(r1, r2, r3));
+            }
+        }
+        else if (left instanceof Register)
+        {
+            if (rightLocal)
+            {
+                list.add(new arm.Mul(r1, (Local)right, (Register) left));
+            }
+            else
+            {
+                list.add(new arm.Mul(r1, (Register)left, r3));
+            }
+        }
+        else if (left instanceof Local)
+        {
+            if (rightLocal)
+            {
+                list.add(new arm.Mul(r1, (Local)left, (Local)right));
+            }
+            else
+            {
+                list.add(new arm.Mul(r1, (Local)left, r3));
+            }
+        }
 
         return list;
     }

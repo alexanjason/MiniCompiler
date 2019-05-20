@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Mov;
+import llvm.value.Immediate;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -26,9 +27,10 @@ public class Zext implements Instruction {
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
-        Register inReg = (Register) inValue;
         Register outReg = (Register) outValue;
-        list.add(new Mov(outReg, inReg));
+
+        list.add(new Mov(outReg, inValue));
+
         return list;
     }
 }

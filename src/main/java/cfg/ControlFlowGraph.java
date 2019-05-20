@@ -177,35 +177,44 @@ public class ControlFlowGraph {
         }
     }
 
-    public void print(PrintStream stream)
+    public void print(PrintStream stream, boolean llvm)
     {
-        printFunction(stream);
+        printFunction(stream, llvm);
         for (BasicBlock block : nodeList)
         {
-            block.print(stream);
+            block.print(stream, llvm);
         }
         stream.print("}\n");
     }
 
-    public void printFunction(PrintStream stream)
+    public void printFunction(PrintStream stream, boolean llvm)
     {
-        Type retType = converter.convertType(function.getRetType());
-        stream.print("define " + retType.getString() + " @"
-                + function.getName() + "(");
-        int i = 0;
-        int size = function.getParams().size();
-        for (Declaration dec : function.getParams())
+        if (llvm)
         {
-            stream.print(converter.convertType(dec.getType()).getString());
-            stream.print(" ");
-            stream.print("%" + dec.getName());
-            if (i != size - 1) {
-                stream.print(", ");
+            Type retType = converter.convertType(function.getRetType());
+            stream.print("define " + retType.getString() + " @"
+                    + function.getName() + "(");
+            int i = 0;
+            int size = function.getParams().size();
+            for (Declaration dec : function.getParams()) {
+                stream.print(converter.convertType(dec.getType()).getString());
+                stream.print(" ");
+                stream.print("%" + dec.getName());
+                if (i != size - 1) {
+                    stream.print(", ");
+                }
+                i++;
             }
-            i++;
+            stream.print(")\n");
+            stream.print("{\n");
         }
-        stream.print(")\n");
-        stream.print("{\n");
+        else
+        {
+            stream.println("\t.align 2");
+            stream.println("\t.global " + function.getName());
+            stream.println(function.getName() + ":");
+        }
+
     }
 
 }

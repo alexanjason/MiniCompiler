@@ -1,6 +1,8 @@
 package llvm.inst;
 
 import arm.Str;
+import llvm.value.Immediate;
+import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -30,10 +32,23 @@ public class Store implements Instruction {
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
-        // TODO handle immediate
+        //System.out.println("store value: " + value.getString() + " ptr: " + ptr.getString());
+
         Register ptrReg = (Register) ptr;
-        Register valueReg = (Register) value;
-        list.add(new Str(valueReg, ptrReg));
+        if (value instanceof Immediate)
+        {
+            Register valueReg = ImmediateToRegister((Immediate)value, list);
+            list.add(new Str(valueReg, ptrReg));
+        }
+        else if (value instanceof Local)
+        {
+            list.add(new Str((Local)value, ptrReg));
+        }
+        else
+        {
+            list.add(new Str((Register)value, ptrReg));
+        }
+
         return list;
     }
 }

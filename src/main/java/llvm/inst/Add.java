@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import llvm.value.Immediate;
+import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -31,19 +32,24 @@ public class Add implements Instruction {
         List<arm.Instruction> list = new ArrayList<>();
         Register r1 = (Register) result;
 
-        Register r2;
 
         if (left instanceof Immediate)
         {
-            r2 = ImmediateToRegister((Immediate)left, list);
+            Register r2 = ImmediateToRegister((Immediate)left, list);
+            list.add(new arm.Add(r1, r2, right));
+        }
+        else if (left instanceof Register)
+        {
+            list.add(new arm.Add(r1, (Register)left, right));
+        }
+        else if (left instanceof Local)
+        {
+            list.add(new arm.Add(r1, (Local)left, right));
         }
         else
         {
-            // TODO stack location???
-            r2 = (Register) left;
+            System.err.println("Add left error");
         }
-
-        list.add(new arm.Add(r1, r2, right));
 
         return list;
     }

@@ -41,7 +41,7 @@ public class BasicBlock {
     {
         label = new Label(); // TODO
         successorList = new ArrayList<>();
-        predecessorList = predList;//new ArrayList<>();
+        predecessorList = predList;
         instructions = new ArrayList<>();
         sealed = false;
         this.stackBased = stackBased;
@@ -56,9 +56,6 @@ public class BasicBlock {
 
     public void writeVariable(String id, Value value)
     {
-        /*
-        System.out.println(label.getString() + ": writeVariable: " + id + " " + value.getString() + " " + value);
-        */
         localMappings.put(id, value);
     }
 
@@ -67,7 +64,6 @@ public class BasicBlock {
     {
         if (localMappings.containsKey(id))
         {
-            //System.out.println("Found in local mapping: " + id);
             return localMappings.get(id);
         }
         else
@@ -81,69 +77,29 @@ public class BasicBlock {
         Value val;
         if (!sealed)
         {
-            /*
-            System.out.println(label.getString() + " block not sealed: " + id);
-            */
-            //val = new Local(id, type);
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
             reg.addDef(phi);
-            /*
-            System.out.println(label.getString() + " adding to incomplete phis: " + phi.getString());
-            */
             incompletePhis.add(phi);
         }
         else if (predecessorList.size() == 0)
         {
-            /*
-            System.out.println(label.getString() + " preds = 0 : " + id);
-            */
-
-            // TODO set val to default of type
-            val = new Immediate(type.getDefault(), type);//new Local(type.getDefault(), type);
-            //val = new Register(type);
+            val = new Immediate(type.getDefault(), type);
             System.err.println("Uninitialized value: " + id);
-            //System.exit(-2);
         }
         else if (predecessorList.size() == 1)
         {
-            /*
-            System.out.println(label.getString() + " preds = 1 : " + id);
-            */
-
             val = predecessorList.get(0).readVariable(id, type);
         }
         else
         {
-            /*
-            System.out.println(label.getString() + " preds = *** : " + id);
-            */
-            for (BasicBlock bb : predecessorList)
-            {
-                if (bb != null)
-                {
-                    System.out.println(bb.label.getString());
-                }
-                else
-                {
-                    System.out.println("null");
-                }
-            }
-            //val = new Local(id, type);
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
             reg.addDef(phi);
             phiInstructions.add(phi);
             writeVariable(id, val);
-
-            System.out.println("addPhiOperands " + label.getString());
-            for (BasicBlock b : predecessorList)
-            {
-                System.out.print(b.label.getString() + " ");
-            }
-
             addPhiOperands(id, type, phi);
         }
         writeVariable(id, val);
@@ -155,11 +111,7 @@ public class BasicBlock {
         Phi phi = (Phi) inst;
         for (BasicBlock pred : predecessorList)
         {
-            /*
-            System.out.println(label.getString() + ": addPhiOperands " + id + " pred: " + pred);
-            */
             phi.addEntry(pred.readVariable(id, type), pred.label);
-
         }
     }
 
@@ -167,37 +119,12 @@ public class BasicBlock {
     {
         if (!stackBased)
         {
-            System.out.println("SEALING: " + label.getString());
-            if (sealed)
+            for (Phi phi : incompletePhis)
             {
-                System.err.println(label.getString() + " already sealed");
+                addPhiOperands(phi.getId(), phi.getType(), phi);
+                phiInstructions.add(phi);
             }
-            else
-            {
-                /*
-                System.out.println("sealing: " + label.getString());
-                */
-                for (Phi phi : incompletePhis)
-                {
-                    System.out.println("addPhiOperands " + label.getString());
-                    for (BasicBlock b : predecessorList)
-                    {
-                        System.out.print(b.label.getString() + " ");
-                    }
-                    addPhiOperands(phi.getId(), phi.getType(), phi);
-                    /*
-                    //Phi phi = (Phi) inst;
-                    System.out.println(phi.getString());
-                    for (Value val : phi.getVals())
-                    {
-                        System.out.println(val.getString());
-                        addPhiOperands(val.getString(), val.getType(), phi);
-                    }
-                    */
-                    phiInstructions.add(phi);
-                }
-                sealed = true;
-            }
+            sealed = true;
         }
     }
 
@@ -213,7 +140,7 @@ public class BasicBlock {
         }
     }
 
-    public void print(PrintStream stream)
+    public void print(PrintStream stream, boolean llvm)
     {
         /*
         if (!stackBased) {
@@ -224,16 +151,21 @@ public class BasicBlock {
         // TODO debug to get rid of empty blocks so this isn't necessary
         if (instructions.size() != 0)
         {
+            if (!llvm)
+            {
+                stream.print(".");
+            }
             stream.println(label.getString() + ":");
             if (!stackBased)
             {
                 for (Instruction inst : phiInstructions)
                 {
-                    stream.println("\t" + inst.getString());
+                    inst.print(stream, llvm);
                 }
             }
-            for (Instruction inst : instructions) {
-                stream.println("\t" + inst.getString());
+            for (Instruction inst : instructions)
+            {
+                inst.print(stream, llvm);
             }
         }
     }

@@ -50,25 +50,45 @@ public class ControlFlowGraphList {
         stream.print(sb.toString());
     }
 
-    public void print(PrintStream stream)
+    public void print(PrintStream stream, boolean llvm)
     {
-        stream.print("target triple=\"i686\"\n");
-        printTypes(program.getTypes(), stream);
-        stream.println();
-        printDecls(program.getDecls(), stream);
+        printHeader(stream, llvm);
+        if (llvm)
+        {
+            printTypes(program.getTypes(), stream);
+            stream.println();
+        }
+
+        printDecls(program.getDecls(), stream, llvm);
 
         for (ControlFlowGraph cfg : controlFlowGraphs)
         {
             stream.println();
-            cfg.print(stream);
+            cfg.print(stream, llvm);
         }
+
         stream.print("\n");
-        printHelpers(stream);
+        if (llvm)
+        {
+            printHelpers(stream);
+        }
+    }
+
+    public void printHeader(PrintStream stream, boolean llvm)
+    {
+        if (llvm)
+        {
+            stream.println("target triple=\"i686\"");
+        }
+        else
+        {
+            stream.println("\t.arch armv7-a");
+            stream.println("\t.text");
+        }
     }
 
     public void printTypes(List<TypeDeclaration> decls, PrintStream stream)
     {
-        // %struct.foo = type {i32, i32, %struct.simple*}
         for (TypeDeclaration tdec : decls)
         {
             stream.print("%struct." + tdec.getName() + " = type {");
@@ -88,13 +108,19 @@ public class ControlFlowGraphList {
         }
     }
 
-    public void printDecls (List<Declaration> decls, PrintStream stream)
+    public void printDecls (List<Declaration> decls, PrintStream stream, boolean llvm)
     {
-        // @globalfoo = common global %struct.foo* null, align 8
         for (Declaration dec : decls)
         {
-            Type type = controlFlowGraphs.get(0).converter.convertType(dec.getType());
-            stream.println("@" + dec.getName() + " = common global " + type.getString() + " " + type.getDefault() + ", align 4");
+            if (llvm)
+            {
+                Type type = controlFlowGraphs.get(0).converter.convertType(dec.getType());
+                stream.println("@" + dec.getName() + " = common global " + type.getString() + " " + type.getDefault() + ", align 4");
+            }
+            else
+            {
+                stream.println("\t.comm " + dec.getName() + ",4,4");
+            }
         }
     }
 

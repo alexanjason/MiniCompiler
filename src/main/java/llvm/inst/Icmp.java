@@ -3,6 +3,7 @@ package llvm.inst;
 import arm.*;
 import llvm.type.i32;
 import llvm.value.Immediate;
+import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -33,9 +34,30 @@ public class Icmp implements Instruction {
     {
         List<arm.Instruction> list = new ArrayList<>();
         Register resultReg = (Register) result;
+
         list.add(new Mov(resultReg, new Immediate("0", new i32())));
-        Register op1Reg = (Register) op1;
-        list.add(new Cmp(op1Reg, op2));
+
+        //System.out.println("Icmp -> op1 " + op1.getString());
+
+        if (op1 instanceof Immediate)
+        {
+            Register op1Reg = ImmediateToRegister((Immediate)op1, list);
+            list.add(new Cmp(op1Reg, op2));
+        }
+        else if (op1 instanceof Register)
+        {
+            list.add(new Cmp((Register)op1, op2));
+        }
+        else if (op1 instanceof Local)
+        {
+            list.add(new Cmp((Local)op1, op2));
+        }
+        else
+        {
+            System.err.println("Icmp op1 error");
+        }
+
+
         Immediate immTrue = new Immediate("1", new i32());
         if (cond.equals("slt"))
         {

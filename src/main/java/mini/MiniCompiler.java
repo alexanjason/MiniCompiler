@@ -10,10 +10,12 @@ import java.util.regex.Pattern;
 public class MiniCompiler
 {
    private static boolean stackBased;
+   private static boolean llvm;
 
    public static void main(String[] args)
    {
       stackBased = false;
+      llvm = false;
       parseParameters(args);
 
       CommonTokenStream tokens = new CommonTokenStream(createLexer());
@@ -34,21 +36,33 @@ public class MiniCompiler
          ControlFlowGraphList cfgList = new ControlFlowGraphList(program, stackBased);
          //cfgList.print(System.out); // for debugging
          // TODO clean this up
-         System.out.println(_inputFile);
+         //System.out.println(_inputFile);
+
          String [] splitStr = _inputFile.split(Pattern.quote("."));
-         String llvmFile = splitStr[0] + ".ll";
-         System.out.println(llvmFile);
+         String outFile;
+
+         if (llvm)
+         {
+            outFile = splitStr[0] + ".ll";
+         }
+         else
+         {
+            outFile = splitStr[0] + ".s";
+         }
+         //System.out.println(llvmFile);
+
          PrintStream fStream = null;
          try
          {
-            fStream = new PrintStream(llvmFile);
+            fStream = new PrintStream(outFile);
          }
          catch (java.io.FileNotFoundException ex)
          {
             System.err.println("file not found");
             System.exit(-1);
          }
-         cfgList.print(fStream);
+
+         cfgList.print(fStream, llvm);
       }
    }
 
@@ -63,6 +77,10 @@ public class MiniCompiler
             if (args[i].equals("-stack"))
             {
                stackBased = true;
+            }
+            else if (args[i].equals("-llvm"))
+            {
+               llvm = true;
             }
             else
             {

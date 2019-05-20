@@ -57,7 +57,7 @@ public class ExpressionBuilder {
             //System.out.println("add identifier expression: " + id);
             Type type = converter.convertType(symbolTableList.typeOf(id));
             result = currentBlock.readVariable(id, type);
-            System.out.println(currentBlock.label.getString() + " readVariable: " + id + " -> " + result.getString());
+            //System.out.println(currentBlock.label.getString() + " readVariable: " + id + " -> " + result.getString());
 
         }
 

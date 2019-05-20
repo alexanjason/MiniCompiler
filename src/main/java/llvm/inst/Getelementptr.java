@@ -2,6 +2,7 @@ package llvm.inst;
 
 import llvm.type.i32;
 import llvm.value.Immediate;
+import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -32,9 +33,25 @@ public class Getelementptr implements Instruction {
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
+
+        //System.out.println("getelementptr -> result: " + result.getString() + " base: " + base.getString());
+
         Register resultReg = (Register) result;
-        Register baseReg = (Register) base;
-        list.add(new arm.Add(resultReg, baseReg, new Immediate(Integer.toString(index*4), new i32())));
+        //Register baseReg = (Register) base;
+
+        if (base instanceof Register)
+        {
+            list.add(new arm.Add(resultReg, (Register)base, new Immediate(Integer.toString(index * 4), new i32())));
+        }
+        else if (base instanceof Local)
+        {
+            list.add(new arm.Add(resultReg, (Local)base, new Immediate(Integer.toString(index * 4), new i32())));
+        }
+        else
+        {
+            System.err.println("getelementptr base error");
+        }
+
         return list;
     }
 }
