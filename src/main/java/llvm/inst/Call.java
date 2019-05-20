@@ -51,6 +51,7 @@ public class Call implements Instruction {
         for (int i = 0; i < paramVals.size(); i++)
         {
             // TODO does stack based still put args into regs?
+            //System.out.println("i: " + i + " paramVal " + paramVals.get(i).getString());
             list.add(new Mov(new Register(paramTypes.get(i), i), paramVals.get(i)));
         }
         list.add(new Bl(name));

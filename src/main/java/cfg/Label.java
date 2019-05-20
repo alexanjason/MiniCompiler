@@ -11,6 +11,11 @@ public class Label {
         increment++;
     }
 
+    public int getId()
+    {
+        return this.id;
+    }
+
     public String getString()
     {
         return ("LU" + id);

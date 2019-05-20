@@ -25,7 +25,7 @@ public class Cmp implements Instruction {
     public String getString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("eor " + r1.getString() + ", ");
+        sb.append("cmp " + r1.getString() + ", ");
         if (Operand2 instanceof Immediate)
         {
             sb.append("#");

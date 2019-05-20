@@ -50,6 +50,9 @@ public class ControlFlowGraph {
         Type type = converter.convertType(function.getRetType());
 
         // TODO put this retval business in a class? Value?
+
+        entryNode.addInstruction(new FuncStart(function.getParamNames()));
+
         if (!(type instanceof Void))
         {
             if (stackBased)
@@ -60,14 +63,6 @@ public class ControlFlowGraph {
                 exitNode.addInstruction(new Load(result, retVal));
                 exitNode.addInstruction(new Return(result));
             }
-            else
-            {
-                // TODO?
-            }
-        }
-        else
-        {
-            exitNode.addInstruction(new ReturnVoid());
         }
 
         nodeList = new ArrayList<>();
@@ -134,7 +129,6 @@ public class ControlFlowGraph {
         if (body instanceof BlockStatement)
         {
             BlockStatement block = (BlockStatement) body;
-            //BasicBlock lastBlock = AddBlockStatement(block, entryNode);
             StatementBuilder builder = new StatementBuilder(stackBased, converter,
                     symbolTableList, structTable, entryNode, exitNode, function.getRetType(), nodeList);
             BasicBlock lastBlock = builder.build(block, entryNode);
@@ -145,18 +139,21 @@ public class ControlFlowGraph {
             }
 
             Type type = converter.convertType(function.getRetType());
+
             if (type instanceof Void)
             {
-                lastBlock.addInstruction(new ReturnVoid());
+                exitNode.addInstruction(new FuncEnd(function.getName()));
+                lastBlock.addInstruction(new BrUncond(exitNode.label));
+                exitNode.addInstruction(new ReturnVoid());
             }
 
             nodeList.add(exitNode);
 
             if (!stackBased && !(type instanceof Void))
             {
-                //Type type = convertType(function.getRetType());
                 Value ret = exitNode.readVariable("_retval_", type);
                 exitNode.addInstruction(new Return(ret));
+                exitNode.addInstruction(new FuncEnd(function.getName()));
                 exitNode.seal();
             }
         }
@@ -188,11 +185,6 @@ public class ControlFlowGraph {
         {
             stream.print("}\n");
         }
-        else
-        {
-            stream.print("pop {fp, pc}");
-            stream.print(".size tailrecursive, .-tailrecursive");
-        }
     }
 
     public void printFunction(PrintStream stream, boolean llvm)
@@ -221,8 +213,6 @@ public class ControlFlowGraph {
             stream.println("\t.align 2");
             stream.println("\t.global " + function.getName());
             stream.println(function.getName() + ":");
-            stream.println("push {fp, lr}");
-            stream.println("add fp, sp, #4");
         }
     }
 }

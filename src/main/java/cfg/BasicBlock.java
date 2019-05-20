@@ -29,7 +29,7 @@ public class BasicBlock {
     // Local mappings for register-based SSA
     private HashMap<String, Value> localMappings;
 
-    private  List<Phi> phiInstructions;
+    private List<Phi> phiInstructions;
 
     private List<Phi> incompletePhis;
 
@@ -52,6 +52,18 @@ public class BasicBlock {
             phiInstructions = new ArrayList<>();
             incompletePhis = new ArrayList<>();
         }
+    }
+
+    public int getLabelId()
+    {
+        return this.label.getId();
+    }
+
+    public void addInstructionAtEnd(Instruction inst)
+    {
+        int size = instructions.size();
+        //System.out.println("adding to end: " + size + " before " + instructions.get(size-2));
+        instructions.add(size - 2, inst);
     }
 
     public void writeVariable(String id, Value value)
@@ -80,8 +92,9 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            reg.addDef(phi);
+            reg.addDef(phi); // TODO
             incompletePhis.add(phi);
+            //System.out.println("adding to incomplete phis " + val.getId() + " " + id);
         }
         else if (predecessorList.size() == 0)
         {
@@ -97,8 +110,9 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            reg.addDef(phi);
+            reg.addDef(phi);    // TODO
             phiInstructions.add(phi);
+            //System.out.println("adding in else : " + val.getString() + " " + id);
             writeVariable(id, val);
             addPhiOperands(id, type, phi);
         }
@@ -106,7 +120,7 @@ public class BasicBlock {
         return val;
     }
 
-    private void addPhiOperands(String id, Type type, Instruction inst)
+    private void addPhiOperands(String id, Type type, Phi inst)
     {
         Phi phi = (Phi) inst;
         for (BasicBlock pred : predecessorList)
@@ -117,14 +131,16 @@ public class BasicBlock {
 
     public void seal()
     {
-        if (!stackBased)
+        if (!sealed)
         {
-            for (Phi phi : incompletePhis)
-            {
-                addPhiOperands(phi.getId(), phi.getType(), phi);
-                phiInstructions.add(phi);
+            this.sealed = true;
+            if (!stackBased) {
+                for (Phi phi : incompletePhis) {
+                    addPhiOperands(phi.getId(), phi.getType(), phi);
+                    phiInstructions.add(phi);
+                    //System.out.println("adding in seal : " + phi.getString());
+                }
             }
-            sealed = true;
         }
     }
 
@@ -158,9 +174,9 @@ public class BasicBlock {
             stream.println(label.getString() + ":");
             if (!stackBased)
             {
-                for (Instruction inst : phiInstructions)
+                for (Phi inst : phiInstructions)
                 {
-                    inst.print(stream, llvm);
+                    inst.print(stream, llvm, predecessorList);
                 }
             }
             for (Instruction inst : instructions)

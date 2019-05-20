@@ -30,7 +30,7 @@ public class Load implements Instruction {
         Register ptrReg = (Register) pointer;
         list.add(new Ldr(resultReg, ptrReg));
 
-        return new ArrayList<>();
+        return list;
     }
 
 }

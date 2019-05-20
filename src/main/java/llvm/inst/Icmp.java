@@ -57,7 +57,6 @@ public class Icmp implements Instruction {
             System.err.println("Icmp op1 error");
         }
 
-
         Immediate immTrue = new Immediate("1", new i32());
         if (cond.equals("slt"))
         {
@@ -83,7 +82,11 @@ public class Icmp implements Instruction {
         {
             list.add(new Movne(resultReg, immTrue));
         }
+        else
+        {
+            System.err.println("PANIC");
+        }
 
-        return new ArrayList<>();
+        return list;
     }
 }

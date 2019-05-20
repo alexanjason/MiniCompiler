@@ -1,37 +1,34 @@
 package llvm.inst;
 
-import arm.Bl;
 import arm.Mov;
-import llvm.value.Register;
+import llvm.value.Local;
 import llvm.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Free implements Instruction {
+public class Move implements Instruction {
 
+    // TODO hack for Phi
+
+    Local result;
     Value ptr;
 
-    public Free(Value ptr)
+    public Move(Local result, Value ptr)
     {
+        this.result = result;
         this.ptr = ptr;
     }
 
     public String getString()
     {
-        return ("call void @free(i8* " + ptr.getString() + ")");
+        return "";
     }
 
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
-
-        list.add(new Mov(new Register(ptr.getType(), 0), ptr));
-        list.add(new Bl("free"));
-
+        list.add(new Mov(result, ptr));
         return list;
     }
-
 }
-
-

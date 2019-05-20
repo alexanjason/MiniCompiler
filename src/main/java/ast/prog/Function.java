@@ -5,6 +5,7 @@ import ast.type.Type;
 import ast.stmt.Statement;
 import ast.type.VoidType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Function
@@ -30,6 +31,16 @@ public class Function
    public List<Declaration> getParams()
    {
       return this.params;
+   }
+
+   public List<String> getParamNames()
+   {
+      List<String> list = new ArrayList<>();
+      for (Declaration dec : params)
+      {
+         list.add(dec.getName());
+      }
+      return list;
    }
 
    public List<Declaration> getLocals()

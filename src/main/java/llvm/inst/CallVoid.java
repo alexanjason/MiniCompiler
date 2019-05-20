@@ -49,7 +49,7 @@ public class CallVoid implements Instruction {
         List<arm.Instruction> list = new ArrayList<>();
         for (int i = 0; i < paramVals.size(); i++)
         {
-            list.add(new Mov(new Register(paramTypes.get(i)), paramVals.get(i)));
+            list.add(new Mov(new Register(paramTypes.get(i), i), paramVals.get(i)));
         }
         list.add(new Bl(name));
 

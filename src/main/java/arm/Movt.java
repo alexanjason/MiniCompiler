@@ -7,23 +7,16 @@ import llvm.value.Value;
 public class Movt implements Instruction {
 
     Register r1;
-    Value Operand2;
+    Immediate imm16;
 
-    public Movt(Register r1, Value operand2)
+    public Movt(Register r1, Immediate imm16)
     {
         this.r1 = r1;
-        Operand2 = operand2;
+        this.imm16 = imm16;
     }
 
     public String getString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("movt " + r1.getString() + ", ");
-        if (Operand2 instanceof Immediate)
-        {
-            sb.append("#");
-        }
-        sb.append(Operand2.getString());
-        return sb.toString();
+        return ("movt " + r1.getString() + ", " + imm16.getString());
     }
 }

@@ -23,6 +23,6 @@ public class Str implements Instruction {
 
     public String getString()
     {
-        return ("str " + r1.getString() + ", " + r2.getString());
+        return ("str " + r1.getString() + ", [" + r2.getString() + "]");
     }
 }

@@ -32,6 +32,12 @@ public class Add implements Instruction {
         List<arm.Instruction> list = new ArrayList<>();
         Register r1 = (Register) result;
 
+        if (left instanceof Immediate)
+        {
+            Value temp = left;
+            left = right;
+            right = temp;
+        }
 
         if (left instanceof Immediate)
         {

@@ -48,7 +48,9 @@ public class ExpressionBuilder {
             }
             else
             {
+                // TODO ahhhhhhhhhhhhhh
                 result = new Register(pointer.getType());
+                //result = new Local(id, pointer.getType());
             }
             currentBlock.addInstruction(new Load(result, pointer));
         }
@@ -58,7 +60,6 @@ public class ExpressionBuilder {
             Type type = converter.convertType(symbolTableList.typeOf(id));
             result = currentBlock.readVariable(id, type);
             //System.out.println(currentBlock.label.getString() + " readVariable: " + id + " -> " + result.getString());
-
         }
 
         return result;
