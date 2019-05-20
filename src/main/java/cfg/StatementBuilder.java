@@ -387,7 +387,11 @@ public class StatementBuilder {
         Statement trueStmt = stmt.getBody();
         BasicBlock trueExitNode = AddStatement(trueStmt, trueEntryNode);
         falseNode.predecessorList.add(trueExitNode);
-        trueEntryNode.predecessorList.add(trueExitNode); // TODO adding same pred multiple times
+        if (!(trueEntryNode.predecessorList.contains(trueExitNode)))
+        {
+            trueEntryNode.predecessorList.add(trueExitNode); // TODO adding same pred multiple times
+        }
+
 
         // add guard to end of true block
         Value guardValT = expBuilder.AddExpression(stmt.getGuard(), trueExitNode);

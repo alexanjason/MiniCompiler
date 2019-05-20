@@ -107,20 +107,22 @@ public class Phi implements Instruction {
                     b.addArmInstructionAtEnd(move);
 
                     arm.Instruction mov;
-                    if (entry.value instanceof Local)
+
+                    if (result instanceof Local)
                     {
-                        mov = new Mov((Local) entry.value, phi);
+                        mov = new Mov((Local) result, phi);
                     }
-                    else if (entry.value instanceof Register)
+                    else if (result instanceof Register)
                     {
-                        mov = new Mov((Register) entry.value, phi);
+                        mov = new Mov((Register) result, phi);
                     }
                     else {
 
-                        System.err.println(entry.value.getString() + " " + entry.value.getType());
+                        System.err.println(result.getString() + " " + result.getType());
                         mov = null;
                         System.err.println("phi inst get arm PANIC");
                     }
+
                     list.add(mov);
                 }
             }

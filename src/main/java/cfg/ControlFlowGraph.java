@@ -75,7 +75,7 @@ public class ControlFlowGraph {
     {
         for (BasicBlock b : nodeList)
         {
-            //b.convertInstToArm();
+            //.convertInstToArm();
             //b.convertPhisToArm();
             b.firstPass(genSet, killSet);
         }

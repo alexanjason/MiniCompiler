@@ -84,12 +84,13 @@ public class BasicBlock {
 
     public void firstPass(Set<Register> genSet, Set<Register> killSet)
     {
+
         for (Phi phi : phiInstructions)
         {
             List<arm.Instruction> armInstList = phi.getArm(predecessorList);
             for (arm.Instruction armInst : armInstList)
             {
-                armInstructions.add(armInst);
+                armInstructions.add(0, armInst);
             }
         }
         for (Instruction inst : instructions)
@@ -100,6 +101,7 @@ public class BasicBlock {
                 armInstructions.add(armInst);
             }
         }
+
     }
 
     public int getLabelId()
@@ -110,7 +112,16 @@ public class BasicBlock {
     public void addArmInstructionAtEnd(arm.Instruction inst)
     {
         int size = armInstructions.size();
-        armInstructions.add(size-1, inst);
+        if (size != 0)
+        {
+            armInstructions.add(size - 1, inst);
+        }
+        else
+        {
+            System.err.println("size = 0");
+            armInstructions.add(size, inst);
+        }
+
     }
 
     public void writeVariable(String id, Value value)
