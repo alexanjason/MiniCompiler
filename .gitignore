@@ -1,3 +1,6 @@
+*.ll
+*/a.out
+
 # Maven
 target/
 pom.xml.tag
