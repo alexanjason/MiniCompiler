@@ -1,5 +1,6 @@
 *.ll
-*/a.out
+*.out
+*.s
 
 # Maven
 target/
