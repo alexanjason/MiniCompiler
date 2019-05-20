@@ -58,41 +58,16 @@ public class BasicBlock {
         }
     }
 
-    public void convertPhisToArm()
+    public void propagatePhis()
     {
         for (Phi phi : phiInstructions)
         {
-            List<arm.Instruction> armInstList = phi.getArm(predecessorList);
-            for (arm.Instruction armInst : armInstList)
-            {
-                armInstructions.add(armInst);
-            }
-        }
-    }
-
-    public void convertInstToArm()
-    {
-        for (Instruction inst : instructions)
-        {
-            List<arm.Instruction> armInstList = inst.getArm();
-            for (arm.Instruction armInst : armInstList)
-            {
-                armInstructions.add(armInst);
-            }
+            phi.propagate(this, predecessorList);
         }
     }
 
     public void firstPass(Set<Register> genSet, Set<Register> killSet)
     {
-
-        for (Phi phi : phiInstructions)
-        {
-            List<arm.Instruction> armInstList = phi.getArm(predecessorList);
-            for (arm.Instruction armInst : armInstList)
-            {
-                armInstructions.add(0, armInst);
-            }
-        }
         for (Instruction inst : instructions)
         {
             List<arm.Instruction> armInstList = inst.getArm();
@@ -101,7 +76,6 @@ public class BasicBlock {
                 armInstructions.add(armInst);
             }
         }
-
     }
 
     public int getLabelId()
@@ -109,19 +83,15 @@ public class BasicBlock {
         return this.label.getId();
     }
 
-    public void addArmInstructionAtEnd(arm.Instruction inst)
+    public void addInstructionAtEnd(Instruction inst)
     {
-        int size = armInstructions.size();
-        if (size != 0)
-        {
-            armInstructions.add(size - 1, inst);
-        }
-        else
-        {
-            System.err.println("size = 0");
-            armInstructions.add(size, inst);
-        }
+        int size = instructions.size();
+        instructions.add(size - 1, inst);
+    }
 
+    public void addArmInstruction(arm.Instruction inst)
+    {
+        armInstructions.add(inst);
     }
 
     public void writeVariable(String id, Value value)

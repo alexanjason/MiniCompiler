@@ -5,12 +5,10 @@ import cfg.BasicBlock;
 import cfg.Label;
 import llvm.type.Type;
 import llvm.type.i32;
-import llvm.value.Immediate;
 import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,10 +86,8 @@ public class Phi implements Instruction {
         return new ArrayList<>();
     }
 
-    public List<arm.Instruction> getArm(List<BasicBlock> predList)
+    public void propagate(BasicBlock curBlock, List<BasicBlock> predList)
     {
-        List<arm.Instruction> list = new ArrayList<>();
-
         // propagate up to predecessors
         for (PhiEntry entry : entryList)
         {
@@ -102,34 +98,32 @@ public class Phi implements Instruction {
                     Local phi = new Local("_phi" + increment, new i32());
                     increment++;
 
-                    arm.Instruction move = new Mov(phi, entry.value);
-                    System.out.println(b.getLabelId());
-                    b.addArmInstructionAtEnd(move);
+                    Instruction prevMove = new Move(phi, entry.value);
+                    b.addInstructionAtEnd(prevMove);
 
                     arm.Instruction mov;
-
+                    //Instruction move;
                     if (result instanceof Local)
                     {
-                        mov = new Mov((Local) result, phi);
+                        //move = new Move((Local)result, phi);
+                        mov = new Mov((Local)result, phi);
                     }
                     else if (result instanceof Register)
                     {
-                        mov = new Mov((Register) result, phi);
+                        //move = new Move((Register)result, phi);
+                        mov = new Mov((Register)result, phi);
                     }
                     else {
 
                         System.err.println(result.getString() + " " + result.getType());
+                        //move = null;
                         mov = null;
                         System.err.println("phi inst get arm PANIC");
                     }
-
-                    list.add(mov);
+                    curBlock.addArmInstruction(mov);
+                    //curBlock.addAtBeginningInstruction(0, move);
                 }
             }
-            System.out.println("");
         }
-
-        return list;
     }
-
 }
