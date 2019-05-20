@@ -290,13 +290,6 @@ public class StatementBuilder {
         List<BasicBlock> exitPreds = new ArrayList<>();
         BasicBlock exitBlock = new BasicBlock(exitPreds, stackBased);
 
-
-        /*
-        System.out.println("thenEntry: " + thenEntry.label.getString() +
-                "\nelseEntry: " + elseEntry.label.getString() +
-                "\nexitBlock: " + exitBlock.label.getString());
-        */
-
         // Keep track of where to branch and what block to return
         BasicBlock retBlock;
 
@@ -306,10 +299,6 @@ public class StatementBuilder {
         currentBlock.successorList.add(thenEntry);
         BasicBlock thenExit = AddStatement(stmt.getThenBlock(), thenEntry);
 
-        /*
-        System.out.println("thenExit: " + thenExit.label.getString());
-        */
-
         if (thenExit != exitNode)
         {
             if (thenExit != thenEntry)
@@ -318,10 +307,6 @@ public class StatementBuilder {
             }
             thenExit.successorList.add(exitBlock);
             exitBlock.predecessorList.add(thenExit);
-
-            /*
-            System.out.println("exitBlock pred add: " + thenExit.label.getString());
-            */
 
             thenExit.addInstruction(new BrUncond(exitBlock.label));
             nodeList.add(exitBlock);
@@ -337,15 +322,6 @@ public class StatementBuilder {
 
         // Populate ELSE entry block
         BasicBlock elseExit = AddStatement(stmt.getElseBlock(), elseEntry);
-
-        /*
-        if (elseExit != null) {
-            System.out.println("elseExit: " + elseExit.label.getString());
-        }
-        else {
-            System.out.println("elseExit: null");
-        }
-        */
 
         elseEntry.seal();
         nodeList.add(elseEntry);
@@ -381,19 +357,12 @@ public class StatementBuilder {
 
     private BasicBlock AddWhileStatement(WhileStatement stmt, BasicBlock currentBlock)
     {
-        /*
-        System.out.println("WHILE current: " + currentBlock.label.getString());
-        */
-
         // create true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
         BasicBlock trueEntryNode = new BasicBlock(predList, stackBased);
 
         // create false block
-        //List<BasicBlock> exitPredList = new ArrayList<>();
-        //exitPredList.add(trueExitNode);
-        //exitPredList.add(currentBlock);
         BasicBlock falseNode = new BasicBlock(predList, stackBased);
         nodeList.add(trueEntryNode);
         nodeList.add(falseNode);
@@ -415,14 +384,10 @@ public class StatementBuilder {
         currentBlock.successorList.add(trueEntryNode);
         currentBlock.successorList.add(falseNode);
 
-        /*
-        System.out.println("WHILE trueEntry: " + trueEntryNode.label.getString());
-        */
-
         Statement trueStmt = stmt.getBody();
         BasicBlock trueExitNode = AddStatement(trueStmt, trueEntryNode);
         falseNode.predecessorList.add(trueExitNode);
-        trueEntryNode.predecessorList.add(trueExitNode);
+        trueEntryNode.predecessorList.add(trueExitNode); // TODO adding same pred multiple times
 
         // add guard to end of true block
         Value guardValT = expBuilder.AddExpression(stmt.getGuard(), trueExitNode);
@@ -442,10 +407,6 @@ public class StatementBuilder {
         // TODO is this where to seal?
         trueEntryNode.seal();
         trueExitNode.seal();
-
-        /*
-        System.out.println("WHILE false: " + falseNode.label.getString());
-        */
 
         falseNode.seal();
         return falseNode;

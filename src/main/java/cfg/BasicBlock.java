@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class BasicBlock {
 
@@ -33,6 +34,8 @@ public class BasicBlock {
 
     private List<Phi> incompletePhis;
 
+    private List<arm.Instruction> armInstructions;
+
     private boolean sealed;
 
     private boolean stackBased;
@@ -43,6 +46,7 @@ public class BasicBlock {
         successorList = new ArrayList<>();
         predecessorList = predList;
         instructions = new ArrayList<>();
+        armInstructions = new ArrayList<>();
         sealed = false;
         this.stackBased = stackBased;
 
@@ -54,16 +58,59 @@ public class BasicBlock {
         }
     }
 
+    public void convertPhisToArm()
+    {
+        for (Phi phi : phiInstructions)
+        {
+            List<arm.Instruction> armInstList = phi.getArm(predecessorList);
+            for (arm.Instruction armInst : armInstList)
+            {
+                armInstructions.add(armInst);
+            }
+        }
+    }
+
+    public void convertInstToArm()
+    {
+        for (Instruction inst : instructions)
+        {
+            List<arm.Instruction> armInstList = inst.getArm();
+            for (arm.Instruction armInst : armInstList)
+            {
+                armInstructions.add(armInst);
+            }
+        }
+    }
+
+    public void firstPass(Set<Register> genSet, Set<Register> killSet)
+    {
+        for (Phi phi : phiInstructions)
+        {
+            List<arm.Instruction> armInstList = phi.getArm(predecessorList);
+            for (arm.Instruction armInst : armInstList)
+            {
+                armInstructions.add(armInst);
+            }
+        }
+        for (Instruction inst : instructions)
+        {
+            List<arm.Instruction> armInstList = inst.getArm();
+            for (arm.Instruction armInst : armInstList)
+            {
+                armInstructions.add(armInst);
+            }
+        }
+    }
+
     public int getLabelId()
     {
         return this.label.getId();
     }
 
-    public void addInstructionAtEnd(Instruction inst)
+    public void addArmInstructionAtEnd(arm.Instruction inst)
     {
-        int size = instructions.size();
-        //System.out.println("adding to end: " + size + " before " + instructions.get(size-2));
-        instructions.add(size - 2, inst);
+        int size = armInstructions.size();
+        armInstructions.add(size-1, inst);
     }
 
     public void writeVariable(String id, Value value)
@@ -94,7 +141,6 @@ public class BasicBlock {
             Phi phi = new Phi(val, id);
             reg.addDef(phi); // TODO
             incompletePhis.add(phi);
-            //System.out.println("adding to incomplete phis " + val.getId() + " " + id);
         }
         else if (predecessorList.size() == 0)
         {
@@ -112,7 +158,6 @@ public class BasicBlock {
             Phi phi = new Phi(val, id);
             reg.addDef(phi);    // TODO
             phiInstructions.add(phi);
-            //System.out.println("adding in else : " + val.getString() + " " + id);
             writeVariable(id, val);
             addPhiOperands(id, type, phi);
         }
@@ -138,7 +183,6 @@ public class BasicBlock {
                 for (Phi phi : incompletePhis) {
                     addPhiOperands(phi.getId(), phi.getType(), phi);
                     phiInstructions.add(phi);
-                    //System.out.println("adding in seal : " + phi.getString());
                 }
             }
         }
@@ -147,8 +191,7 @@ public class BasicBlock {
     private void printMappings()
     {
         System.out.println("MAPPING " + label.getString() + " :");
-        //System.out.println("isSealed: " + sealed);
-        // private HashMap<String, Value> localMappings;
+
         for (String key : localMappings.keySet())
         {
             Value v = localMappings.get(key);
@@ -172,16 +215,26 @@ public class BasicBlock {
                 stream.print(".");
             }
             stream.println(label.getString() + ":");
-            if (!stackBased)
+            if (!stackBased && llvm)
             {
                 for (Phi inst : phiInstructions)
                 {
-                    inst.print(stream, llvm, predecessorList);
+                    inst.print(stream);
                 }
             }
-            for (Instruction inst : instructions)
+            if (llvm)
             {
-                inst.print(stream, llvm);
+                for (Instruction inst : instructions)
+                {
+                    inst.print(stream);
+                }
+            }
+            else
+            {
+                for (arm.Instruction inst : armInstructions)
+                {
+                    inst.print(stream);
+                }
             }
         }
     }

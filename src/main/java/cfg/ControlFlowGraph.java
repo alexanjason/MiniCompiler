@@ -10,6 +10,7 @@ import llvm.value.*;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ControlFlowGraph {
 
@@ -68,6 +69,16 @@ public class ControlFlowGraph {
         nodeList = new ArrayList<>();
         nodeList.add(entryNode);
         BuildCFG();
+    }
+
+    public void firstPass(Set<Register> genSet, Set<Register> killSet)
+    {
+        for (BasicBlock b : nodeList)
+        {
+            //b.convertInstToArm();
+            //b.convertPhisToArm();
+            b.firstPass(genSet, killSet);
+        }
     }
 
     private void BuildCFG()

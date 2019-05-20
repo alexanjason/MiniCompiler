@@ -34,13 +34,10 @@ public class ExpressionBuilder {
     private Value AddIdentifierExpression(IdentifierExpression exp, BasicBlock currentBlock)
     {
         String id = exp.getId();
-        /*
-        System.out.println("identifierExpression: " + id);
-        */
         Value result;
+
         if (stackBased)
         {
-            //System.out.println("stack based");
             Value pointer = getLocalFromId(id);
             if (stackBased)
             {
@@ -50,16 +47,13 @@ public class ExpressionBuilder {
             {
                 // TODO ahhhhhhhhhhhhhh
                 result = new Register(pointer.getType());
-                //result = new Local(id, pointer.getType());
             }
             currentBlock.addInstruction(new Load(result, pointer));
         }
         else
         {
-            //System.out.println("add identifier expression: " + id);
             Type type = converter.convertType(symbolTableList.typeOf(id));
             result = currentBlock.readVariable(id, type);
-            //System.out.println(currentBlock.label.getString() + " readVariable: " + id + " -> " + result.getString());
         }
 
         return result;
@@ -268,7 +262,6 @@ public class ExpressionBuilder {
 
     private Value AddNewExpression(NewExpression exp, BasicBlock currentBlock)
     {
-        StructEntry entry = structTable.get(exp.getId());
         // TODO there's a better way than converting type
         Type type = converter.convertType(new StructType(-1, exp.getId()));
 
@@ -404,7 +397,7 @@ public class ExpressionBuilder {
         Value offsetAddr;
         if (stackBased)
         {
-            offsetAddr = new StackLocation(sType); // TODO ptr type?
+            offsetAddr = new StackLocation(sType);
         }
         else
         {

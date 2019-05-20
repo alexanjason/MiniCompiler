@@ -34,6 +34,8 @@ public class MiniCompiler
          program.TypeCheck();
 
          ControlFlowGraphList cfgList = new ControlFlowGraphList(program, stackBased);
+         cfgList.regAlloc();
+
          //cfgList.print(System.out); // for debugging
          // TODO clean this up
          //System.out.println(_inputFile);

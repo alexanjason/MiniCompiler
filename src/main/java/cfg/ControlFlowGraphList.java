@@ -2,10 +2,13 @@ package cfg;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ast.prog.*;
 import llvm.type.Type;
+import llvm.value.Register;
 
 public class ControlFlowGraphList {
 
@@ -30,6 +33,20 @@ public class ControlFlowGraphList {
 
             controlFlowGraphs.add(new ControlFlowGraph(func, program.getStructTable(), program.getSymbolTables(), stackBased));
             symbolTables.removeScope();
+        }
+    }
+
+    public void regAlloc()
+    {
+        if (!stackBased)
+        {
+            for (ControlFlowGraph cfg : controlFlowGraphs)
+            {
+                Set<Register> genSet = new HashSet<>();
+                Set<Register> killSet = new HashSet<>();
+
+                cfg.firstPass(genSet, killSet);
+            }
         }
     }
 

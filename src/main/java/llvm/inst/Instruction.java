@@ -30,31 +30,9 @@ public interface Instruction {
         return temp;
     }
 
-    /*
-    default String stringArm()
+    default void print(PrintStream stream)
     {
-        StringBuilder sb = new StringBuilder();
-        for (arm.Instruction inst : this.getArm())
-        {
-            sb.append(inst.getString());
-        }
-        return sb.toString();
-    }
-    */
-
-    default void print(PrintStream stream, boolean llvm)
-    {
-        if (llvm)
-        {
-            stream.println("\t" + getString());
-        }
-        else
-        {
-            for (arm.Instruction inst : this.getArm())
-            {
-                stream.println("\t" + inst.getString());
-            }
-        }
+        stream.println("\t" + getString());
     }
 
 }

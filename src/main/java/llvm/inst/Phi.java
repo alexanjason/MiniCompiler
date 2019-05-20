@@ -81,32 +81,11 @@ public class Phi implements Instruction {
         return builder.toString();
     }
 
-    public void print(PrintStream stream, boolean llvm)
-    {
-        // nah
-        // TODO dumb
-    }
-
     public List<arm.Instruction> getArm()
     {
         // nah
         // TODO dumb
         return new ArrayList<>();
-    }
-
-    public void print(PrintStream stream, boolean llvm, List<BasicBlock> predList)
-    {
-        if (llvm)
-        {
-            stream.println("\t" + getString());
-        }
-        else
-        {
-            for (arm.Instruction inst : this.getArm(predList))
-            {
-                stream.println("\t" + inst.getString());
-            }
-        }
     }
 
     public List<arm.Instruction> getArm(List<BasicBlock> predList)
@@ -122,8 +101,10 @@ public class Phi implements Instruction {
                 {
                     Local phi = new Local("_phi" + increment, new i32());
                     increment++;
-                    Instruction move = new Move(phi, entry.value);
-                    b.addInstructionAtEnd(move);    // TODO this block has already printed so it doesn't matter
+
+                    arm.Instruction move = new Mov(phi, entry.value);
+                    System.out.println(b.getLabelId());
+                    b.addArmInstructionAtEnd(move);
 
                     arm.Instruction mov;
                     if (entry.value instanceof Local)
@@ -134,14 +115,16 @@ public class Phi implements Instruction {
                     {
                         mov = new Mov((Register) entry.value, phi);
                     }
-                    else
-                    {
+                    else {
+
+                        System.err.println(entry.value.getString() + " " + entry.value.getType());
                         mov = null;
                         System.err.println("phi inst get arm PANIC");
                     }
                     list.add(mov);
                 }
             }
+            System.out.println("");
         }
 
         return list;
