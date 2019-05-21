@@ -1,5 +1,6 @@
 package arm;
 
+import cfg.InterferenceGraph;
 import cfg.Label;
 import llvm.value.Value;
 
@@ -20,6 +21,10 @@ public class Bne implements Instruction {
     }
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
+    }
+
+    public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
     }
 }

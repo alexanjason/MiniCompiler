@@ -1,5 +1,6 @@
 package arm;
 
+import cfg.InterferenceGraph;
 import llvm.value.Immediate;
 import llvm.value.Local;
 import llvm.value.Register;
@@ -42,5 +43,23 @@ public class Movge implements Instruction {
 
         // add target to kill set
         killSet.add(r1);
+    }
+
+    public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
+    {
+        // remove inst target from live
+        liveSet.remove(r1);
+
+        // add an edge from inst target to each element of live
+        for (Value v : liveSet)
+        {
+            graph.addEdge(r1, v);
+        }
+
+        // add each source in inst to live
+        if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
+        {
+            liveSet.add(Operand2);
+        }
     }
 }

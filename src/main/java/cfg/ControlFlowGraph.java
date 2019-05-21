@@ -72,23 +72,14 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
-    public void regAlloc()
+    public void propagateLiveOutSets()
     {
-        for (BasicBlock b : nodeList)
-        {
-            b.propagatePhis();
-        }
-        for (BasicBlock b : nodeList)
-        {
-            b.firstPass();
-        }
-
-        List<BasicBlock> liveOutList = nodeList;
         boolean guard = true;
         while(guard)
         {
-            // TODO move to BasicBlock
-            for (BasicBlock n : liveOutList)
+            // TODO move to BasicBlock?
+
+            for (BasicBlock n : nodeList)
             {
                 //System.out.println("***" + n.label.getString() + "***");
                 Set<Value> newLiveOut = new HashSet<>();
@@ -122,6 +113,33 @@ public class ControlFlowGraph {
                 n.liveOut = newLiveOut;
             }
         }
+    }
+
+    public InterferenceGraph buildInterferenceGraph()
+    {
+        InterferenceGraph graph = new InterferenceGraph();
+        for (BasicBlock b : nodeList)
+        {
+            b.addToInterferenceGraph(graph);
+        }
+        return graph;
+    }
+
+    public void regAlloc()
+    {
+        for (BasicBlock b : nodeList)
+        {
+            b.propagatePhis();
+        }
+        for (BasicBlock b : nodeList)
+        {
+            b.firstPass();
+        }
+
+        propagateLiveOutSets();
+
+        InterferenceGraph interferenceGraph = buildInterferenceGraph();
+
     }
 
     private void BuildCFG()

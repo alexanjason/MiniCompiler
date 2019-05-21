@@ -43,7 +43,7 @@ public class And implements Instruction {
             r2 = (Register) op1;
         }
 
-        list.add(new arm.Add(r1, r2, op2));
+        list.add(new arm.And(r1, r2, op2));
 
         return list;
     }

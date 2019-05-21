@@ -1,5 +1,6 @@
 package arm;
 
+import cfg.InterferenceGraph;
 import llvm.value.Value;
 
 import java.io.PrintStream;
@@ -15,4 +16,6 @@ public interface Instruction {
     }
 
     void addToGenAndKill(Set<Value> genSet, Set<Value> killSet);
+
+    void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph);
 }

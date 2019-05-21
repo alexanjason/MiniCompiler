@@ -70,6 +70,15 @@ public class BasicBlock {
         }
     }
 
+    public void addToInterferenceGraph(InterferenceGraph graph)
+    {
+        Set<Value> liveSet = liveOut;
+        for (int i = armInstructions.size() - 1; i >= 0; i--)
+        {
+            armInstructions.get(i).addToInterferenceGraph(liveSet, graph);
+        }
+    }
+
     public void propagatePhis()
     {
         for (Phi phi : phiInstructions)

@@ -1,5 +1,8 @@
 package arm;
 
+import cfg.InterferenceGraph;
+import llvm.value.Local;
+import llvm.value.Register;
 import llvm.value.Value;
 
 import java.util.List;
@@ -33,6 +36,10 @@ public class Pop implements Instruction {
     }
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
+    }
+
+    public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
     }
 }
