@@ -42,10 +42,7 @@ public class ControlFlowGraphList {
         {
             for (ControlFlowGraph cfg : controlFlowGraphs)
             {
-                Set<Value> genSet = new HashSet<>();     // TODO sus
-                Set<Value> killSet = new HashSet<>();    // TODO sus
-
-                cfg.firstPass(genSet, killSet);
+                cfg.regAlloc();
             }
         }
     }

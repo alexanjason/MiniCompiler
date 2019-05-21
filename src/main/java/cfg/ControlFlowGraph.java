@@ -9,6 +9,7 @@ import llvm.value.*;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,7 +72,7 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
-    public void firstPass(Set<Value> genSet, Set<Value> killSet)
+    public void regAlloc()
     {
         for (BasicBlock b : nodeList)
         {
@@ -79,7 +80,47 @@ public class ControlFlowGraph {
         }
         for (BasicBlock b : nodeList)
         {
-            b.firstPass(genSet, killSet);
+            b.firstPass();
+        }
+
+        List<BasicBlock> liveOutList = nodeList;
+        boolean guard = true;
+        while(guard)
+        {
+            // TODO move to BasicBlock
+            for (BasicBlock n : liveOutList)
+            {
+                //System.out.println("***" + n.label.getString() + "***");
+                Set<Value> newLiveOut = new HashSet<>();
+
+                for (BasicBlock m : n.successorList)
+                {
+                    //System.out.println(m.label.getString());
+
+                    Set<Value> temp = m.liveOut;
+                    //System.out.println("m.liveOut " + temp);
+                    Set<Value> all = m.genSet;
+                    //System.out.println("m.genSet " + all);
+
+                    // LiveOut(m) - Kill(m)
+                    temp.removeAll(m.killSet);
+
+                    // Gen(m) U (LiveOut(m) - Kill(m))
+                    all.addAll(temp);
+
+                    // LiveOut(n) = Union all m : Gen(m) U (LiveOut(m) - Kill(m))
+                    newLiveOut.addAll(all);
+                }
+
+                //System.out.println("liveOut " + n.liveOut);
+                //System.out.println("newLiveOut " + newLiveOut);
+
+                if (n.liveOut.equals(newLiveOut))
+                {
+                    guard = false;
+                }
+                n.liveOut = newLiveOut;
+            }
         }
     }
 

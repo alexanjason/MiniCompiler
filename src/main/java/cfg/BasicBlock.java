@@ -8,10 +8,7 @@ import llvm.value.Register;
 import llvm.value.Value;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class BasicBlock {
 
@@ -26,6 +23,15 @@ public class BasicBlock {
 
     // list of instructions
     List<Instruction> instructions;
+
+    // Gen Set
+    Set<Value> genSet;  // TODO Value or Register?
+
+    // Kill Set
+    Set<Value> killSet; // TODO Value or Register?
+
+    // LiveOut Set
+    Set<Value> liveOut; // TODO Value or Register?
 
     // Local mappings for register-based SSA
     private HashMap<String, Value> localMappings;
@@ -43,10 +49,13 @@ public class BasicBlock {
     BasicBlock(List<BasicBlock> predList, boolean stackBased)
     {
         label = new Label(); // TODO
+
         successorList = new ArrayList<>();
         predecessorList = predList;
+
         instructions = new ArrayList<>();
         armInstructions = new ArrayList<>();
+
         sealed = false;
         this.stackBased = stackBased;
 
@@ -55,6 +64,9 @@ public class BasicBlock {
             localMappings = new HashMap<>();
             phiInstructions = new ArrayList<>();
             incompletePhis = new ArrayList<>();
+            genSet = new HashSet<>();
+            killSet = new HashSet<>();
+            liveOut = new HashSet<>();
         }
     }
 
@@ -66,7 +78,7 @@ public class BasicBlock {
         }
     }
 
-    public void firstPass(Set<Value> genSet, Set<Value> killSet)
+    public void firstPass()
     {
         for (Instruction inst : instructions)
         {

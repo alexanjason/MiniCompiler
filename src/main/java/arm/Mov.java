@@ -39,9 +39,11 @@ public class Mov implements Instruction {
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
     {
         // add each source not in kill set to gen set
-        if (!(killSet.contains(Operand2)))
+        if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
         {
-            genSet.add(Operand2);
+            if (!(killSet.contains(Operand2))) {
+                genSet.add(Operand2);
+            }
         }
 
         // add target to kill set

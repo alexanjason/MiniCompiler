@@ -1,6 +1,7 @@
 package arm;
 
 import llvm.value.Immediate;
+import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
@@ -39,9 +40,11 @@ public class Orr implements Instruction {
             genSet.add(r2);
         }
 
-        if (!(killSet.contains(Operand2)))
+        if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
         {
-            genSet.add(Operand2);
+            if (!(killSet.contains(Operand2))) {
+                genSet.add(Operand2);
+            }
         }
 
         // add target to kill set
