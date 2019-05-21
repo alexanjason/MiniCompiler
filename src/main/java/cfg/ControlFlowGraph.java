@@ -71,7 +71,7 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
-    public void firstPass(Set<Register> genSet, Set<Register> killSet)
+    public void firstPass(Set<Value> genSet, Set<Value> killSet)
     {
         for (BasicBlock b : nodeList)
         {

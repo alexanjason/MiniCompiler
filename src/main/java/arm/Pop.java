@@ -1,6 +1,9 @@
 package arm;
 
+import llvm.value.Value;
+
 import java.util.List;
+import java.util.Set;
 
 public class Pop implements Instruction {
 
@@ -27,5 +30,9 @@ public class Pop implements Instruction {
         }
         builder.append("}");
         return builder.toString();
+    }
+
+    public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
     }
 }

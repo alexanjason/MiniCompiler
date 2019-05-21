@@ -5,6 +5,8 @@ import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Set;
+
 public class Sub implements Instruction {
 
     Register r1;
@@ -35,5 +37,22 @@ public class Sub implements Instruction {
         }
         sb.append(Operand2.getString());
         return sb.toString();
+    }
+
+    public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
+        // add each source not in kill set to gen set
+        if (!(killSet.contains(r2)))
+        {
+            genSet.add(r2);
+        }
+
+        if (!(killSet.contains(Operand2)))
+        {
+            genSet.add(Operand2);
+        }
+
+        // add target to kill set
+        killSet.add(r1);
     }
 }

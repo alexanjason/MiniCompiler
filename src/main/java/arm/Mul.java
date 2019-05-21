@@ -4,6 +4,8 @@ import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Set;
+
 public class Mul implements Instruction {
 
     Register r1;
@@ -34,5 +36,22 @@ public class Mul implements Instruction {
     public String getString()
     {
         return ("mul " + r1.getString() + ", " + r2.getString() + ", " + r3.getString());
+    }
+
+    public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
+        // add each source not in kill set to gen set
+        if (!(killSet.contains(r2)))
+        {
+            genSet.add(r2);
+        }
+
+        if (!(killSet.contains(r3)))
+        {
+            genSet.add(r3);
+        }
+
+        // add target to kill set
+        killSet.add(r1);
     }
 }

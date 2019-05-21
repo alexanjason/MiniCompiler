@@ -66,7 +66,7 @@ public class BasicBlock {
         }
     }
 
-    public void firstPass(Set<Register> genSet, Set<Register> killSet)
+    public void firstPass(Set<Value> genSet, Set<Value> killSet)
     {
         for (Instruction inst : instructions)
         {
@@ -74,6 +74,7 @@ public class BasicBlock {
             for (arm.Instruction armInst : armInstList)
             {
                 armInstructions.add(armInst);
+                armInst.addToGenAndKill(genSet, killSet);
             }
         }
     }

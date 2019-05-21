@@ -1,6 +1,9 @@
 package arm;
 
 import cfg.Label;
+import llvm.value.Value;
+
+import java.util.Set;
 
 public class B implements Instruction {
 
@@ -14,5 +17,9 @@ public class B implements Instruction {
     public String getString()
     {
         return ("b ." + label.getString());
+    }
+
+    public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
     }
 }

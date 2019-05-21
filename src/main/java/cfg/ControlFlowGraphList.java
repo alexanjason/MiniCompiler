@@ -8,7 +8,7 @@ import java.util.Set;
 
 import ast.prog.*;
 import llvm.type.Type;
-import llvm.value.Register;
+import llvm.value.Value;
 
 public class ControlFlowGraphList {
 
@@ -42,8 +42,8 @@ public class ControlFlowGraphList {
         {
             for (ControlFlowGraph cfg : controlFlowGraphs)
             {
-                Set<Register> genSet = new HashSet<>();
-                Set<Register> killSet = new HashSet<>();
+                Set<Value> genSet = new HashSet<>();     // TODO sus
+                Set<Value> killSet = new HashSet<>();    // TODO sus
 
                 cfg.firstPass(genSet, killSet);
             }

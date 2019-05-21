@@ -2,6 +2,9 @@ package arm;
 
 import llvm.value.Immediate;
 import llvm.value.Register;
+import llvm.value.Value;
+
+import java.util.Set;
 
 public class Movw implements Instruction {
 
@@ -17,5 +20,11 @@ public class Movw implements Instruction {
     public String getString()
     {
         return ("movw " + r1.getString() + ", " + imm16.getString());
+    }
+
+    public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
+        // add target to kill set
+        killSet.add(r1);
     }
 }

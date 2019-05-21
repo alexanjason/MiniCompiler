@@ -1,6 +1,9 @@
 package arm;
 
 import cfg.Label;
+import llvm.value.Value;
+
+import java.util.Set;
 
 public class Bne implements Instruction {
 
@@ -16,4 +19,7 @@ public class Bne implements Instruction {
         return ("bne ." + label.getString());
     }
 
+    public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
+    {
+    }
 }
