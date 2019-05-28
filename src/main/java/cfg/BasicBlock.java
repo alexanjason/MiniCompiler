@@ -77,8 +77,11 @@ public class BasicBlock {
         for (int i = armInstructions.size() - 1; i >= 0; i--)
         //for (arm.Instruction i : armInstructions)
         {
+            armInstructions.get(i).print(System.err);
+
             armInstructions.get(i).addToInterferenceGraph(liveSet, graph);
             //i.addToInterferenceGraph(liveSet, graph);
+
             System.out.print("\tLive: ");
             for (Value v : liveSet)
             {

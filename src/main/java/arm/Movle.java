@@ -30,7 +30,7 @@ public class Movle implements Instruction {
         else if (spillSet.contains(r1.getString()))
         {
             // TODO can r1 spill?
-            System.err.println("Add r1 spilled");
+            System.err.println("movle r1 spilled " + r1.getString());
         }
         else
         {
@@ -95,9 +95,18 @@ public class Movle implements Instruction {
         liveSet.remove(r1);
 
         // add an edge from inst target to each element of live
+        if (liveSet.size() > 0)
+        {
+            System.out.print("\tadding edge from " + r1.getString() + " to ");
+        }
         for (Value v : liveSet)
         {
             graph.addEdge(r1, v);
+            System.out.print(v.getString() + " ");
+        }
+        if (liveSet.size() > 0)
+        {
+            System.out.println();
         }
 
         // r1 in liveset

@@ -39,7 +39,7 @@ public class Add implements Instruction {
         else if (spillSet.contains(r1.getString()))
         {
             // TODO can r1 spill?
-            System.err.println("Add r1 spilled");
+            System.err.println("Add r1 spilled: " + r1.getString());
         }
         else
         {
@@ -123,6 +123,7 @@ public class Add implements Instruction {
         liveSet.remove(r1);
 
         // add an edge from inst target to each element of live
+
         for (Value v : liveSet)
         {
             graph.addEdge(r1, v);

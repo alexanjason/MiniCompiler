@@ -30,7 +30,7 @@ public class Movne implements Instruction {
         else if (spillSet.contains(r1.getString()))
         {
             // TODO can r1 spill?
-            System.err.println("Add r1 spilled");
+            System.err.println("movne r1 spilled " + r1.getString());
         }
         else
         {

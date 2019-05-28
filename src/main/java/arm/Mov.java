@@ -36,7 +36,7 @@ public class Mov implements Instruction {
         else if (spillSet.contains(r1.getString()))
         {
             // TODO can r1 spill?
-            System.err.println("Add r1 spilled");
+            System.err.println("mov r1 spilled " + r1.getString());
         }
         else
         {
@@ -78,8 +78,6 @@ public class Mov implements Instruction {
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
     {
-        //System.out.println("mov\t r1: " + r1.getString() + "\tOp2: " + Operand2.getString());
-
         // add each source not in kill set to gen set
         if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
         {
@@ -88,18 +86,13 @@ public class Mov implements Instruction {
             }
         }
 
-        /*
-        if (!(killSet.contains(r1))) {
-            genSet.add(r1);
-        }
-        */
-
         // add target to kill set
         killSet.add(r1);
     }
 
     public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
+        /*
         System.out.println("mov\tr1: " + r1.getString() + "\t Operand2: " + Operand2.getString());
         System.out.print("Live: ");
         for (Value v : liveSet)
@@ -107,14 +100,24 @@ public class Mov implements Instruction {
             System.out.print(v.getString() + " ");
         }
         System.out.println();
+        */
 
         // remove inst target from live
         liveSet.remove(r1);
 
+        if (liveSet.size() > 0)
+        {
+            System.out.print("\tadding edge from " + r1.getString() + " to ");
+        }
         // add an edge from inst target to each element of live
         for (Value v : liveSet)
         {
+            System.out.print(v.getString() + " ");
             graph.addEdge(r1, v);
+        }
+        if (liveSet.size() > 0)
+        {
+            System.out.println();
         }
 
         // add each source in inst to live

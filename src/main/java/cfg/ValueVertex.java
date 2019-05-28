@@ -61,7 +61,7 @@ public class ValueVertex {
             }
         }
 
-        //System.out.println("SPILLED: " + this.v.getString());
+        System.err.println("***SPILLED: " + this.v.getString());
         //this.spill = true;
         return false;
     }
