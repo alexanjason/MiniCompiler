@@ -27,4 +27,26 @@ public class Local implements Value {
     {
         return this.type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Value)) {
+            return false;
+        }
+
+        Value c = (Value) o;
+
+        return this.getString().equals(c.getString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.id.hashCode();
+    }
 }

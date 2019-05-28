@@ -2,8 +2,10 @@ package arm;
 
 import cfg.InterferenceGraph;
 import cfg.Label;
+import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Map;
 import java.util.Set;
 
 public class B implements Instruction {
@@ -13,6 +15,10 @@ public class B implements Instruction {
     public B(Label label)
     {
         this.label = label;
+    }
+
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
     }
 
     public String getString()

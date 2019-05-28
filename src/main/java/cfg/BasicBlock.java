@@ -73,9 +73,24 @@ public class BasicBlock {
     public void addToInterferenceGraph(InterferenceGraph graph)
     {
         Set<Value> liveSet = liveOut;
+        System.out.println(this.label.getString() + ":");
         for (int i = armInstructions.size() - 1; i >= 0; i--)
         {
             armInstructions.get(i).addToInterferenceGraph(liveSet, graph);
+            System.out.print("\tLive: ");
+            for (Value v : liveSet)
+            {
+                System.out.print(v.getString() + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
+        for (arm.Instruction inst : armInstructions)
+        {
+            inst.replaceRegs(map, spillSet);
         }
     }
 
@@ -98,6 +113,19 @@ public class BasicBlock {
                 armInst.addToGenAndKill(genSet, killSet);
             }
         }
+
+        System.out.println(this.label.getString() + ":");
+        System.out.print("\tgenSet: ");
+        for (Value v : genSet)
+        {
+            System.out.print(v.getString() + " ");
+        }
+        System.out.print("\n\tkillSet: ");
+        for (Value v : killSet)
+        {
+            System.out.print(v.getString() + " ");
+        }
+        System.out.println();
     }
 
     public int getLabelId()

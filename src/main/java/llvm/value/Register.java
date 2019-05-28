@@ -15,6 +15,8 @@ public class Register implements Value {
     Instruction def;            //TODO
     List<Instruction> uses;     //TODO
 
+    boolean real = false;       // TODO hacky
+
     public Register(Type type)
     {
         this.type = type;
@@ -28,16 +30,17 @@ public class Register implements Value {
         this.type = type;
         this.id = num;
         this.uses = new ArrayList<>();
+        real = true;
+    }
+
+    public boolean isReal()
+    {
+        return real;
     }
 
     public String getId()
     {
         return Integer.toString(id);
-    }
-
-    public void addDef(Instruction def)
-    {
-        this.def = def;
     }
 
     public Type getType()
@@ -47,6 +50,45 @@ public class Register implements Value {
 
     public String getString()
     {
-        return ("%v" + id);
+        if (real)
+        {
+            return ("r" + id);
+        }
+        else
+        {
+            return ("%v" + id);
+        }
+    }
+
+    public void addDef(Instruction def)
+    {
+        this.def = def;
+    }
+
+    public void addUse(Instruction use)
+    {
+        uses.add(use);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Value)) {
+            return false;
+        }
+
+        Value c = (Value) o;
+
+        return this.getString().equals(c.getString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.id;
     }
 }

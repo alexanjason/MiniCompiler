@@ -11,11 +11,13 @@ public class MiniCompiler
 {
    private static boolean stackBased;
    private static boolean llvm;
+   private static boolean regAlloc;
 
    public static void main(String[] args)
    {
       stackBased = false;
       llvm = false;
+      regAlloc = false;
       parseParameters(args);
 
       CommonTokenStream tokens = new CommonTokenStream(createLexer());
@@ -34,7 +36,14 @@ public class MiniCompiler
          program.TypeCheck();
 
          ControlFlowGraphList cfgList = new ControlFlowGraphList(program, stackBased);
-         cfgList.regAlloc();
+         if (!llvm)
+         {
+            cfgList.codeGen();
+         }
+         if (regAlloc)
+         {
+            cfgList.regAlloc();
+         }
 
          //cfgList.print(System.out); // for debugging
          // TODO clean this up
@@ -83,6 +92,10 @@ public class MiniCompiler
             else if (args[i].equals("-llvm"))
             {
                llvm = true;
+            }
+            else if (args[i].equals("-regalloc"))
+            {
+               regAlloc = true;
             }
             else
             {

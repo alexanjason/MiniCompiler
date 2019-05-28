@@ -1,11 +1,13 @@
 package arm;
 
 import cfg.InterferenceGraph;
+import llvm.type.i32;
 import llvm.value.Immediate;
 import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Map;
 import java.util.Set;
 
 public class Add implements Instruction {
@@ -26,6 +28,62 @@ public class Add implements Instruction {
         this.r1 = r1;
         this.r2 = r2;
         Operand2 = operand2;
+    }
+
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
+        if (map.containsKey(r1.getString()))
+        {
+            r1 = map.get(r1.getString());
+        }
+        else if (spillSet.contains(r1.getString()))
+        {
+            // TODO can r1 spill?
+            System.err.println("Add r1 spilled");
+        }
+        else
+        {
+            Register newReg = new Register(new i32(), 5);
+            map.put(r1.getString(), newReg);
+            r1 = newReg;
+        }
+
+        if (map.containsKey(r2.getString()))
+        {
+            r2 = map.get(r2.getString());
+        }
+        else if (spillSet.contains(r2.getString()))
+        {
+            Register spillReg = new Register(new i32(), 9);
+            map.put(r2.getString(), spillReg);
+            r2 = spillReg;
+            // TODO add this to mapping?
+        }
+        else
+        {
+            Register newReg = new Register(new i32(), 5);
+            // TODO
+            map.put(r2.getString(), newReg);
+            r2 = newReg;
+        }
+
+        if (Operand2 instanceof Local || Operand2 instanceof Register)
+        {
+            if (map.containsKey(Operand2.getString()))
+            {
+                Operand2 = map.get(Operand2.getString());
+            }
+            else if (spillSet.contains(Operand2.getString())) {
+                Register spillReg = new Register(new i32(), 10);
+                map.put(Operand2.getString(), spillReg);
+                Operand2 = spillReg;
+                // TODO add this to mapping?
+            } else {
+                Register newReg = new Register(new i32(), 5);
+                map.put(Operand2.getString(), newReg);
+                Operand2 = newReg;
+            }
+        }
     }
 
     public String getString()

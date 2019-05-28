@@ -74,9 +74,21 @@ public class Sdiv implements Instruction {
                 list.add(new arm.Sdiv(r1, (Local)left, r3));
             }
         }
+        else if (left instanceof Immediate)
+        {
+            Register r = ImmediateToRegister((Immediate) left, list);
+            if (rightLocal) {
+                list.add(new arm.Sdiv(r1, r, (Local)right));
+            }
+            else
+            {
+                list.add(new arm.Sdiv(r1, r, r3));
+            }
+        }
         else
         {
             System.err.println("Sdiv left error");
+            System.err.println(left.getType().getString() + " " + left.getString());
         }
 
         return list;

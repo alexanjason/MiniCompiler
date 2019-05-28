@@ -9,4 +9,5 @@ public interface Value {
     String getString();
 
     String getId();
+
 }

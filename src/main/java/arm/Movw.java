@@ -1,11 +1,13 @@
 package arm;
 
 import cfg.InterferenceGraph;
+import llvm.type.i32;
 import llvm.value.Immediate;
 import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Map;
 import java.util.Set;
 
 public class Movw implements Instruction {
@@ -19,6 +21,25 @@ public class Movw implements Instruction {
         this.imm16 = imm16;
     }
 
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
+        if (map.containsKey(r1.getString()))
+        {
+            r1 = map.get(r1.getString());
+        }
+        else if (spillSet.contains(r1.getString()))
+        {
+            // TODO can r1 spill?
+            System.err.println("Add r1 spilled");
+        }
+        else
+        {
+            Register newReg = new Register(new i32(), 5);
+            map.put(r1.getString(), newReg);
+            r1 = newReg;
+        }
+    }
+
     public String getString()
     {
         return ("movw " + r1.getString() + ", " + imm16.getString());
@@ -26,6 +47,11 @@ public class Movw implements Instruction {
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
     {
+        // add source
+        if (!(killSet.contains(r1))) {
+            genSet.add(r1);
+        }
+
         // add target to kill set
         killSet.add(r1);
     }

@@ -6,6 +6,7 @@ import llvm.value.Register;
 import llvm.value.Value;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Pop implements Instruction {
@@ -15,6 +16,10 @@ public class Pop implements Instruction {
     public Pop(List<String> list)
     {
         this.list = list;
+    }
+
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
     }
 
     public String getString()

@@ -8,10 +8,7 @@ import llvm.type.Void;
 import llvm.value.*;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ControlFlowGraph {
 
@@ -75,14 +72,22 @@ public class ControlFlowGraph {
     public void propagateLiveOutSets()
     {
         boolean guard = true;
+        //List<BasicBlock> newNodeList = nodeList;
+        int count = 0;
+
         while(guard)
+        //Iterator iterator = newNodeList.iterator();
+        //while (iterator.hasNext())
         {
             // TODO move to BasicBlock?
 
+            //for (int i = nodeList.size() - 1; i >= 0; i--)
             for (BasicBlock n : nodeList)
             {
+                //BasicBlock n = (BasicBlock) iterator.next();
                 //System.out.println("***" + n.label.getString() + "***");
                 Set<Value> newLiveOut = new HashSet<>();
+                //BasicBlock n = nodeList.get(i);
 
                 for (BasicBlock m : n.successorList)
                 {
@@ -108,10 +113,30 @@ public class ControlFlowGraph {
 
                 if (n.liveOut.equals(newLiveOut))
                 {
-                    guard = false;
+                    //newNodeList.remove()
+                    if (count != 0)
+                    {
+                        guard = false;
+                    }
+                    //iterator.remove();
                 }
                 n.liveOut = newLiveOut;
+                count ++;
+                //n.liveOut.addAll(newLiveOut);
             }
+        }
+
+
+        for (BasicBlock n : nodeList)
+        {
+            System.out.println(n.label.getString() + ":");
+            System.out.print("\tliveOut: ");
+            for (Value v : n.liveOut)
+            {
+                System.out.print(v.getString() + " ");
+            }
+            System.out.println();
+
         }
     }
 
@@ -125,7 +150,7 @@ public class ControlFlowGraph {
         return graph;
     }
 
-    public void regAlloc()
+    public void codeGen()
     {
         for (BasicBlock b : nodeList)
         {
@@ -136,9 +161,23 @@ public class ControlFlowGraph {
             b.firstPass();
         }
 
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
+
+    public void regAlloc()
+    {
         propagateLiveOutSets();
 
         InterferenceGraph interferenceGraph = buildInterferenceGraph();
+        interferenceGraph.regAlloc();
+
+        //interferenceGraph.printGraph();
+        interferenceGraph.printMap();
+
+        for (BasicBlock b : nodeList)
+        {
+            b.replaceRegs(interferenceGraph.regMappings, interferenceGraph.spillSet);
+        }
 
     }
 

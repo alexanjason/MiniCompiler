@@ -1,8 +1,10 @@
 package arm;
 
 import cfg.InterferenceGraph;
+import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Map;
 import java.util.Set;
 
 public class Size implements Instruction {
@@ -17,6 +19,10 @@ public class Size implements Instruction {
     public String getString()
     {
         return ".size " + name + ", .-" + name;
+    }
+
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
     }
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)

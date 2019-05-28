@@ -1,8 +1,10 @@
 package arm;
 
 import cfg.InterferenceGraph;
+import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.Map;
 import java.util.Set;
 
 public class Bl implements Instruction {
@@ -12,6 +14,10 @@ public class Bl implements Instruction {
     public Bl(String name)
     {
         this.name = name;
+    }
+
+    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    {
     }
 
     public String getString()

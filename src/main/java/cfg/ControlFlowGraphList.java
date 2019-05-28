@@ -2,13 +2,10 @@ package cfg;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ast.prog.*;
 import llvm.type.Type;
-import llvm.value.Value;
 
 public class ControlFlowGraphList {
 
@@ -33,6 +30,14 @@ public class ControlFlowGraphList {
 
             controlFlowGraphs.add(new ControlFlowGraph(func, program.getStructTable(), program.getSymbolTables(), stackBased));
             symbolTables.removeScope();
+        }
+    }
+
+    public void codeGen()
+    {
+        for (ControlFlowGraph cfg : controlFlowGraphs)
+        {
+            cfg.codeGen();
         }
     }
 
