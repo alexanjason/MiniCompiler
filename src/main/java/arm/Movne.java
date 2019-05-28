@@ -99,6 +99,8 @@ public class Movne implements Instruction {
             graph.addEdge(r1, v);
         }
 
+        liveSet.add(r1);
+
         // add each source in inst to live
         if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
         {

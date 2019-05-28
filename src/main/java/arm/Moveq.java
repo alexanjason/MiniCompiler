@@ -80,10 +80,6 @@ public class Moveq implements Instruction {
             }
         }
 
-        if (!(killSet.contains(r1))) {
-            genSet.add(r1);
-        }
-
         // add target to kill set
         killSet.add(r1);
     }
@@ -99,7 +95,8 @@ public class Moveq implements Instruction {
             graph.addEdge(r1, v);
         }
 
-        liveSet.add(Operand2); // TODO help me lord
+        liveSet.add(r1);
+
         // add each source in inst to live
         if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
         {

@@ -80,6 +80,7 @@ public class Movle implements Instruction {
             }
         }
 
+        // r1 is source
         if (!(killSet.contains(r1))) {
             genSet.add(r1);
         }
@@ -98,6 +99,13 @@ public class Movle implements Instruction {
         {
             graph.addEdge(r1, v);
         }
+
+        // r1 in liveset
+        liveSet.add(r1);
+
+        // everywhere source load prior
+        // if target store after
+        // copy inst to another list
 
         // add each source in inst to live
         if ((Operand2 instanceof Register) || (Operand2 instanceof Local))

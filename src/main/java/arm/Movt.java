@@ -66,5 +66,7 @@ public class Movt implements Instruction {
         {
             graph.addEdge(r1, v);
         }
+
+        liveSet.add(r1);
     }
 }

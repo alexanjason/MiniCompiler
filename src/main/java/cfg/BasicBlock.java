@@ -75,8 +75,10 @@ public class BasicBlock {
         Set<Value> liveSet = liveOut;
         System.out.println(this.label.getString() + ":");
         for (int i = armInstructions.size() - 1; i >= 0; i--)
+        //for (arm.Instruction i : armInstructions)
         {
             armInstructions.get(i).addToInterferenceGraph(liveSet, graph);
+            //i.addToInterferenceGraph(liveSet, graph);
             System.out.print("\tLive: ");
             for (Value v : liveSet)
             {

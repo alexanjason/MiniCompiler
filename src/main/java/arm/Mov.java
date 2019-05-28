@@ -100,6 +100,14 @@ public class Mov implements Instruction {
 
     public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
+        System.out.println("mov\tr1: " + r1.getString() + "\t Operand2: " + Operand2.getString());
+        System.out.print("Live: ");
+        for (Value v : liveSet)
+        {
+            System.out.print(v.getString() + " ");
+        }
+        System.out.println();
+
         // remove inst target from live
         liveSet.remove(r1);
 
