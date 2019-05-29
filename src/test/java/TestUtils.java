@@ -14,6 +14,7 @@ public class TestUtils {
 
     boolean stack;
     boolean llvm;
+    boolean sscp;
 
     File runCompiler(TemporaryFolder folder, String name, String dest)
     {
@@ -31,6 +32,7 @@ public class TestUtils {
         int numArgs = 1;
         if (stack) { numArgs++; }
         if (llvm) { numArgs++; }
+        if (sscp) { numArgs++; }
 
         String[] args = new String[numArgs];
         args[0] = dest + name + ".mini";
@@ -45,6 +47,12 @@ public class TestUtils {
             args[i] = "-llvm";
             i++;
         }
+        if (sscp)
+        {
+            args[i] = "-sscp";
+            i++;
+        }
+
         //String[] args = {dest + name + ".mini", "-stack", "-llvm"};
         mini.main(args);
 

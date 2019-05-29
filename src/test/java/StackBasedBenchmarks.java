@@ -10,6 +10,7 @@ public class StackBasedBenchmarks extends TestUtils {
     {
         stack = true;
         llvm = false;
+        sscp = false;
     }
 
     @Rule

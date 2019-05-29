@@ -67,8 +67,8 @@ public class Mov implements Instruction {
     public String getString()
     {
         // TODO make newlines instructions
-        if (!(r1.getString().equals(Operand2.getString())))
-        {
+        //if (!(r1.getString().equals(Operand2.getString())))
+        //{
             StringBuilder sb = new StringBuilder();
             sb.append("mov " + r1.getString() + ", ");
             if (Operand2 instanceof Immediate)
@@ -77,8 +77,8 @@ public class Mov implements Instruction {
             }
             sb.append(Operand2.getString());
             return sb.toString();
-        }
-        return "";
+        //}
+        //return "";
     }
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
@@ -110,19 +110,11 @@ public class Mov implements Instruction {
         // remove inst target from live
         liveSet.remove(r1);
 
-        if (liveSet.size() > 0)
-        {
-            System.out.print("\tadding edge from " + r1.getString() + " to ");
-        }
+
         // add an edge from inst target to each element of live
         for (Value v : liveSet)
         {
-            System.out.print(v.getString() + " ");
             graph.addEdge(r1, v);
-        }
-        if (liveSet.size() > 0)
-        {
-            System.out.println();
         }
 
         // add each source in inst to live

@@ -72,7 +72,8 @@ public class BasicBlock {
 
     public void addToInterferenceGraph(InterferenceGraph graph)
     {
-        Set<Value> liveSet = liveOut;
+        Set<Value> liveSet = new HashSet<>();//liveOut;
+        liveSet.addAll(liveOut);
         System.out.println(this.label.getString() + ":");
         for (int i = armInstructions.size() - 1; i >= 0; i--)
         //for (arm.Instruction i : armInstructions)
@@ -134,7 +135,7 @@ public class BasicBlock {
             }
         }
 
-        /*
+
         System.out.println(this.label.getString() + ":");
         System.out.print("\tgenSet: ");
         for (Value v : genSet)
@@ -147,7 +148,7 @@ public class BasicBlock {
             System.out.print(v.getString() + " ");
         }
         System.out.println();
-        */
+
     }
 
     public int getLabelId()

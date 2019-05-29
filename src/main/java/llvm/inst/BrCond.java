@@ -44,6 +44,7 @@ public class BrCond implements Instruction {
         {
             cond = constant;
         }
+        // TODO simplify branch to uncond
     }
 
     public String getString()

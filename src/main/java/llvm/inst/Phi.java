@@ -43,10 +43,10 @@ public class Phi implements Instruction {
     {
         for (PhiEntry entry : entryList)
         {
-            System.err.println("entry.value: " + entry.value.getString() + " v " + v.getString());
+            //System.err.println("entry.value: " + entry.value.getString() + " v " + v.getString());
             if (entry.value == v)
             {
-                System.err.println("constant: " + constant.getString());
+                //System.err.println("constant: " + constant.getString());
                 entry.value = constant;
             }
         }
@@ -86,6 +86,7 @@ public class Phi implements Instruction {
         }
         else if (imm != null)
         {
+            // TODO phi immediate entries
             System.out.println(imm);
             if (imm instanceof Boolean)
             {

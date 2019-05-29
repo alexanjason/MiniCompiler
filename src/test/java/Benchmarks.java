@@ -10,6 +10,7 @@ public class Benchmarks extends TestUtils {
     {
         stack = false;
         llvm = false;
+        sscp = false;
     }
 
     @Rule

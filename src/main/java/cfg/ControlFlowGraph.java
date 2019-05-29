@@ -177,7 +177,8 @@ public class ControlFlowGraph {
                 Immediate constant;
                 if (c instanceof Boolean)
                 {
-                    constant = new Immediate(Boolean.toString((Boolean)c), new i32());
+                    //constant = new Immediate(Boolean.toString((Boolean)c), new i32());
+                    constant = new Immediate(Boolean.toString((Boolean)c), new i1());
                 }
                 else if (c instanceof Integer)
                 {
@@ -203,32 +204,35 @@ public class ControlFlowGraph {
 
         while(guard)
         {
+            guard = false;
             // TODO move to BasicBlock?
             for (BasicBlock n : nodeList)
             {
                 Set<Value> newLiveOut = new HashSet<>();
-
+                System.err.println("Block n: " + n.label.getString());
                 for (BasicBlock m : n.successorList)
                 {
-                    Set<Value> temp = m.liveOut;
+                    System.err.println("Block m: " + m.label.getString());
+                    Set<Value> temp = new HashSet<>();//m.liveOut.clone(); // TODO clone
+                    temp.addAll(m.liveOut);
                     Set<Value> all = m.genSet;
+                    System.err.println(m.genSet);
 
                     // LiveOut(m) - Kill(m)
                     temp.removeAll(m.killSet);
 
                     // Gen(m) U (LiveOut(m) - Kill(m))
-                    all.addAll(temp);
+                    temp.addAll(all);
+                    //all.addAll(temp);
 
                     // LiveOut(n) = Union all m : Gen(m) U (LiveOut(m) - Kill(m))
-                    newLiveOut.addAll(all);
+                    newLiveOut.addAll(temp);
+
                 }
 
-                if (n.liveOut.equals(newLiveOut))
+                if (!(n.liveOut.equals(newLiveOut)))
                 {
-                    if (count != 0)
-                    {
-                        guard = false;
-                    }
+                    guard = true;
                 }
                 n.liveOut = newLiveOut;
                 count ++;
@@ -355,6 +359,7 @@ public class ControlFlowGraph {
             if (lastBlock == null)
             {
                 entryNode.addInstruction(new BrUncond(exitNode.label));
+                entryNode.successorList.add(exitNode);
             }
 
 
@@ -367,6 +372,7 @@ public class ControlFlowGraph {
                 if (lastBlock != null)
                 {
                     lastBlock.addInstruction(new BrUncond(exitNode.label));
+                    lastBlock.successorList.add(exitNode);
                 }
                 exitNode.addInstruction(new ReturnVoid());
             }

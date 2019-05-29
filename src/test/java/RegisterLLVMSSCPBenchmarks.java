@@ -3,14 +3,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class StackLLVMBenchmarks extends TestUtils {
+public class RegisterLLVMSSCPBenchmarks extends TestUtils {
 
     @Before
     public void setUp()
     {
-        stack = true;
+        stack = false;
         llvm = true;
-        sscp = false;
+        sscp = true;
     }
 
     @Rule
@@ -20,6 +20,7 @@ public class StackLLVMBenchmarks extends TestUtils {
     public void BenchMarkishTopics()
     {
         String name = "BenchMarkishTopics";
+        // TODO while loop multiple of same phi instruction
         runTest(folder, name);
     }
 
@@ -148,5 +149,4 @@ public class StackLLVMBenchmarks extends TestUtils {
         String name = "wasteOfCycles";
         runTest(folder, name);
     }
-
 }

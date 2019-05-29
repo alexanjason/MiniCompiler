@@ -10,6 +10,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     {
         stack = false;
         llvm = true;
+        sscp = false;
     }
 
     @Rule
@@ -148,5 +149,4 @@ public class RegisterLLVMBenchmarks extends TestUtils {
         String name = "wasteOfCycles";
         runTest(folder, name);
     }
-
 }

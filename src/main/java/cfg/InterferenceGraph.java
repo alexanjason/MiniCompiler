@@ -84,6 +84,8 @@ public class InterferenceGraph {
     {
         // TODO sloppy
         if (!((s1 instanceof Register && ((Register)s1).isReal()) || (s2 instanceof Register && ((Register)s2).isReal()))) {
+            System.out.println("addEdge: from " + s1.getString() + " to " + s2.getString());
+
             ValueVertex v1 = addVertex(s1);
             ValueVertex v2 = addVertex(s2);
 

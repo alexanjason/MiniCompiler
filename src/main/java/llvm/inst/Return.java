@@ -32,6 +32,7 @@ public class Return implements Instruction {
 
     public void sscpReplace(Value v, Immediate constant)
     {
+        // TODO not getting replaced
         if (value == v)
         {
             value = constant;

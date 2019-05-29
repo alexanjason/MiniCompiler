@@ -294,6 +294,8 @@ public class StatementBuilder {
 
         currentBlock.addInstruction(new Trunc(guardLoc, extGuard));
         currentBlock.addInstruction(new BrCond(extGuard, thenEntry.label, elseEntry.label));
+        currentBlock.successorList.add(thenEntry);
+        currentBlock.successorList.add(elseEntry);
 
         // Create EXIT block
         List<BasicBlock> exitPreds = new ArrayList<>();
@@ -305,7 +307,6 @@ public class StatementBuilder {
         // Populate THEN entry block
         nodeList.add(thenEntry);
         thenEntry.seal();
-        currentBlock.successorList.add(thenEntry);
         BasicBlock thenExit = AddStatement(stmt.getThenBlock(), thenEntry);
 
         if (thenExit != exitNode)
@@ -318,6 +319,7 @@ public class StatementBuilder {
             exitBlock.predecessorList.add(thenExit);
 
             thenExit.addInstruction(new BrUncond(exitBlock.label));
+            thenExit.successorList.add(exitBlock);
             nodeList.add(exitBlock);
             retBlock = exitBlock;
         }
@@ -347,6 +349,7 @@ public class StatementBuilder {
                 exitBlock.predecessorList.add(elseExit);
 
                 elseExit.addInstruction(new BrUncond(exitBlock.label));
+                elseExit.successorList.add(exitBlock);
                 retBlock = exitBlock;
                 // TODO is there a case where exitBlock won't be in nodelist?
             }
@@ -355,6 +358,7 @@ public class StatementBuilder {
         {
             exitBlock.predecessorList.add(elseEntry);
             elseEntry.addInstruction(new BrUncond(retBlock.label));
+            elseEntry.successorList.add(retBlock);
         }
 
         //exitBlock.predecessorList.add(elseExit); // TODO ?
@@ -420,6 +424,8 @@ public class StatementBuilder {
         trueExitNode.addInstruction(new Trunc(guardValT, extGuardT));
         Instruction brInstT = new BrCond(extGuardT, trueEntryNode.label, falseNode.label);
         trueExitNode.addInstruction(brInstT);
+        trueExitNode.successorList.add(trueEntryNode);
+        trueExitNode.successorList.add(falseNode);
 
         // TODO is this where to seal?
         trueEntryNode.seal();
