@@ -3,14 +3,12 @@ package llvm.inst;
 import arm.Mov;
 import cfg.BasicBlock;
 import cfg.Label;
+import cfg.SSCPValue;
 import llvm.type.Type;
 import llvm.type.i32;
-import llvm.value.Local;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Phi implements Instruction {
@@ -26,6 +24,105 @@ public class Phi implements Instruction {
         this.result = result;
         this.entryList = new ArrayList<>();
         this.id = id;
+
+        result.addDef(this);
+        // TODO ???
+        for (PhiEntry entry : entryList)
+        {
+            entry.value.addUse(this);
+        }
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        // TODO
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        SSCPValue oldRes = map.get(result);
+
+        Object imm = null;
+        boolean bottom = false;
+        for (PhiEntry entry : entryList)
+        {
+            Value v = entry.value;
+            if (v instanceof Immediate)
+            {
+                imm = Integer.parseInt(v.getId());
+            }
+            else
+            {
+                SSCPValue sscpValue = map.get(v);
+                if (sscpValue instanceof SSCPValue.Bottom)
+                {
+                    bottom = true;
+                }
+                else if (sscpValue instanceof SSCPValue.Constant)
+                {
+                    imm = ((SSCPValue.Constant)sscpValue).getConst();
+                }
+            }
+        }
+
+        SSCPValue newRes;
+        if (bottom)
+        {
+            newRes = new SSCPValue.Bottom();
+        }
+        else if (imm != null)
+        {
+            newRes = new SSCPValue.Constant((int)imm); // TODO sus
+        }
+        else
+        {
+            newRes = new SSCPValue.Top();
+        }
+
+        if (oldRes != newRes)
+        {
+            workList.add(result);
+            map.put(result, newRes);
+        }
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        Immediate imm = null;
+        Local param = null;
+        for (PhiEntry entry : entryList)
+        {
+            Value v = entry.value;
+            if (v instanceof Immediate)
+            {
+                imm = (Immediate) v;
+            }
+            else if (v instanceof Local)
+            {
+                if (((Local)v).isParam())
+                {
+                    param = (Local) v;
+                }
+            }
+        }
+        if (param != null)
+        {
+            map.put(result, new SSCPValue.Bottom());
+            workList.add(result);
+            return;
+        }
+        else if (imm != null)
+        {
+            int immV = Integer.parseInt(imm.getId());
+            map.put(result, new SSCPValue.Constant(immV));
+            workList.add(result);
+            return;
+        }
+        else
+        {
+            map.put(result, new SSCPValue.Top());
+            return;
+        }
     }
 
     public String getId()

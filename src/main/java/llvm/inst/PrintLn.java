@@ -2,12 +2,11 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
-import llvm.value.Register;
-import llvm.value.Value;
+import cfg.SSCPValue;
+import llvm.value.*;
 import llvm.type.Type;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PrintLn implements Instruction {
 
@@ -18,6 +17,26 @@ public class PrintLn implements Instruction {
     {
         this.val = val;
         this.type = type;
+
+        val.addUse(this);
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit println");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (val == v)
+        {
+            val = constant;
+        }
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval println");
     }
 
     public String getString()

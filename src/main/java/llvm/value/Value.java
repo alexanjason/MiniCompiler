@@ -1,6 +1,9 @@
 package llvm.value;
 
+import llvm.inst.Instruction;
 import llvm.type.Type;
+
+import java.util.List;
 
 public interface Value {
 
@@ -10,4 +13,11 @@ public interface Value {
 
     String getId();
 
+    void addDef(llvm.inst.Instruction def);
+
+    void addUse(llvm.inst.Instruction use);
+
+    Instruction getDef();
+
+    List<Instruction> getUses();
 }

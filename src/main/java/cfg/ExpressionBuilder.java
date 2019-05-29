@@ -21,14 +21,16 @@ public class ExpressionBuilder {
     TypeConverter converter;
     SymbolTableList symbolTableList;
     StructTable structTable;
+    protected List<Value> values;
 
     public ExpressionBuilder(boolean stackBased, TypeConverter converter, SymbolTableList symbolTableList,
-                             StructTable structTable)
+                             StructTable structTable, List<Value> values)
     {
         this.stackBased = stackBased;
         this.converter = converter;
         this.symbolTableList = symbolTableList;
         this.structTable = structTable;
+        this.values = values;
     }
 
     private Value AddIdentifierExpression(IdentifierExpression exp, BasicBlock currentBlock)
@@ -48,6 +50,8 @@ public class ExpressionBuilder {
                 // TODO ahhhhhhhhhhhhhh
                 result = new Register(pointer.getType());
             }
+            values.add(result);
+
             currentBlock.addInstruction(new Load(result, pointer));
         }
         else
@@ -63,18 +67,25 @@ public class ExpressionBuilder {
     {
         Scope scope = symbolTableList.scopeOf(id);
         Type type = converter.convertType(symbolTableList.typeOf(id));
+
+        Value val;
         if (scope == Scope.PARAM)
         {
-            return new Local("_P_" + id, type);
+            val = new Local("_P_" + id, type);
+            //return new Local("_P_" + id, type);
         }
         else if (scope == Scope.GLOBAL)
         {
-            return new Global(id, type);
+            val = new Global(id, type);
+            //return new Global(id, type);
         }
         else
         {
-            return new Local(id, type);
+            val = new Local(id, type);
+            //return new Local(id, type);
         }
+        values.add(val);
+        return val;
     }
 
     private Value AddUnaryExpression(UnaryExpression uExp, BasicBlock currentBlock)
@@ -90,6 +101,7 @@ public class ExpressionBuilder {
         {
             result = new Register(new i32());
         }
+        values.add(result);
 
         switch(op)
         {
@@ -103,6 +115,8 @@ public class ExpressionBuilder {
                 {
                     extTrue = new Register(new i32());
                 }
+                values.add(extTrue);
+
                 currentBlock.addInstruction(new Zext(new Immediate("true", new i1()), extTrue));
                 currentBlock.addInstruction(new Xor(extTrue, rVal, result));
                 return result;
@@ -129,6 +143,8 @@ public class ExpressionBuilder {
         {
             result = new Register(new i32());
         }
+        values.add(result);
+
         if (op == BinaryExpression.Operator.TIMES)
         {
             currentBlock.addInstruction(new Mult(result, leftLoc, rightLoc));
@@ -160,6 +176,8 @@ public class ExpressionBuilder {
             {
                 intResult = new Register(new i1());
             }
+            values.add(intResult);
+
             currentBlock.addInstruction(new Icmp(intResult, "slt", leftLoc, rightLoc));
             currentBlock.addInstruction(new Zext(intResult, result));
             return result;
@@ -175,6 +193,8 @@ public class ExpressionBuilder {
             {
                 intResult = new Register(new i1());
             }
+            values.add(intResult);
+
             currentBlock.addInstruction(new Icmp(intResult, "sgt", leftLoc, rightLoc));
             currentBlock.addInstruction(new Zext(intResult, result));
             return result;
@@ -190,6 +210,8 @@ public class ExpressionBuilder {
             {
                 intResult = new Register(new i1());
             }
+            values.add(intResult);
+
             currentBlock.addInstruction(new Icmp(intResult, "sle", leftLoc, rightLoc));
             currentBlock.addInstruction(new Zext(intResult, result));
             return result;
@@ -205,6 +227,8 @@ public class ExpressionBuilder {
             {
                 intResult = new Register(new i1());
             }
+            values.add(intResult);
+
             currentBlock.addInstruction(new Icmp(intResult, "sge", leftLoc, rightLoc));
             currentBlock.addInstruction(new Zext(intResult, result));
             return result;
@@ -220,6 +244,8 @@ public class ExpressionBuilder {
             {
                 intResult = new Register(new i1());
             }
+            values.add(intResult);
+
             currentBlock.addInstruction(new Icmp(intResult, "eq", leftLoc, rightLoc));
             // TODO could be struct
             currentBlock.addInstruction(new Zext(intResult, result));
@@ -237,6 +263,8 @@ public class ExpressionBuilder {
             {
                 intResult = new Register(new i1());
             }
+            values.add(intResult);
+
             currentBlock.addInstruction(new Icmp(intResult, "ne", leftLoc, rightLoc));
             currentBlock.addInstruction(new Zext(intResult, result));
 
@@ -283,6 +311,8 @@ public class ExpressionBuilder {
             ptr = new Register(new i8());
             result = new Register(type);
         }
+        values.add(ptr);
+        values.add(result);
 
         currentBlock.addInstruction(new Call(ptr, "malloc", paramTypes, paramVals));
         currentBlock.addInstruction(new Bitcast(ptr, result));
@@ -312,6 +342,8 @@ public class ExpressionBuilder {
             {
                 result = new Register(new i32());
             }
+            values.add(result);
+
             currentBlock.addInstruction(new Zext(new Immediate("false", new i1()) , result));
             return result;
         }
@@ -350,6 +382,8 @@ public class ExpressionBuilder {
             {
                 result = new Register(new i32());
             }
+            values.add(result);
+
             List<Value> emptyValList = new ArrayList<>();
             List<Type> emptyTypeList = new ArrayList<>();
             currentBlock.addInstruction(new Call(result,"read_util", emptyTypeList, emptyValList));
@@ -368,6 +402,8 @@ public class ExpressionBuilder {
             {
                 result = new Register(new i32());
             }
+            values.add(result);
+
             currentBlock.addInstruction(new Zext(new Immediate("true", new i1()), result));
             return result;
         }
@@ -403,6 +439,8 @@ public class ExpressionBuilder {
         {
             offsetAddr = new Register(sType);
         }
+        values.add(offsetAddr);
+
         StructEntry entry = structTable.get(((Struct)sType).getName());
         int index = entry.getFieldIndex(exp.getId());
         currentBlock.addInstruction(new Getelementptr(offsetAddr, localLoc, index));
@@ -418,6 +456,8 @@ public class ExpressionBuilder {
         {
             result = new Register(fieldType);
         }
+        values.add(result);
+
         currentBlock.addInstruction(new Load(result, offsetAddr));
 
         return result;
@@ -438,24 +478,27 @@ public class ExpressionBuilder {
             paramTypes.add(converter.convertType(fType.getParamType(i)));
             i++;
         }
-        Value result;
-        if (stackBased)
-        {
-            result = new StackLocation(retType);
-        }
-        else
-        {
-            result = new Register(retType);
-        }
+
         Instruction callInst;
+        Value result = null;
         if (retType instanceof Void)
         {
             callInst = new CallVoid(fName, paramTypes, paramVals);
         }
         else
         {
+            if (stackBased)
+            {
+                result = new StackLocation(retType);
+            }
+            else
+            {
+                result = new Register(retType);
+            }
+            values.add(result);
             callInst = new Call(result, fName, paramTypes, paramVals);
         }
+
         currentBlock.addInstruction(callInst);
         return result;
     }

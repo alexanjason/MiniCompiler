@@ -1,11 +1,10 @@
 package llvm.inst;
 
 import arm.Mov;
-import llvm.value.Register;
-import llvm.value.Value;
+import cfg.SSCPValue;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Return implements Instruction {
 
@@ -16,6 +15,27 @@ public class Return implements Instruction {
     public Return(Value value)
     {
         this.value = value;
+
+        // TODO ???
+        value.addUse(this);
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit return");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (value == v)
+        {
+            value = constant;
+        }
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval return");
     }
 
     public String getString()

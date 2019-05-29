@@ -4,12 +4,9 @@ import arm.B;
 import arm.Beq;
 import arm.Cmp;
 import cfg.*;
-import llvm.value.Immediate;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BrCond implements Instruction {
 
@@ -22,6 +19,26 @@ public class BrCond implements Instruction {
         this.cond = cond;
         this.ifTrue = ifTrue;
         this.ifFalse = ifFalse;
+
+        cond.addUse(this);
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit brcond");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval brcond");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (cond == v)
+        {
+            cond = constant;
+        }
     }
 
     public String getString()

@@ -33,6 +33,26 @@ public class Register implements Value {
         real = true;
     }
 
+    public void addDef(Instruction def)
+    {
+        this.def = def;
+    }
+
+    public void addUse(Instruction use)
+    {
+        this.uses.add(use);
+    }
+
+    public Instruction getDef()
+    {
+        return def;
+    }
+
+    public List<Instruction> getUses()
+    {
+        return uses;
+    }
+
     public boolean isReal()
     {
         return real;
@@ -58,16 +78,6 @@ public class Register implements Value {
         {
             return ("%v" + id);
         }
-    }
-
-    public void addDef(Instruction def)
-    {
-        this.def = def;
-    }
-
-    public void addUse(Instruction use)
-    {
-        uses.add(use);
     }
 
     @Override

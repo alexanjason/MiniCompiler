@@ -33,6 +33,19 @@ public class ControlFlowGraphList {
         }
     }
 
+    public void uselessCodeElimination()
+    {
+        // TODO
+    }
+
+    public void sparseSimpleConstantPropagation()
+    {
+        for (ControlFlowGraph cfg : controlFlowGraphs)
+        {
+            cfg.constantPropagation();
+        }
+    }
+
     public void codeGen()
     {
         for (ControlFlowGraph cfg : controlFlowGraphs)

@@ -1,14 +1,11 @@
 package llvm.inst;
 
 import arm.Mov;
+import cfg.SSCPValue;
 import llvm.type.i32;
-import llvm.value.Immediate;
-import llvm.value.Local;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class FuncStart implements Instruction{
 
@@ -22,6 +19,20 @@ public class FuncStart implements Instruction{
     public String getString()
     {
         return "";
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit funcend");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval funcstart");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
     }
 
     @Override

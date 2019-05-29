@@ -119,6 +119,7 @@ public class BasicBlock {
             }
         }
 
+        /*
         System.out.println(this.label.getString() + ":");
         System.out.print("\tgenSet: ");
         for (Value v : genSet)
@@ -131,6 +132,7 @@ public class BasicBlock {
             System.out.print(v.getString() + " ");
         }
         System.out.println();
+        */
     }
 
     public int getLabelId()

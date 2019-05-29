@@ -23,6 +23,8 @@ public class ControlFlowGraph {
     // nodes are basic blocks
     protected List<BasicBlock> nodeList;
 
+    protected List<Value> values;
+
     protected StructTable structTable;
 
     protected SymbolTableList symbolTableList;
@@ -42,6 +44,7 @@ public class ControlFlowGraph {
         this.function = func;
         this.stackBased = stack;
         this.converter = new TypeConverter(structTable);
+        this.values = new ArrayList<>();
         entryNode = new BasicBlock(new ArrayList<>(), stackBased);
         exitNode = new BasicBlock(new ArrayList<>(), stackBased);
         entryNode.seal();
@@ -57,7 +60,9 @@ public class ControlFlowGraph {
             if (stackBased)
             {
                 Value result = new StackLocation(type);
+                values.add(result);
                 Value retVal = new Local("_retval_", type);
+                values.add(retVal);
                 entryNode.addInstruction(new Allocate("_retval_", type));
                 exitNode.addInstruction(new Load(result, retVal));
                 exitNode.addInstruction(new Return(result));
@@ -69,34 +74,122 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
+    public void constantPropagation()
+    {
+        Map<Value, SSCPValue> sscpMap = new HashMap<>(); // TODO Value hash code
+        //Set<Value> workList = new HashSet<>();
+        //Queue<Value> workList = new LinkedList<>();
+        List<Value> workList = new ArrayList<>();
+
+        // initialize value mappings
+        for (Value v : values)
+        {
+
+            // TODO hacky
+            if (v instanceof Global)
+            {
+                sscpMap.put(v, new SSCPValue.Bottom());
+                workList.add(v);
+            }
+            else if (v instanceof Local)
+            {
+                if (((Local)v).isParam())
+                {
+                    // TODO so much duplicate code in llvm instructions
+                    sscpMap.put(v, new SSCPValue.Bottom());
+                    workList.add(v);
+                }
+                else
+                {
+                    // TODO hacky and possibly incorrect
+                    if (v.getDef() == null)
+                    {
+                        sscpMap.put(v, new SSCPValue.Top());
+                    }
+                    else
+                    {
+                        System.err.println("ELSE NEEDS HELP");
+                        System.out.println(v.getString());
+                        v.getDef().print(System.out);
+                    }
+                }
+            }
+            else
+            {
+                // TODO quick mindless hack
+                if (v.getDef() == null)
+                {
+                    System.err.println(v.getString() + " def == null");
+                }
+                else
+                {
+                    v.getDef().sscpInit(sscpMap, workList);
+                }
+            }
+        }
+
+        //Iterator iterator = workList.iterator();
+        ListIterator iterator = workList.listIterator();
+        while (iterator.hasNext())
+        {
+            Value r = (Value)iterator.next();
+            iterator.remove();
+
+            for (Instruction inst : r.getUses())
+            {
+                inst.sscpEval(sscpMap, iterator);
+            }
+        }
+
+        System.out.println("SSCP MAPPINGS: ");
+        for (Value v : sscpMap.keySet())
+        {
+            System.out.println(v.getString() + " -> " + sscpMap.get(v).getString());
+        }
+
+        for (Value v : sscpMap.keySet())
+        {
+            if (sscpMap.get(v) instanceof SSCPValue.Constant)
+            {
+                Object c = ((SSCPValue.Constant)sscpMap.get(v)).getConst();
+                Immediate constant;
+                if (c instanceof Boolean)
+                {
+                    constant = new Immediate(Boolean.toString((Boolean)c), new i32());
+                }
+                else if (c instanceof Integer)
+                {
+                    constant = new Immediate(Integer.toString((Integer)c), new i32());
+                }
+                else
+                {
+                    constant = null;
+                    System.err.println("PANIC sscp constant to immediate " + c.toString());
+                }
+                for (Instruction inst : v.getUses())
+                {
+                    inst.sscpReplace(v, constant);
+                }
+            }
+        }
+    }
+
     public void propagateLiveOutSets()
     {
         boolean guard = true;
-        //List<BasicBlock> newNodeList = nodeList;
         int count = 0;
 
         while(guard)
-        //Iterator iterator = newNodeList.iterator();
-        //while (iterator.hasNext())
         {
             // TODO move to BasicBlock?
-
-            //for (int i = nodeList.size() - 1; i >= 0; i--)
             for (BasicBlock n : nodeList)
             {
-                //BasicBlock n = (BasicBlock) iterator.next();
-                //System.out.println("***" + n.label.getString() + "***");
                 Set<Value> newLiveOut = new HashSet<>();
-                //BasicBlock n = nodeList.get(i);
 
                 for (BasicBlock m : n.successorList)
                 {
-                    //System.out.println(m.label.getString());
-
                     Set<Value> temp = m.liveOut;
-                    //System.out.println("m.liveOut " + temp);
                     Set<Value> all = m.genSet;
-                    //System.out.println("m.genSet " + all);
 
                     // LiveOut(m) - Kill(m)
                     temp.removeAll(m.killSet);
@@ -108,24 +201,17 @@ public class ControlFlowGraph {
                     newLiveOut.addAll(all);
                 }
 
-                //System.out.println("liveOut " + n.liveOut);
-                //System.out.println("newLiveOut " + newLiveOut);
-
                 if (n.liveOut.equals(newLiveOut))
                 {
-                    //newNodeList.remove()
                     if (count != 0)
                     {
                         guard = false;
                     }
-                    //iterator.remove();
                 }
                 n.liveOut = newLiveOut;
                 count ++;
-                //n.liveOut.addAll(newLiveOut);
             }
         }
-
 
         for (BasicBlock n : nodeList)
         {
@@ -136,7 +222,6 @@ public class ControlFlowGraph {
                 System.out.print(v.getString() + " ");
             }
             System.out.println();
-
         }
     }
 
@@ -161,7 +246,7 @@ public class ControlFlowGraph {
             b.firstPass();
         }
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     public void regAlloc()
@@ -171,7 +256,7 @@ public class ControlFlowGraph {
         InterferenceGraph interferenceGraph = buildInterferenceGraph();
         interferenceGraph.regAlloc();
 
-        //interferenceGraph.printGraph();
+        interferenceGraph.printGraph();
         interferenceGraph.printMap();
 
         for (BasicBlock b : nodeList)
@@ -192,17 +277,11 @@ public class ControlFlowGraph {
         }
         else
         {
-            // add params to mapping
-            // TODO are parameters put into registers??
             AddParamsToMapping(function.getParams());
-
-            // add locals to mapping
-            // TODO nothing to do here?
         }
 
         // create instructions from body
         AddBodyInst(function.getBody());
-        //StatementBuilder builder = new StatementBuilder(function.getBody(), entryNode, exitNode);
     }
 
     private void AddParamsToMapping(List<Declaration> params)
@@ -211,7 +290,9 @@ public class ControlFlowGraph {
         {
             Type type = converter.convertType(dec.getType());
             String name = dec.getName();
-            Value localParam = new Local(name, type); // TODO local?
+            // TODO have Paramerer class instead of hacky constructor
+            Value localParam = new Local(name, type, true);
+            values.add(localParam);
             entryNode.writeVariable(name, localParam);
         }
     }
@@ -223,7 +304,10 @@ public class ControlFlowGraph {
             // Create allocation instruction
             Type type = converter.convertType(dec.getType());
             String param = "_P_" + dec.getName();
-            Value localParam = new Local(param, type);
+
+            // TODO have Paramerer class instead of hacky constructor
+            Value localParam = new Local(param, type, true);
+            values.add(localParam);
             Instruction inst = new Allocate(param, type);
 
             // Add allocation instruction to entry node
@@ -231,6 +315,7 @@ public class ControlFlowGraph {
 
             // load param into allocated location
             Value actualParam = new Local(dec.getName(), type);
+            values.add(actualParam);
             entryNode.addInstruction(new Store(actualParam, localParam));
         }
     }
@@ -241,20 +326,26 @@ public class ControlFlowGraph {
         {
             BlockStatement block = (BlockStatement) body;
             StatementBuilder builder = new StatementBuilder(stackBased, converter,
-                    symbolTableList, structTable, entryNode, exitNode, function.getRetType(), nodeList);
+                    symbolTableList, structTable, entryNode, exitNode, function.getRetType(), nodeList, values);
             BasicBlock lastBlock = builder.build(block, entryNode);
 
+            Type type = converter.convertType(function.getRetType());
             if (lastBlock == null)
             {
                 entryNode.addInstruction(new BrUncond(exitNode.label));
             }
 
-            Type type = converter.convertType(function.getRetType());
+
 
             if (type instanceof Void)
             {
                 exitNode.addInstruction(new FuncEnd(function.getName()));
-                lastBlock.addInstruction(new BrUncond(exitNode.label));
+
+                // TODO mindless hack
+                if (lastBlock != null)
+                {
+                    lastBlock.addInstruction(new BrUncond(exitNode.label));
+                }
                 exitNode.addInstruction(new ReturnVoid());
             }
 

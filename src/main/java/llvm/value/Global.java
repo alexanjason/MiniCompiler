@@ -1,6 +1,10 @@
 package llvm.value;
 
+import llvm.inst.Instruction;
 import llvm.type.Type;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Global implements Value {
 
@@ -11,6 +15,26 @@ public class Global implements Value {
     {
         this.id = id;
         this.type = type;
+    }
+
+    public void addDef(Instruction def)
+    {
+        System.err.println("addDef global");
+    }
+
+    public void addUse(Instruction use)
+    {
+        System.err.println("addUse global");
+    }
+
+    public Instruction getDef()
+    {
+        return null;
+    }
+
+    public List<Instruction> getUses()
+    {
+        return new ArrayList<>();
     }
 
     public String getString()

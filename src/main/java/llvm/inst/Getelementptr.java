@@ -1,13 +1,10 @@
 package llvm.inst;
 
+import cfg.SSCPValue;
 import llvm.type.i32;
-import llvm.value.Immediate;
-import llvm.value.Local;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Getelementptr implements Instruction {
 
@@ -20,6 +17,27 @@ public class Getelementptr implements Instruction {
         this.result = result;
         this.base = base;
         this.index = index;
+
+        result.addDef(this);
+        base.addUse(this);
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit getelementptr");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval getelementptr");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (base == v)
+        {
+            base = constant;
+        }
     }
 
     public String getString()

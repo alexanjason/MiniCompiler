@@ -2,12 +2,11 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import cfg.SSCPValue;
 import llvm.type.Type;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Call implements Instruction {
 
@@ -23,6 +22,34 @@ public class Call implements Instruction {
         this.name = name;
         this.paramTypes = paramTypes;
         this.paramVals = paramVals;
+
+        // TODO ????
+        result.addDef(this);
+        for (Value v : paramVals)
+        {
+            v.addUse(this);
+        }
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit call " + name);
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval call");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        for (int i = 0; i < paramVals.size(); i++)
+        {
+            if (paramVals.get(i) == v)
+            {
+                paramVals.set(i, constant);
+            }
+        }
     }
 
     public String getString()

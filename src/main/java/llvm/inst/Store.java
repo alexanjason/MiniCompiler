@@ -1,13 +1,10 @@
 package llvm.inst;
 
 import arm.Str;
-import llvm.value.Immediate;
-import llvm.value.Local;
-import llvm.value.Register;
-import llvm.value.Value;
+import cfg.SSCPValue;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Store implements Instruction {
 
@@ -20,6 +17,18 @@ public class Store implements Instruction {
     {
         this.ptr = ptr;
         this.value = value;
+
+        // TODO def?
+        ptr.addUse(this);
+        value.addUse(this);
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (ptr == v)
+        {
+            ptr = constant;
+        }
     }
 
     public String getString()
@@ -27,6 +36,17 @@ public class Store implements Instruction {
         String valTypeStr = ptr.getType().getString();
 
         return ("store " + valTypeStr + " " + value.getString() + ", " + valTypeStr + "* " + ptr.getString());
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        // TODO def?
+        System.err.println("sscpinit store");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval store");
     }
 
     public List<arm.Instruction> getArm()

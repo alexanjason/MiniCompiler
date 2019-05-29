@@ -66,14 +66,19 @@ public class Mov implements Instruction {
 
     public String getString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("mov " + r1.getString() + ", ");
-        if (Operand2 instanceof Immediate)
+        // TODO make newlines instructions
+        if (!(r1.getString().equals(Operand2.getString())))
         {
-            sb.append("#");
+            StringBuilder sb = new StringBuilder();
+            sb.append("mov " + r1.getString() + ", ");
+            if (Operand2 instanceof Immediate)
+            {
+                sb.append("#");
+            }
+            sb.append(Operand2.getString());
+            return sb.toString();
         }
-        sb.append(Operand2.getString());
-        return sb.toString();
+        return "";
     }
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)

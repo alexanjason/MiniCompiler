@@ -1,14 +1,11 @@
 package llvm.inst;
 
 import arm.*;
+import cfg.SSCPValue;
 import llvm.type.i32;
-import llvm.value.Immediate;
-import llvm.value.Local;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Icmp implements Instruction {
 
@@ -22,12 +19,174 @@ public class Icmp implements Instruction {
         this.cond = cond;
         this.op1 = op1;
         this.op2 = op2;
+
+        result.addDef(this);
+        op1.addUse(this);
+        op2.addUse(this);
     }
 
     public String getString()
     {
         return (result.getString() + " = icmp " + cond + " " +
                 op1.getType().getString() + " " + op1.getString() + ", " + op2.getString());
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (op1 == v)
+        {
+            op1 = constant;
+        }
+        if (op2 == v)
+        {
+            op2 = constant;
+        }
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        if (!(map.get(result) instanceof SSCPValue.Bottom))
+        {
+            SSCPValue oldResult = map.get(result);
+            SSCPValue newResult;
+
+            SSCPValue sscpLeft;
+            SSCPValue sscpRight;
+
+            if (op1 instanceof Immediate)
+            {
+                sscpLeft = new SSCPValue.Constant(Integer.parseInt(op1.getId()));
+            }
+            else
+            {
+                sscpLeft = map.get(op1);
+            }
+
+            if (op2 instanceof Immediate)
+            {
+                sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
+            }
+            else
+            {
+                sscpRight = map.get(op2);
+            }
+
+            if (sscpLeft instanceof SSCPValue.Bottom || sscpRight instanceof SSCPValue.Bottom)
+            {
+                newResult = new SSCPValue.Bottom();
+            }
+            else if (sscpLeft instanceof SSCPValue.Constant && sscpRight instanceof SSCPValue.Constant)
+            {
+                int l = (int)((SSCPValue.Constant) sscpLeft).getConst();
+                int r = (int)((SSCPValue.Constant) sscpRight).getConst();
+                if (cond.equals("slt"))
+                {
+                    newResult = new SSCPValue.Constant(l < r);
+                }
+                else if (cond.equals("sgt"))
+                {
+                    newResult = new SSCPValue.Constant(l > r);
+                }
+                else if (cond.equals("sle"))
+                {
+                    newResult = new SSCPValue.Constant(l <= r);
+                }
+                else if (cond.equals("sge"))
+                {
+                    newResult = new SSCPValue.Constant(l >= r);
+                }
+                else if (cond.equals("eq"))
+                {
+                    newResult = new SSCPValue.Constant(l == r);
+                }
+                else if (cond.equals("ne"))
+                {
+                    newResult = new SSCPValue.Constant(l != r);
+                }
+                else
+                {
+                    System.err.println("PANIC icmp sscp init");
+                    newResult = null;
+                }
+            }
+            else
+            {
+                newResult = new SSCPValue.Top();
+            }
+
+            if (oldResult != newResult)
+            {
+                workList.add(result);
+                map.put(result, newResult);
+            }
+        }
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        if ((op1 instanceof Immediate) && (op2 instanceof Immediate))
+        {
+            int leftImm = Integer.parseInt(op1.getId());
+            int rightImm = Integer.parseInt(op2.getId());
+
+            SSCPValue val;
+            if (cond.equals("slt"))
+            {
+                val = new SSCPValue.Constant(leftImm < rightImm);
+            }
+            else if (cond.equals("sgt"))
+            {
+                val = new SSCPValue.Constant(leftImm > rightImm);
+            }
+            else if (cond.equals("sle"))
+            {
+                val = new SSCPValue.Constant(leftImm <= rightImm);
+            }
+            else if (cond.equals("sge"))
+            {
+                val = new SSCPValue.Constant(leftImm >= rightImm);
+            }
+            else if (cond.equals("eq"))
+            {
+                val = new SSCPValue.Constant(leftImm == rightImm);
+            }
+            else if (cond.equals("ne"))
+            {
+                val = new SSCPValue.Constant(leftImm != rightImm);
+            }
+            else
+            {
+                System.err.println("PANIC icmp sscp init");
+                val = null;
+            }
+
+            map.put(result, val);
+            workList.add(result);
+        }
+        else if (op1 instanceof Local)
+        {
+            if (((Local)op1).isParam())
+            {
+                map.put(result, new SSCPValue.Bottom());
+                workList.add(result);
+            }
+        }
+        else if (op2 instanceof Local)
+        {
+            if (((Local)op2).isParam())
+            {
+                map.put(result, new SSCPValue.Bottom());
+                workList.add(result);
+            }
+        }
+        else if ((op1 instanceof Register) || (op1 instanceof StackLocation) || (op2 instanceof Register) || (op2 instanceof StackLocation))
+        {
+            map.put(result, new SSCPValue.Top());
+        }
+        else
+        {
+            System.err.println("sscpinit icmp. left: " + op1.getString() + " right: " + op2.getString());
+        }
     }
 
     public List<arm.Instruction> getArm()

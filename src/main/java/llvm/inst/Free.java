@@ -2,11 +2,10 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
-import llvm.value.Register;
-import llvm.value.Value;
+import cfg.SSCPValue;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Free implements Instruction {
 
@@ -15,11 +14,28 @@ public class Free implements Instruction {
     public Free(Value ptr)
     {
         this.ptr = ptr;
+
+        // TODO ???
+        ptr.addUse(this);
     }
 
     public String getString()
     {
         return ("call void @free(i8* " + ptr.getString() + ")");
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit free");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval free");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
     }
 
     public List<arm.Instruction> getArm()

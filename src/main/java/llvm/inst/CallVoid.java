@@ -2,13 +2,12 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import cfg.SSCPValue;
 import llvm.type.Type;
 import llvm.type.Void;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CallVoid implements Instruction {
 
@@ -21,6 +20,33 @@ public class CallVoid implements Instruction {
         this.name = name;
         this.paramTypes = paramTypes;
         this.paramVals = paramVals;
+
+        // TODO ????
+        for (Value v : paramVals)
+        {
+            v.addUse(this);
+        }
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit call void");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval callvoid");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        for (int i = 0; i < paramVals.size(); i++)
+        {
+            if (paramVals.get(i) == v)
+            {
+                paramVals.set(i, constant);
+            }
+        }
     }
 
     public String getString()

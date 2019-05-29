@@ -12,12 +12,17 @@ public class MiniCompiler
    private static boolean stackBased;
    private static boolean llvm;
    private static boolean regAlloc;
+   private static boolean uce;
+   private static boolean sscp;
 
    public static void main(String[] args)
    {
       stackBased = false;
       llvm = false;
       regAlloc = false;
+      uce = false;
+      sscp = false;
+
       parseParameters(args);
 
       CommonTokenStream tokens = new CommonTokenStream(createLexer());
@@ -43,6 +48,14 @@ public class MiniCompiler
          if (regAlloc)
          {
             cfgList.regAlloc();
+         }
+         if (uce)
+         {
+            cfgList.uselessCodeElimination();
+         }
+         if (sscp)
+         {
+            cfgList.sparseSimpleConstantPropagation();
          }
 
          //cfgList.print(System.out); // for debugging
@@ -96,6 +109,14 @@ public class MiniCompiler
             else if (args[i].equals("-regalloc"))
             {
                regAlloc = true;
+            }
+            else if (args[i].equals("-uce"))
+            {
+               uce = true;
+            }
+            else if (args[i].equals("-sscp"))
+            {
+               sscp = true;
             }
             else
             {

@@ -1,11 +1,10 @@
 package llvm.inst;
 
 import arm.Mov;
-import llvm.value.Register;
-import llvm.value.Value;
+import cfg.SSCPValue;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Bitcast implements Instruction {
 
@@ -16,6 +15,27 @@ public class Bitcast implements Instruction {
     {
         this.val = val;
         this.result = result;
+
+        result.addDef(this);
+        val.addUse(this);
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit bitcast. result: " + result.getString() + "val: " + val.getString());
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval allocate");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        if (val == v)
+        {
+            val = constant;
+        }
     }
 
     public String getString()

@@ -2,18 +2,26 @@ package llvm.inst;
 
 import arm.Movt;
 import arm.Movw;
+import cfg.SSCPValue;
 import llvm.type.i32;
 import llvm.value.Immediate;
 import llvm.value.Register;
+import llvm.value.Value;
 
 import java.io.PrintStream;
-import java.util.List;
+import java.util.*;
 
 public interface Instruction {
 
     String getString();
 
     List<arm.Instruction> getArm();
+
+    void sscpInit(Map<Value, SSCPValue> map, List<Value> workList);
+
+    void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList);
+
+    void sscpReplace(Value v, Immediate constant);
 
     default Register ImmediateToRegister(Immediate immVal, List<arm.Instruction> list)
     {

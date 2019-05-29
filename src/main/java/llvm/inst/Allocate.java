@@ -1,10 +1,11 @@
 package llvm.inst;
 
 
+import cfg.SSCPValue;
 import llvm.type.Type;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Allocate implements Instruction {
 
@@ -17,6 +18,23 @@ public class Allocate implements Instruction {
     {
         this.name = name;
         this.type = type;
+
+        // TODO def or use?
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval allocate");
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscp init allocate");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
+        System.err.println("sscpReplace allocate");
     }
 
     public String getString()

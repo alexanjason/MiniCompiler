@@ -23,13 +23,14 @@ public class StatementBuilder {
     BasicBlock exitNode;
     ast.type.Type retType;
     List<BasicBlock> nodeList;
+    protected List<Value> values;
 
     public StatementBuilder(boolean stackBased, TypeConverter converter, SymbolTableList symbolTableList,
                             StructTable structTable, BasicBlock entry, BasicBlock exit, ast.type.Type retType,
-                                    List<BasicBlock> nodeList)
+                                    List<BasicBlock> nodeList, List<Value> values)
     {
         this.stackBased = stackBased;
-        this.expBuilder = new ExpressionBuilder(stackBased, converter, symbolTableList, structTable);
+        this.expBuilder = new ExpressionBuilder(stackBased, converter, symbolTableList, structTable, values);
         this.converter = converter;
         this.symbolTableList = symbolTableList;
         this.structTable = structTable;
@@ -37,6 +38,7 @@ public class StatementBuilder {
         this.exitNode = exit;
         this.retType = retType;
         this.nodeList = nodeList;
+        this.values = values;
     }
 
     public BasicBlock build(BlockStatement start, BasicBlock entry)
@@ -108,7 +110,7 @@ public class StatementBuilder {
             {
                 offsetAddr = new Register(fieldType);
             }
-
+            values.add(offsetAddr);
 
             currentBlock.addInstruction(new Getelementptr(offsetAddr, localLoc, index));
             return offsetAddr;
@@ -127,7 +129,9 @@ public class StatementBuilder {
             {
                 Type type = converter.convertType(symbolTableList.typeOf(id));
                 //return currentBlock.readVariable(id, type);
-                return new Local(id, type);
+                Value local = new Local(id, type);
+                values.add(local);
+                return local;
             }
         }
     }
@@ -144,6 +148,8 @@ public class StatementBuilder {
         {
             result = new Register(new i8());
         }
+        values.add(result);
+
         // TODO reuse call? issue: free has no result
         currentBlock.addInstruction(new Bitcast(val, result));
         currentBlock.addInstruction(new Free(result));
@@ -248,6 +254,7 @@ public class StatementBuilder {
         if (stackBased)
         {
             Value retVal = new Local("_retval_", type);
+            values.add(retVal);
             currentBlock.addInstruction(new Store(retExpVal, retVal));
         }
         else
@@ -283,6 +290,8 @@ public class StatementBuilder {
         {
             extGuard = new Register(new i1());
         }
+        values.add(extGuard);
+
         currentBlock.addInstruction(new Trunc(guardLoc, extGuard));
         currentBlock.addInstruction(new BrCond(extGuard, thenEntry.label, elseEntry.label));
 
@@ -378,6 +387,8 @@ public class StatementBuilder {
         {
             extGuard = new Register(new i1());
         }
+        values.add(extGuard);
+
         currentBlock.addInstruction(new Trunc(guardVal, extGuard));
         Instruction brInst = new BrCond(extGuard, trueEntryNode.label, falseNode.label);
         currentBlock.addInstruction(brInst);
@@ -404,6 +415,8 @@ public class StatementBuilder {
         {
             extGuardT = new Register(new i1());
         }
+        values.add(extGuardT);
+
         trueExitNode.addInstruction(new Trunc(guardValT, extGuardT));
         Instruction brInstT = new BrCond(extGuardT, trueEntryNode.label, falseNode.label);
         trueExitNode.addInstruction(brInstT);

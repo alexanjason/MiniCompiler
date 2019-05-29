@@ -2,9 +2,10 @@ package llvm.inst;
 
 import arm.B;
 import cfg.Label;
+import cfg.SSCPValue;
+import llvm.value.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BrUncond implements Instruction {
 
@@ -18,6 +19,20 @@ public class BrUncond implements Instruction {
     public String getString()
     {
         return ("br label %" + dest.getString());
+    }
+
+    public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
+    {
+        System.err.println("sscpinit bruncon");
+    }
+
+    public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
+    {
+        System.err.println("sscpEval bruncond");
+    }
+
+    public void sscpReplace(Value v, Immediate constant)
+    {
     }
 
     public List<arm.Instruction> getArm()
