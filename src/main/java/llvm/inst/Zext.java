@@ -64,7 +64,6 @@ public class Zext implements Instruction {
                 sscpIn = map.get(inValue);
             }
 
-
             if (sscpIn instanceof SSCPValue.Bottom)
             {
                 newResult = new SSCPValue.Bottom();

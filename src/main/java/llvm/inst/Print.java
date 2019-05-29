@@ -31,7 +31,7 @@ public class Print implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval print");
+        //System.err.println("sscpEval print");
     }
 
     public void sscpReplace(Value v, Immediate constant)

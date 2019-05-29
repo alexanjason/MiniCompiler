@@ -19,18 +19,21 @@ public class Or implements Instruction {
         this.op2 = op2;
 
         result.addDef(this);
-        op1.addDef(this);
-        op2.addDef(this);
+        op1.addUse(this);
+        op2.addUse(this);
     }
 
     public void sscpReplace(Value v, Immediate constant)
     {
+        System.err.println("v: " + v.getString() + " op1 " + op1.getString() + " op2: " + op2.getString());
         if (op1 == v)
         {
+            System.err.println("replacing " + " op1 " + op1.getString() + " with " + constant.getString());
             op1 = constant;
         }
         if (op2 == v)
         {
+            System.err.println("replacing " + " op2 " + op2.getString() + " with " + constant.getString());
             op2 = constant;
         }
     }
@@ -57,7 +60,7 @@ public class Or implements Instruction {
 
             if (op1 instanceof Immediate)
             {
-                sscpLeft = new SSCPValue.Constant(Integer.parseInt(op1.getId()));
+                sscpLeft = new SSCPValue.Constant(Boolean.parseBoolean(op1.getId()));
             }
             else
             {
@@ -66,12 +69,14 @@ public class Or implements Instruction {
 
             if (op2 instanceof Immediate)
             {
-                sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
+                sscpRight = new SSCPValue.Constant(Boolean.parseBoolean(op2.getId()));
             }
             else
             {
                 sscpRight = map.get(op2);
             }
+
+            System.err.println("OR: sscpLeft: " + sscpLeft.getString() + " sscpRight: " + sscpRight.getString());
 
             if (sscpLeft instanceof SSCPValue.Bottom || sscpRight instanceof SSCPValue.Bottom)
             {

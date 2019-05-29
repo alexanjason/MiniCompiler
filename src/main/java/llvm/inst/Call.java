@@ -38,7 +38,7 @@ public class Call implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit call " + name);
+        //System.err.println("sscpinit call " + name);
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)

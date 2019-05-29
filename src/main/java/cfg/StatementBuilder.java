@@ -276,8 +276,8 @@ public class StatementBuilder {
         entryPreds.add(currentBlock);
 
         // Create entry blocks
-        BasicBlock thenEntry = new BasicBlock(entryPreds, stackBased);
-        BasicBlock elseEntry = new BasicBlock(entryPreds, stackBased);
+        BasicBlock thenEntry = new BasicBlock(entryPreds, stackBased, values);
+        BasicBlock elseEntry = new BasicBlock(entryPreds, stackBased, values);
 
         // Add guard
         Value guardLoc = expBuilder.AddExpression(stmt.getGuard(), currentBlock);
@@ -299,7 +299,7 @@ public class StatementBuilder {
 
         // Create EXIT block
         List<BasicBlock> exitPreds = new ArrayList<>();
-        BasicBlock exitBlock = new BasicBlock(exitPreds, stackBased);
+        BasicBlock exitBlock = new BasicBlock(exitPreds, stackBased, values);
 
         // Keep track of where to branch and what block to return
         BasicBlock retBlock;
@@ -373,10 +373,10 @@ public class StatementBuilder {
         // create true block
         List<BasicBlock> predList = new ArrayList<>();
         predList.add(currentBlock);
-        BasicBlock trueEntryNode = new BasicBlock(predList, stackBased);
+        BasicBlock trueEntryNode = new BasicBlock(predList, stackBased, values);
 
         // create false block
-        BasicBlock falseNode = new BasicBlock(predList, stackBased);
+        BasicBlock falseNode = new BasicBlock(predList, stackBased, values);
         nodeList.add(trueEntryNode);
         nodeList.add(falseNode);
 

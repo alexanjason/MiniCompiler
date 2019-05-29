@@ -46,7 +46,9 @@ public class BasicBlock {
 
     private boolean stackBased;
 
-    BasicBlock(List<BasicBlock> predList, boolean stackBased)
+    private List<Value> values;
+
+    BasicBlock(List<BasicBlock> predList, boolean stackBased, List<Value> values)
     {
         label = new Label(); // TODO
 
@@ -68,6 +70,8 @@ public class BasicBlock {
             killSet = new HashSet<>();
             liveOut = new HashSet<>();
         }
+
+        this.values = values;
     }
 
     public void addToInterferenceGraph(InterferenceGraph graph)
@@ -193,7 +197,8 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            reg.addDef(phi); // TODO
+            values.add(reg);
+            //reg.addDef(phi); // TODO
             incompletePhis.add(phi);
         }
         else if (predecessorList.size() == 0)
@@ -210,7 +215,8 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            reg.addDef(phi);    // TODO
+            //reg.addDef(phi);    // TODO
+            values.add(reg);
             phiInstructions.add(phi);
             writeVariable(id, val);
             addPhiOperands(id, type, phi);

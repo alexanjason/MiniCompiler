@@ -45,8 +45,8 @@ public class ControlFlowGraph {
         this.stackBased = stack;
         this.converter = new TypeConverter(structTable);
         this.values = new ArrayList<>();
-        entryNode = new BasicBlock(new ArrayList<>(), stackBased);
-        exitNode = new BasicBlock(new ArrayList<>(), stackBased);
+        entryNode = new BasicBlock(new ArrayList<>(), stackBased, values);
+        exitNode = new BasicBlock(new ArrayList<>(), stackBased, values);
         entryNode.seal();
 
         Type type = converter.convertType(function.getRetType());
@@ -92,7 +92,6 @@ public class ControlFlowGraph {
                     guard = true;
                 }
             }
-
         }
     }
 

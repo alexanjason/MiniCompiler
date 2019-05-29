@@ -52,10 +52,67 @@ public class Phi implements Instruction {
         }
     }
 
+    public SSCPValue meet(SSCPValue sscpVal1, Value v, Map<Value, SSCPValue> map)
+    {
+        SSCPValue sscpVal2;
+
+        if (v instanceof Immediate)
+        {
+            if (v.getId().equals("true"))
+            {
+                sscpVal2 = new SSCPValue.Constant(true);
+            }
+            else if (v.getId().equals("false"))
+            {
+                sscpVal2 = new SSCPValue.Constant(false);
+            }
+            else
+            {
+                sscpVal2 = new SSCPValue.Constant(Integer.parseInt(v.getId()));
+            }
+        }
+        else
+        {
+            sscpVal2 = map.get(v);
+        }
+
+        if (sscpVal1 instanceof SSCPValue.Bottom || sscpVal2 instanceof SSCPValue.Bottom)
+        {
+            return new SSCPValue.Bottom();
+        }
+        else if (sscpVal1 instanceof SSCPValue.Constant)
+        {
+            return sscpVal1;
+        }
+        else if (sscpVal2 instanceof SSCPValue.Constant)
+        {
+            return sscpVal2;
+        }
+        else
+        {
+            return new SSCPValue.Top();
+        }
+
+    }
+
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
         SSCPValue oldRes = map.get(result);
+        SSCPValue newRes = new SSCPValue.Top();
 
+        for (PhiEntry entry : entryList)
+        {
+            Value v = entry.value;
+            newRes = meet(newRes, v, map);
+        }
+
+        if (oldRes != newRes)
+        {
+            workList.add(result);
+            map.put(result, newRes);
+        }
+
+        /*
         Object imm = null;
         boolean bottom = false;
         for (PhiEntry entry : entryList)
@@ -108,12 +165,16 @@ public class Phi implements Instruction {
             workList.add(result);
             map.put(result, newRes);
         }
+        */
     }
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
         Immediate imm = null;
         Local param = null;
+
+        //System.err.println("*** phi init");
+
         for (PhiEntry entry : entryList)
         {
             Value v = entry.value;
@@ -173,6 +234,7 @@ public class Phi implements Instruction {
     {
         entryList.add(new PhiEntry(val, label));
         val.addUse(this);
+        //System.err.println("~~~ adding entry" + this.getString() + " -> " + val.getString());
     }
 
     public String getString()
