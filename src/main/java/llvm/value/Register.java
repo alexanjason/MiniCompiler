@@ -12,8 +12,9 @@ public class Register implements Value {
     Type type;
     static private int increment = 0;
     private int id;
-    Instruction def;            //TODO
-    List<Instruction> uses;     //TODO
+    Instruction def;
+    List<Instruction> uses;
+    boolean marked;
 
     boolean real = false;       // TODO hacky
 
@@ -23,6 +24,7 @@ public class Register implements Value {
         this.id = increment++;
         //this.def = def;
         this.uses = new ArrayList<>();
+        this.marked = false;
     }
 
     public Register(Type type, int num)
@@ -31,6 +33,20 @@ public class Register implements Value {
         this.id = num;
         this.uses = new ArrayList<>();
         real = true;
+        this.marked = false;
+    }
+
+    public void checkUseless()
+    {
+        if (this.uses.size() == 0)
+        {
+            marked = true;
+        }
+    }
+
+    public boolean isMarked()
+    {
+        return this.marked;
     }
 
     public void addDef(Instruction def)

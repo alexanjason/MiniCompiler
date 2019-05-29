@@ -28,6 +28,16 @@ public class Sdiv implements Instruction {
                 + ", " + right.getString());
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public void sscpReplace(Value v, Immediate constant)
     {
         if (left == v)
@@ -86,6 +96,7 @@ public class Sdiv implements Instruction {
             if (oldResult != newResult)
             {
                 workList.add(result);
+                map.put(result, newResult);
             }
         }
     }

@@ -27,6 +27,16 @@ public class Xor implements Instruction {
         return (result.getString() + " = xor " + result.getType().getString() + " " + op1.getString() + ", " + op2.getString());
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public void sscpReplace(Value v, Immediate constant)
     {
         if (op1 == v)
@@ -84,6 +94,7 @@ public class Xor implements Instruction {
 
             if (oldResult != newResult)
             {
+                map.put(result,  newResult);
                 workList.add(result);
             }
         }

@@ -11,8 +11,9 @@ public class StackLocation implements Value {
     static int increment = 0;
     private int id;
     Type type;
-    Instruction def;            //TODO
-    List<Instruction> uses;     //TODO
+    Instruction def;
+    List<Instruction> uses;
+    boolean marked;
 
     public StackLocation(Type type)
     {
@@ -20,6 +21,20 @@ public class StackLocation implements Value {
         increment++;
         this.type = type;
         this.uses = new ArrayList<>();
+        this.marked = false;
+    }
+
+    public void checkUseless()
+    {
+        if (this.uses.size() == 0)
+        {
+            marked = true;
+        }
+    }
+
+    public boolean isMarked()
+    {
+        return this.marked;
     }
 
     public void addDef(llvm.inst.Instruction def)

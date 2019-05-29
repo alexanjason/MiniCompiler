@@ -26,6 +26,11 @@ public class Move implements Instruction {
         this.ptr = ptr;
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        return false;
+    }
+
     public void sscpReplace(Value v, Immediate constant)
     {
         if (ptr == v)

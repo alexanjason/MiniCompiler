@@ -27,6 +27,16 @@ public class Load implements Instruction {
         }
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
         if (!(map.get(result) instanceof SSCPValue.Bottom))

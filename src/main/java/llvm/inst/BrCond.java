@@ -23,6 +23,11 @@ public class BrCond implements Instruction {
         cond.addUse(this);
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        return false;
+    }
+
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
         System.err.println("sscpinit brcond");

@@ -35,7 +35,10 @@ public class ControlFlowGraphList {
 
     public void uselessCodeElimination()
     {
-        // TODO
+        for (ControlFlowGraph cfg : controlFlowGraphs)
+        {
+            cfg.uselessCodeElimination();
+        }
     }
 
     public void sparseSimpleConstantPropagation()

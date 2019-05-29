@@ -31,6 +31,17 @@ public class Store implements Instruction {
         }
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        // TODO ?
+        if (ptr.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public String getString()
     {
         String valTypeStr = ptr.getType().getString();

@@ -22,6 +22,11 @@ public class Allocate implements Instruction {
         // TODO def or use?
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        return false;
+    }
+
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
         System.err.println("sscpEval allocate");

@@ -28,6 +28,16 @@ public class Mult implements Instruction {
                 left.getString() + ", " + right.getString());
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public void sscpReplace(Value v, Immediate constant)
     {
         if (left == v)

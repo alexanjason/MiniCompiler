@@ -91,6 +91,21 @@ public class BasicBlock {
         }
     }
 
+    public boolean uselessCodeElimination()
+    {
+        ListIterator iterator = instructions.listIterator();
+        boolean removed = false;
+        while (iterator.hasNext())
+        {
+            Instruction inst = (Instruction) iterator.next();
+            if (inst.checkRemove(iterator))
+            {
+                removed = true;
+            }
+        }
+        return removed;
+    }
+
     public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
     {
         for (arm.Instruction inst : armInstructions)

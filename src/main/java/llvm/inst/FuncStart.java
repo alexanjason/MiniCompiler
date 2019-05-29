@@ -35,6 +35,11 @@ public class FuncStart implements Instruction{
     {
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        return false;
+    }
+
     @Override
     public List<arm.Instruction> getArm()
     {

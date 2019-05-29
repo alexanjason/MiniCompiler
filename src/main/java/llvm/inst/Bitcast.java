@@ -20,6 +20,16 @@ public class Bitcast implements Instruction {
         val.addUse(this);
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
         System.err.println("sscpinit bitcast. result: " + result.getString() + "val: " + val.getString());

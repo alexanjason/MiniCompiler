@@ -23,6 +23,8 @@ public interface Instruction {
 
     void sscpReplace(Value v, Immediate constant);
 
+    boolean checkRemove(ListIterator list);
+
     default Register ImmediateToRegister(Immediate immVal, List<arm.Instruction> list)
     {
         Register temp = new Register(new i32());

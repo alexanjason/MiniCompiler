@@ -11,8 +11,9 @@ public class Local implements Value {
     String id;
     Type type;
     boolean isParam;
-    Instruction def;            //TODO
-    List<Instruction> uses;     //TODO
+    Instruction def;
+    List<Instruction> uses;
+    boolean marked;
 
     public Local(String id, Type type)
     {
@@ -20,6 +21,20 @@ public class Local implements Value {
         this.type = type;
         this.isParam = false;
         this.uses = new ArrayList<>();
+        this.marked = false;
+    }
+
+    public boolean isMarked()
+    {
+        return this.marked;
+    }
+
+    public void checkUseless()
+    {
+        if (this.uses.size() == 0)
+        {
+            marked = true;
+        }
     }
 
     // TODO hacky

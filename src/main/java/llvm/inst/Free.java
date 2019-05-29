@@ -19,6 +19,11 @@ public class Free implements Instruction {
         ptr.addUse(this);
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        return false;
+    }
+
     public String getString()
     {
         return ("call void @free(i8* " + ptr.getString() + ")");

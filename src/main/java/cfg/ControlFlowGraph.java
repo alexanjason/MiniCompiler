@@ -74,6 +74,28 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
+    public void uselessCodeElimination()
+    {
+        boolean guard = true;
+        while (guard)
+        {
+            guard = false;
+            for (Value v : values)
+            {
+                v.checkUseless();
+            }
+
+            for (BasicBlock b : nodeList)
+            {
+                if (b.uselessCodeElimination())
+                {
+                    guard = true;
+                }
+            }
+
+        }
+    }
+
     public void constantPropagation()
     {
         Map<Value, SSCPValue> sscpMap = new HashMap<>(); // TODO Value hash code

@@ -20,4 +20,8 @@ public interface Value {
     Instruction getDef();
 
     List<Instruction> getUses();
+
+    void checkUseless();
+
+    boolean isMarked();
 }

@@ -22,6 +22,16 @@ public class Add implements Instruction {
         right.addUse(this);
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public String getString()
     {
         return (result.getString() + " = add " + result.getType().getString() + " " + left.getString()
@@ -30,12 +40,16 @@ public class Add implements Instruction {
 
     public void sscpReplace(Value v, Immediate constant)
     {
+        System.err.println("v: " + v.getString() + " left: " + left.getString() + " right: " + right.getString());
         if (left == v)
         {
+            System.err.println("replacing " + left.getString() + " with " + constant.getString());
             left = constant;
         }
         if (right == v)
         {
+            System.err.println("replacing " + right.getString() + " with " + constant.getString());
+
             right = constant;
         }
     }

@@ -23,6 +23,16 @@ public class And implements Instruction {
         op2.addUse(this);
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public String getString()
     {
         return (result.getString() + " = and " + result.getType().getString() + " " + op1.getString() + ", " + op2.getString());

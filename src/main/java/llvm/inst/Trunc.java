@@ -25,6 +25,16 @@ public class Trunc implements Instruction {
         return (outValue.getString() + " = trunc " + inValue.getType().getString() + " " + inValue.getString() + " to " + outValue.getType().getString());
     }
 
+    public boolean checkRemove(ListIterator list)
+    {
+        if (outValue.isMarked())
+        {
+            list.remove();
+            return true;
+        }
+        return false;
+    }
+
     public void sscpReplace(Value v, Immediate constant)
     {
         if (inValue == v)
@@ -67,6 +77,7 @@ public class Trunc implements Instruction {
 
             if (oldResult != newResult)
             {
+                map.put(outValue, newResult);
                 workList.add(outValue);
             }
         }

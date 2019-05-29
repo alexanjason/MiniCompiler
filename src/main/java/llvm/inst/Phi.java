@@ -27,15 +27,29 @@ public class Phi implements Instruction {
 
         result.addDef(this);
         // TODO ???
-        for (PhiEntry entry : entryList)
+    }
+
+    public boolean checkRemove(ListIterator list)
+    {
+        if (result.isMarked())
         {
-            entry.value.addUse(this);
+            list.remove();
+            return true;
         }
+        return false;
     }
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        // TODO
+        for (PhiEntry entry : entryList)
+        {
+            System.err.println("entry.value: " + entry.value.getString() + " v " + v.getString());
+            if (entry.value == v)
+            {
+                System.err.println("constant: " + constant.getString());
+                entry.value = constant;
+            }
+        }
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
@@ -72,7 +86,16 @@ public class Phi implements Instruction {
         }
         else if (imm != null)
         {
-            newRes = new SSCPValue.Constant((int)imm); // TODO sus
+            System.out.println(imm);
+            if (imm instanceof Boolean)
+            {
+                newRes = new SSCPValue.Constant((boolean)imm); // TODO sus
+            }
+            else
+            {
+                newRes = new SSCPValue.Constant((int)imm); // TODO sus
+            }
+
         }
         else
         {
@@ -148,6 +171,7 @@ public class Phi implements Instruction {
     public void addEntry(Value val, Label label)
     {
         entryList.add(new PhiEntry(val, label));
+        val.addUse(this);
     }
 
     public String getString()

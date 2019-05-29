@@ -17,6 +17,11 @@ public class Immediate implements Value {
         this.type = type;
     }
 
+    public boolean isMarked()
+    {
+        return false;
+    }
+
     public void addDef(Instruction def)
     {
         System.err.println("addDef immediate");
@@ -25,6 +30,10 @@ public class Immediate implements Value {
     public void addUse(Instruction use)
     {
         //System.err.println("addUse immediate");
+    }
+
+    public void checkUseless()
+    {
     }
 
     public Instruction getDef()
