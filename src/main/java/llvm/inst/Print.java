@@ -38,6 +38,7 @@ public class Print implements Instruction {
     {
         if (val == v)
         {
+            val.getUses().remove(this);
             val = constant;
         }
     }

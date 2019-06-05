@@ -40,16 +40,14 @@ public class Add implements Instruction {
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        System.err.println("v: " + v.getString() + " left: " + left.getString() + " right: " + right.getString());
         if (left == v)
         {
-            System.err.println("replacing " + left.getString() + " with " + constant.getString());
+            left.getUses().remove(this);
             left = constant;
         }
         if (right == v)
         {
-            System.err.println("replacing " + right.getString() + " with " + constant.getString());
-
+            right.getUses().remove(this);
             right = constant;
         }
     }

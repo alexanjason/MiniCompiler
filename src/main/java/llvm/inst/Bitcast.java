@@ -44,6 +44,7 @@ public class Bitcast implements Instruction {
     {
         if (val == v)
         {
+            val.getUses().remove(this);
             val = constant;
         }
     }

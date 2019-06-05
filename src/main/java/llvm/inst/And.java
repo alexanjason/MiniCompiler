@@ -42,10 +42,12 @@ public class And implements Instruction {
     {
         if (op1 == v)
         {
+            op1.getUses().remove(this);
             op1 = constant;
         }
         if (op2 == v)
         {
+            op2.getUses().remove(this);
             op2 = constant;
         }
     }

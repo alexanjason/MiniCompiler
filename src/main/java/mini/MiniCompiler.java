@@ -49,13 +49,13 @@ public class MiniCompiler
          {
             cfgList.regAlloc();
          }
-         if (uce)
-         {
-            cfgList.uselessCodeElimination();
-         }
          if (sscp)
          {
             cfgList.sparseSimpleConstantPropagation();
+         }
+         if (uce)
+         {
+            cfgList.uselessCodeElimination();
          }
 
          //cfgList.print(System.out); // for debugging

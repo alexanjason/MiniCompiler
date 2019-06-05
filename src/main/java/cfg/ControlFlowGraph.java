@@ -148,15 +148,24 @@ public class ControlFlowGraph {
 
         //Iterator iterator = workList.iterator();
         while (workList.size() != 0) {
-            ListIterator iterator = workList.listIterator();
+
+            System.err.print("WORKLIST: ");
+            for (Value v : workList)
+            {
+                System.out.print(v.getString() + " ");
+            }
+            System.out.println();
+
+            ListIterator<Value> iterator = workList.listIterator();
+
             while (iterator.hasNext()) {
-                Value r = (Value) iterator.next();
-                System.err.println("removing " + r.getString() + " from worklist");
+                Value r = iterator.next();
+                //System.err.println("removing " + r.getString() + " from worklist");
                 iterator.remove();
 
 
                 for (Instruction inst : r.getUses()) {
-                    System.err.println("use: " + inst.getString());
+                    //System.err.println("use: " + inst.getString());
                     inst.sscpEval(sscpMap, iterator);
                 }
             }
@@ -187,9 +196,14 @@ public class ControlFlowGraph {
                     constant = null;
                     System.err.println("PANIC sscp constant to immediate " + c.toString());
                 }
-                for (Instruction inst : v.getUses())
+                //ListIterator<Instruction> iterator = v.getUses().listIterator();
+                //while (iterator.hasNext())
+                List<Instruction> list = new ArrayList<>(v.getUses());
+                for (Instruction inst : list)
                 {
                     inst.sscpReplace(v, constant);
+                    //Instruction inst = iterator.next();
+                    //inst.sscpReplace(v, constant, iterator);
                 }
             }
         }

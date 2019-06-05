@@ -52,6 +52,7 @@ public class Call implements Instruction {
         {
             if (paramVals.get(i) == v)
             {
+                v.getUses().remove(this);
                 paramVals.set(i, constant);
             }
         }

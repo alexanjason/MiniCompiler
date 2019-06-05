@@ -35,6 +35,7 @@ public class Move implements Instruction {
     {
         if (ptr == v)
         {
+            ptr.getUses().remove(this);
             ptr = constant;
         }
     }

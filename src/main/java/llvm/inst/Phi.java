@@ -44,8 +44,8 @@ public class Phi implements Instruction {
         {
             if (entry.value == v)
             {
+                v.getUses().remove(this);
                 entry.value = constant;
-                // TODO remove from uses?
             }
         }
     }

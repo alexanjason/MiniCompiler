@@ -27,6 +27,7 @@ public class Store implements Instruction {
     {
         if (ptr == v)
         {
+            ptr.getUses().remove(this);
             ptr = constant;
         }
     }

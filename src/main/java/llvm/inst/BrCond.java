@@ -42,6 +42,7 @@ public class BrCond implements Instruction {
     {
         if (cond == v)
         {
+            cond.getUses().remove(this);
             cond = constant;
         }
         // TODO simplify branch to uncond

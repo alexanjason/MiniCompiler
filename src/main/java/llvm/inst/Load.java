@@ -23,6 +23,7 @@ public class Load implements Instruction {
     {
         if (pointer == v)
         {
+            pointer.getUses().remove(this);
             pointer = constant;
         }
     }

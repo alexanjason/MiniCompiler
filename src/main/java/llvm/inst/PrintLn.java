@@ -35,6 +35,7 @@ public class PrintLn implements Instruction {
     {
         if (val == v)
         {
+            val.getUses().remove(this);
             val = constant;
         }
     }

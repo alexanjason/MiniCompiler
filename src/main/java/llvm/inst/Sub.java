@@ -41,10 +41,12 @@ public class Sub implements Instruction {
     {
         if (left == v)
         {
+            left.getUses().remove(this);
             left = constant;
         }
         if (right == v)
         {
+            right.getUses().remove(this);
             right = constant;
         }
     }

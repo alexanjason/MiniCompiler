@@ -35,16 +35,7 @@ public class Return implements Instruction {
     {
         if (value == v)
         {
-            /*
-            if (constant.getId().equals("true"))
-            {
-                value = new Immediate("1", new i32());
-            }
-            else
-            {
-                value = new Immediate("0", new i32());
-            }
-            */
+            value.getUses().remove(this);
             value = constant;
         }
     }

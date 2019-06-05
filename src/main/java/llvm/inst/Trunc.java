@@ -39,6 +39,7 @@ public class Trunc implements Instruction {
     {
         if (inValue == v)
         {
+            inValue.getUses().remove(this);
             inValue = constant;
         }
     }

@@ -46,6 +46,7 @@ public class Getelementptr implements Instruction {
     {
         if (base == v)
         {
+            base.getUses().remove(this);
             base = constant;
         }
     }

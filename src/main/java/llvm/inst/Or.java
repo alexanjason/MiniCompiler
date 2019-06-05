@@ -25,15 +25,14 @@ public class Or implements Instruction {
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        //System.err.println("v: " + v.getString() + " op1 " + op1.getString() + " op2: " + op2.getString());
         if (op1 == v)
         {
-            //System.err.println("replacing " + " op1 " + op1.getString() + " with " + constant.getString());
+            op1.getUses().remove(this);
             op1 = constant;
         }
         if (op2 == v)
         {
-            //System.err.println("replacing " + " op2 " + op2.getString() + " with " + constant.getString());
+            op2.getUses().remove(this);
             op2 = constant;
         }
     }
