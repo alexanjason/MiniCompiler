@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.Mov;
 import cfg.SSCPValue;
+import llvm.type.i32;
 import llvm.value.*;
 
 import java.util.*;
@@ -32,9 +33,18 @@ public class Return implements Instruction {
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        // TODO not getting replaced
         if (value == v)
         {
+            /*
+            if (constant.getId().equals("true"))
+            {
+                value = new Immediate("1", new i32());
+            }
+            else
+            {
+                value = new Immediate("0", new i32());
+            }
+            */
             value = constant;
         }
     }

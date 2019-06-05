@@ -61,7 +61,8 @@ public class Xor implements Instruction {
 
             if (op1 instanceof Immediate)
             {
-                sscpLeft = new SSCPValue.Constant(Integer.parseInt(op1.getId()));
+                //sscpLeft = new SSCPValue.Constant(Integer.parseInt(op1.getId()));
+                sscpLeft = new SSCPValue.Constant(Boolean.parseBoolean(op1.getId()));
             }
             else
             {
@@ -70,7 +71,8 @@ public class Xor implements Instruction {
 
             if (op2 instanceof Immediate)
             {
-                sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
+                //sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
+                sscpRight = new SSCPValue.Constant(Boolean.parseBoolean(op2.getId()));
             }
             else
             {
@@ -84,6 +86,7 @@ public class Xor implements Instruction {
             else if (sscpLeft instanceof SSCPValue.Constant && sscpRight instanceof SSCPValue.Constant)
             {
                 boolean l = (boolean)((SSCPValue.Constant) sscpLeft).getConst();
+                System.out.println("sscpRight: " + sscpRight.getString());
                 boolean r = (boolean)((SSCPValue.Constant) sscpRight).getConst();
                 newResult = new SSCPValue.Constant(l ^ r);
             }

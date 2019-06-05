@@ -122,7 +122,20 @@ public class Phi implements Instruction {
             Value v = entry.value;
             if (v instanceof Immediate)
             {
-                imm = (Immediate) v;
+                if (imm == null)
+                {
+                    imm = (Immediate) v;
+                }
+                else if (imm.getId().equals((v).getId()))
+                {
+                    // imm already equals V
+                }
+                else
+                {
+                    map.put(result, new SSCPValue.Bottom());
+                    workList.add(result);
+                    return;
+                }
             }
             else if (v instanceof Local)
             {

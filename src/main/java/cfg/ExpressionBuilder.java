@@ -106,19 +106,32 @@ public class ExpressionBuilder {
         switch(op)
         {
             case NOT:
-                Value extTrue;
+                Value extTrue, right;
                 if (stackBased)
                 {
-                    extTrue = new StackLocation(new i32());
+                    extTrue = new StackLocation(new i1());
                 }
                 else
                 {
-                    extTrue = new Register(new i32());
+                    extTrue = new Register(new i1());
                 }
                 values.add(extTrue);
 
-                currentBlock.addInstruction(new Zext(new Immediate("true", new i1()), extTrue));
-                currentBlock.addInstruction(new Xor(extTrue, rVal, result));
+                if (stackBased)
+                {
+                    right = new StackLocation(new i1());
+                }
+                else
+                {
+                    right = new Register(new i1());
+                }
+                values.add(right);
+
+                //currentBlock.addInstruction(new Zext(new Immediate("true", new i1()), extTrue));
+                currentBlock.addInstruction(new Trunc(rVal, right));
+                currentBlock.addInstruction(new Xor(new Immediate("true", new i1()), right, extTrue));
+                currentBlock.addInstruction(new Zext(extTrue, result));
+
                 return result;
             case MINUS:
                 currentBlock.addInstruction(new Mult(result, new Immediate("-1", new i32()), rVal));
@@ -272,12 +285,77 @@ public class ExpressionBuilder {
         }
         else if (op == BinaryExpression.Operator.AND)
         {
-            currentBlock.addInstruction(new And(result, leftLoc, rightLoc));
+            Value intResult, left, right;
+            if (stackBased)
+            {
+                intResult  = new StackLocation(new i1());
+            }
+            else
+            {
+                intResult = new Register(new i1());
+            }
+            values.add(intResult);
+            if (stackBased)
+            {
+                left  = new StackLocation(new i1());
+            }
+            else
+            {
+                left = new Register(new i1());
+            }
+            values.add(left);
+            if (stackBased)
+            {
+                right  = new StackLocation(new i1());
+            }
+            else
+            {
+                right = new Register(new i1());
+            }
+            values.add(right);
+
+            currentBlock.addInstruction(new Trunc(leftLoc, left));
+            currentBlock.addInstruction(new Trunc(rightLoc, right));
+            currentBlock.addInstruction(new And(intResult, left, right));
+            currentBlock.addInstruction(new Zext(intResult, result));
             return result;
         }
         else if (op == BinaryExpression.Operator.OR)
         {
-            currentBlock.addInstruction(new Or(result, leftLoc, rightLoc));
+            Value intResult, left, right;
+            if (stackBased)
+            {
+                intResult  = new StackLocation(new i1());
+            }
+            else
+            {
+                intResult = new Register(new i1());
+            }
+            values.add(intResult);
+
+            if (stackBased)
+            {
+                left  = new StackLocation(new i1());
+            }
+            else
+            {
+                left = new Register(new i1());
+            }
+            values.add(left);
+            if (stackBased)
+            {
+                right  = new StackLocation(new i1());
+            }
+            else
+            {
+                right = new Register(new i1());
+            }
+            values.add(right);
+
+            currentBlock.addInstruction(new Trunc(leftLoc, left));
+            currentBlock.addInstruction(new Trunc(rightLoc, right));
+            currentBlock.addInstruction(new Or(intResult, left, right));
+            currentBlock.addInstruction(new Zext(intResult, result));
             return result;
         }
         else

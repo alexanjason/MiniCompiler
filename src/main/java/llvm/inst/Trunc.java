@@ -61,14 +61,23 @@ public class Trunc implements Instruction {
                 sscpIn = map.get(inValue);
             }
 
-
             if (sscpIn instanceof SSCPValue.Bottom)
             {
                 newResult = new SSCPValue.Bottom();
             }
             else if (sscpIn instanceof SSCPValue.Constant)
             {
-                newResult = sscpIn; // TODO ??
+                //newResult = sscpIn; // TODO ??
+                System.out.println("trunc eval " + this.getString() + " -> " + sscpIn.getString());
+                int bool = (int)((SSCPValue.Constant) sscpIn).getConst();
+                if (bool == 0)
+                {
+                    newResult = new SSCPValue.Constant(false);
+                }
+                else
+                {
+                    newResult = new SSCPValue.Constant(true);
+                }
             }
             else
             {
