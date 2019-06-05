@@ -97,15 +97,12 @@ public class ControlFlowGraph {
 
     public void constantPropagation()
     {
-        Map<Value, SSCPValue> sscpMap = new HashMap<>(); // TODO Value hash code
-        //Set<Value> workList = new HashSet<>();
-        //Queue<Value> workList = new LinkedList<>();
+        Map<Value, SSCPValue> sscpMap = new HashMap<>();
         List<Value> workList = new ArrayList<>();
 
         // initialize value mappings
         for (Value v : values)
         {
-
             // TODO hacky
             if (v instanceof Global)
             {
@@ -150,15 +147,18 @@ public class ControlFlowGraph {
         }
 
         //Iterator iterator = workList.iterator();
-        ListIterator iterator = workList.listIterator();
-        while (iterator.hasNext())
-        {
-            Value r = (Value)iterator.next();
-            iterator.remove();
+        while (workList.size() != 0) {
+            ListIterator iterator = workList.listIterator();
+            while (iterator.hasNext()) {
+                Value r = (Value) iterator.next();
+                System.err.println("removing " + r.getString() + " from worklist");
+                iterator.remove();
 
-            for (Instruction inst : r.getUses())
-            {
-                inst.sscpEval(sscpMap, iterator);
+
+                for (Instruction inst : r.getUses()) {
+                    System.err.println("use: " + inst.getString());
+                    inst.sscpEval(sscpMap, iterator);
+                }
             }
         }
 
@@ -176,7 +176,6 @@ public class ControlFlowGraph {
                 Immediate constant;
                 if (c instanceof Boolean)
                 {
-                    //constant = new Immediate(Boolean.toString((Boolean)c), new i32());
                     constant = new Immediate(Boolean.toString((Boolean)c), new i1());
                 }
                 else if (c instanceof Integer)

@@ -84,8 +84,8 @@ public class And implements Instruction {
             }
             else if (sscpLeft instanceof SSCPValue.Constant && sscpRight instanceof SSCPValue.Constant)
             {
-                int l = (int)((SSCPValue.Constant) sscpLeft).getConst();
-                int r = (int)((SSCPValue.Constant) sscpRight).getConst();
+                boolean l = (boolean)((SSCPValue.Constant) sscpLeft).getConst();
+                boolean r = (boolean)((SSCPValue.Constant) sscpRight).getConst();
                 newResult = new SSCPValue.Constant(l & r);
             }
             else

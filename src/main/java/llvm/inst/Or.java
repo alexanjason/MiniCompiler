@@ -25,15 +25,15 @@ public class Or implements Instruction {
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        System.err.println("v: " + v.getString() + " op1 " + op1.getString() + " op2: " + op2.getString());
+        //System.err.println("v: " + v.getString() + " op1 " + op1.getString() + " op2: " + op2.getString());
         if (op1 == v)
         {
-            System.err.println("replacing " + " op1 " + op1.getString() + " with " + constant.getString());
+            //System.err.println("replacing " + " op1 " + op1.getString() + " with " + constant.getString());
             op1 = constant;
         }
         if (op2 == v)
         {
-            System.err.println("replacing " + " op2 " + op2.getString() + " with " + constant.getString());
+            //System.err.println("replacing " + " op2 " + op2.getString() + " with " + constant.getString());
             op2 = constant;
         }
     }
@@ -76,7 +76,7 @@ public class Or implements Instruction {
                 sscpRight = map.get(op2);
             }
 
-            System.err.println("OR: sscpLeft: " + sscpLeft.getString() + " sscpRight: " + sscpRight.getString());
+            //System.err.println("OR: sscpLeft: " + sscpLeft.getString() + " sscpRight: " + sscpRight.getString());
 
             if (sscpLeft instanceof SSCPValue.Bottom || sscpRight instanceof SSCPValue.Bottom)
             {
@@ -84,8 +84,8 @@ public class Or implements Instruction {
             }
             else if (sscpLeft instanceof SSCPValue.Constant && sscpRight instanceof SSCPValue.Constant)
             {
-                int l = (int)((SSCPValue.Constant) sscpLeft).getConst();
-                int r = (int)((SSCPValue.Constant) sscpRight).getConst();
+                boolean l = (boolean)((SSCPValue.Constant) sscpLeft).getConst();
+                boolean r = (boolean)((SSCPValue.Constant) sscpRight).getConst();
                 newResult = new SSCPValue.Constant(l | r);
             }
             else
@@ -96,6 +96,7 @@ public class Or implements Instruction {
             if (oldResult != newResult)
             {
                 workList.add(result);
+                System.err.println("adding to worklist: " + result.getString());
                 map.put(result, newResult);
             }
         }

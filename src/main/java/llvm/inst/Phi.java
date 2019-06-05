@@ -26,7 +26,6 @@ public class Phi implements Instruction {
         this.id = id;
 
         result.addDef(this);
-        // TODO ???
     }
 
     public boolean checkRemove(ListIterator list)
@@ -43,11 +42,10 @@ public class Phi implements Instruction {
     {
         for (PhiEntry entry : entryList)
         {
-            //System.err.println("entry.value: " + entry.value.getString() + " v " + v.getString());
             if (entry.value == v)
             {
-                //System.err.println("constant: " + constant.getString());
                 entry.value = constant;
+                // TODO remove from uses?
             }
         }
     }
@@ -109,71 +107,15 @@ public class Phi implements Instruction {
         if (oldRes != newRes)
         {
             workList.add(result);
+            System.err.println("adding " + result.getString() + " to worklist");
             map.put(result, newRes);
         }
-
-        /*
-        Object imm = null;
-        boolean bottom = false;
-        for (PhiEntry entry : entryList)
-        {
-            Value v = entry.value;
-            if (v instanceof Immediate)
-            {
-                imm = Integer.parseInt(v.getId());
-            }
-            else
-            {
-                SSCPValue sscpValue = map.get(v);
-                if (sscpValue instanceof SSCPValue.Bottom)
-                {
-                    bottom = true;
-                }
-                else if (sscpValue instanceof SSCPValue.Constant)
-                {
-                    imm = ((SSCPValue.Constant)sscpValue).getConst();
-                }
-            }
-        }
-
-        SSCPValue newRes;
-        if (bottom)
-        {
-            newRes = new SSCPValue.Bottom();
-        }
-        else if (imm != null)
-        {
-            // TODO phi immediate entries
-            System.out.println(imm);
-            if (imm instanceof Boolean)
-            {
-                newRes = new SSCPValue.Constant((boolean)imm); // TODO sus
-            }
-            else
-            {
-                newRes = new SSCPValue.Constant((int)imm); // TODO sus
-            }
-
-        }
-        else
-        {
-            newRes = new SSCPValue.Top();
-        }
-
-        if (oldRes != newRes)
-        {
-            workList.add(result);
-            map.put(result, newRes);
-        }
-        */
     }
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
         Immediate imm = null;
         Local param = null;
-
-        //System.err.println("*** phi init");
 
         for (PhiEntry entry : entryList)
         {
@@ -234,7 +176,6 @@ public class Phi implements Instruction {
     {
         entryList.add(new PhiEntry(val, label));
         val.addUse(this);
-        //System.err.println("~~~ adding entry" + this.getString() + " -> " + val.getString());
     }
 
     public String getString()
