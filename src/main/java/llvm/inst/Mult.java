@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -20,6 +21,76 @@ public class Mult implements Instruction {
         result.addDef(this);
         left.addUse(this);
         right.addUse(this);
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (left == oldV)
+        {
+            left.getUses().remove(this);
+            left = newV;
+        }
+        if (right == oldV)
+        {
+            right.getUses().remove(this);
+            right = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
+        if (lvn.isInMap(left.getId()))
+        {
+            //left.getUses().remove(this);
+            // left = lvn.getVal(left.getId());
+
+            //left.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(left.getId(), left);
+        }
+
+        int leftNum = lvn.getNumbering(left.getId());
+
+        if (lvn.isInMap(right.getId()))
+        {
+            //right.getUses().remove(this);
+            //right = lvn.getVal(right.getId());
+
+            //right.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(right.getId(), right);
+        }
+
+        int rightNum = lvn.getNumbering(right.getId());
+
+        String res1 = "*," + leftNum + "," + rightNum;
+        String res2 = "*," + rightNum + "," + leftNum;
+
+        //System.out.println(res1 + " -> " + left.getString() + " " + right.getString());
+
+
+        if (lvn.isInMap(res1))
+        {
+            //result.getUses().remove(this);
+            Value lvnVal = lvn.getVal(res1);
+            //result.addUse(this);
+
+            List<Instruction> list = new ArrayList<>(result.getUses());
+            for (Instruction inst: list)
+            {
+                //System.out.println("replacing " + result.getString() + " with " + lvnVal.getString());
+                inst.replace(result, lvnVal);
+            }
+        }
+        else
+        {
+            lvn.enterInMap(res1, result);
+            lvn.enterInMap(res2, result);
+        }
     }
 
     public String getString()

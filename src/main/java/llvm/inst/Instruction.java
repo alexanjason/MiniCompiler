@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.Movt;
 import arm.Movw;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
 import llvm.value.Immediate;
@@ -44,5 +45,9 @@ public interface Instruction {
     {
         stream.println("\t" + getString());
     }
+
+    void replace(Value oldV, Value newV);
+
+    void localValueNumbering(LocalValueNumbering lvn);
 
 }

@@ -23,14 +23,28 @@ public class Add implements Instruction {
         right.addUse(this);
     }
 
+    public void replace(Value oldV, Value newV)
+    {
+        if (left == oldV)
+        {
+            left.getUses().remove(this);
+            left = newV;
+        }
+        if (right == oldV)
+        {
+            right.getUses().remove(this);
+            right = newV;
+        }
+    }
+
     public void localValueNumbering(LocalValueNumbering lvn)
     {
         if (lvn.isInMap(left.getId()))
         {
-            left.getUses().remove(this);
-            left = lvn.getVal(left.getId());
+            //left.getUses().remove(this);
+            //left = lvn.getVal(left.getId());
 
-            left.addUse(this);
+            //left.addUse(this);
         }
         else
         {
@@ -41,10 +55,10 @@ public class Add implements Instruction {
 
         if (lvn.isInMap(right.getId()))
         {
-            right.getUses().remove(this);
-            right = lvn.getVal(right.getId());
+            //right.getUses().remove(this);
+            //right = lvn.getVal(right.getId());
 
-            right.addUse(this);
+            //right.addUse(this);
         }
         else
         {
@@ -56,24 +70,24 @@ public class Add implements Instruction {
         String res1 = "+," + leftNum + "," + rightNum;
         String res2 = "+," + rightNum + "," + leftNum;
 
+        //System.out.println(res1 + " -> " + left.getString() + " " + right.getString());
         if (lvn.isInMap(res1))
         {
-            result.getUses().remove(this);
-            result = lvn.getVal(res1);
-            result.addUse(this);
-        }
-        else if (lvn.isInMap(res2))
-        {
-            result.getUses().remove(this);
-            result = lvn.getVal(res1);
-            result.addUse(this);
+            //result.getUses().remove(this);
+            Value lvnVal = lvn.getVal(res1);
+            //result.addUse(this);
+            List<Instruction> list = new ArrayList<>(result.getUses());
+            for (Instruction inst: list)
+            {
+                //System.out.println("replacing " + result.getString() + " with " + lvnVal.getString());
+                inst.replace(result, lvnVal);
+            }
         }
         else
         {
             lvn.enterInMap(res1, result);
             lvn.enterInMap(res2, result);
         }
-
     }
 
     public boolean checkRemove(ListIterator list)

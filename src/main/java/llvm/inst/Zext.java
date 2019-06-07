@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.Immediate;
 import llvm.value.Local;
@@ -36,6 +37,19 @@ public class Zext implements Instruction {
             return true;
         }
         return false;
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (inValue == oldV)
+        {
+            inValue.getUses().remove(this);
+            inValue = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public void sscpReplace(Value v, Immediate constant)

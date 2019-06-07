@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.B;
 import cfg.Label;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -14,6 +15,14 @@ public class BrUncond implements Instruction {
     public BrUncond(Label dest)
     {
         this.dest = dest;
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public String getString()

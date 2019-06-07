@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -42,6 +43,19 @@ public class Trunc implements Instruction {
             inValue.getUses().remove(this);
             inValue = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (inValue == oldV)
+        {
+            inValue.getUses().remove(this);
+            inValue = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)

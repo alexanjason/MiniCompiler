@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
 import llvm.value.*;
@@ -32,6 +33,14 @@ public class FuncStart implements Instruction{
     }
 
     public void sscpReplace(Value v, Immediate constant)
+    {
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
     {
     }
 

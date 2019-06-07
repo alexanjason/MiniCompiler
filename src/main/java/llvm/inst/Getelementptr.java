@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
 import llvm.value.*;
@@ -49,6 +50,19 @@ public class Getelementptr implements Instruction {
             base.getUses().remove(this);
             base = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (base == oldV)
+        {
+            base.getUses().remove(this);
+            base = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public String getString()

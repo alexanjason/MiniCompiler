@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.Type;
 import llvm.value.*;
@@ -29,6 +30,22 @@ public class Call implements Instruction {
         {
             v.addUse(this);
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        for (int i = 0; i < paramVals.size(); i++)
+        {
+            if (paramVals.get(i) == oldV)
+            {
+                oldV.getUses().remove(this);
+                paramVals.set(i, newV);
+            }
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public boolean checkRemove(ListIterator list)

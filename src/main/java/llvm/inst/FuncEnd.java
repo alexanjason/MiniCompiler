@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -27,6 +28,14 @@ public class FuncEnd implements Instruction{
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
         System.err.println("sscpEval funcend");
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public void sscpReplace(Value v, Immediate constant)

@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -17,6 +18,19 @@ public class Free implements Instruction {
 
         // TODO ???
         ptr.addUse(this);
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (ptr == oldV)
+        {
+            ptr.getUses().remove(this);
+            ptr = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public boolean checkRemove(ListIterator list)

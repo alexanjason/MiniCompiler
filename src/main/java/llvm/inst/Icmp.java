@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.*;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
 import llvm.value.*;
@@ -53,6 +54,24 @@ public class Icmp implements Instruction {
             op2.getUses().remove(this);
             op2 = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (op1 == oldV)
+        {
+            op1.getUses().remove(this);
+            op1 = newV;
+        }
+        if (op2 == oldV)
+        {
+            op2.getUses().remove(this);
+            op2 = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)

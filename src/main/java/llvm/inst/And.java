@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -49,6 +50,70 @@ public class And implements Instruction {
         {
             op2.getUses().remove(this);
             op2 = constant;
+        }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (op1 == oldV)
+        {
+            op1.getUses().remove(this);
+            op1 = newV;
+        }
+        if (op2 == oldV)
+        {
+            op2.getUses().remove(this);
+            op2 = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
+        if (lvn.isInMap(op1.getId()))
+        {
+            //op1.getUses().remove(this);
+            //op1 = lvn.getVal(op1.getId());
+
+            //op1.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(op1.getId(), op1);
+        }
+
+        int leftNum = lvn.getNumbering(op1.getId());
+
+        if (lvn.isInMap(op2.getId()))
+        {
+            //op2.getUses().remove(this);
+            //op2 = lvn.getVal(op2.getId());
+
+            //op2.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(op2.getId(), op2);
+        }
+
+        int rightNum = lvn.getNumbering(op2.getId());
+
+        String res1 = "&," + leftNum + "," + rightNum;
+        String res2 = "&," + rightNum + "," + leftNum;
+
+        if (lvn.isInMap(res1))
+        {
+            //result.getUses().remove(this);
+            Value lvnVal = lvn.getVal(res1);
+            //result.addUse(this);
+            for (Instruction inst: result.getUses())
+            {
+                inst.replace(result, lvnVal);
+            }
+        }
+        else
+        {
+            lvn.enterInMap(res1, result);
+            lvn.enterInMap(res2, result);
         }
     }
 

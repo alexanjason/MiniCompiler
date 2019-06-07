@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 import llvm.type.Type;
@@ -38,6 +39,19 @@ public class PrintLn implements Instruction {
             val.getUses().remove(this);
             val = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (val == oldV)
+        {
+            val.getUses().remove(this);
+            val = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)

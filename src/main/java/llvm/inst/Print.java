@@ -2,6 +2,7 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -41,6 +42,19 @@ public class Print implements Instruction {
             val.getUses().remove(this);
             val = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (val == oldV)
+        {
+            val.getUses().remove(this);
+            val = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public String getString()

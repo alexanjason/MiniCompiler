@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Ldr;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -26,6 +27,19 @@ public class Load implements Instruction {
             pointer.getUses().remove(this);
             pointer = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (pointer == oldV)
+        {
+            pointer.getUses().remove(this);
+            pointer = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public boolean checkRemove(ListIterator list)

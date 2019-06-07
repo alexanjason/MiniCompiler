@@ -1,6 +1,7 @@
 package llvm.inst;
 
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.Type;
 import llvm.value.*;
@@ -20,6 +21,14 @@ public class Allocate implements Instruction {
         this.type = type;
 
         // TODO def or use?
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public boolean checkRemove(ListIterator list)

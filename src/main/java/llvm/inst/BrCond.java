@@ -23,6 +23,19 @@ public class BrCond implements Instruction {
         cond.addUse(this);
     }
 
+    public void replace(Value oldV, Value newV)
+    {
+        if (cond == oldV)
+        {
+            cond.getUses().remove(this);
+            cond = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
+    }
+
     public boolean checkRemove(ListIterator list)
     {
         return false;

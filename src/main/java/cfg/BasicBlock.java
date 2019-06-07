@@ -79,7 +79,7 @@ public class BasicBlock {
         LocalValueNumbering lvn = new LocalValueNumbering();
         for (Instruction inst : instructions)
         {
-            //inst.localValueNumbering(lvn);
+            inst.localValueNumbering(lvn);
         }
     }
 

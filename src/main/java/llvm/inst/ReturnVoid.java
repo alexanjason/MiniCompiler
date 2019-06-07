@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -25,6 +26,14 @@ public class ReturnVoid implements Instruction {
     }
 
     public void sscpReplace(Value v, Immediate constant)
+    {
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
     {
     }
 

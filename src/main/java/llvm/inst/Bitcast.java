@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -18,6 +19,19 @@ public class Bitcast implements Instruction {
 
         result.addDef(this);
         val.addUse(this);
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (val == oldV)
+        {
+            val.getUses().remove(this);
+            val = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public boolean checkRemove(ListIterator list)

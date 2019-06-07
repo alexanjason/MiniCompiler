@@ -3,6 +3,7 @@ package llvm.inst;
 import arm.Mov;
 import cfg.BasicBlock;
 import cfg.Label;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.Type;
 import llvm.type.i32;
@@ -48,6 +49,22 @@ public class Phi implements Instruction {
                 entry.value = constant;
             }
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        for (PhiEntry entry : entryList)
+        {
+            if (entry.value == oldV)
+            {
+                oldV.getUses().remove(this);
+                entry.value = newV;
+            }
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public SSCPValue meet(SSCPValue sscpVal1, Value v, Map<Value, SSCPValue> map)

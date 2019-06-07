@@ -1,6 +1,7 @@
 package llvm.inst;
 
 import arm.Mov;
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -38,6 +39,19 @@ public class Move implements Instruction {
             ptr.getUses().remove(this);
             ptr = constant;
         }
+    }
+
+    public void replace(Value oldV, Value newV)
+    {
+        if (ptr == oldV)
+        {
+            ptr.getUses().remove(this);
+            ptr = newV;
+        }
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
