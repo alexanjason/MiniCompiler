@@ -14,6 +14,7 @@ public class MiniCompiler
    private static boolean regAlloc;
    private static boolean uce;
    private static boolean sscp;
+   private static boolean lvn;
 
    public static void main(String[] args)
    {
@@ -22,6 +23,7 @@ public class MiniCompiler
       regAlloc = false;
       uce = false;
       sscp = false;
+      lvn = false;
 
       parseParameters(args);
 
@@ -52,6 +54,10 @@ public class MiniCompiler
          if (sscp)
          {
             cfgList.sparseSimpleConstantPropagation();
+         }
+         if (lvn)
+         {
+            cfgList.localValueNumbering();
          }
          if (uce)
          {
@@ -117,6 +123,10 @@ public class MiniCompiler
             else if (args[i].equals("-sscp"))
             {
                sscp = true;
+            }
+            else if (args[i].equals("-lvn"))
+            {
+               lvn = true;
             }
             else
             {

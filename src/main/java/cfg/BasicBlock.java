@@ -74,6 +74,15 @@ public class BasicBlock {
         this.values = values;
     }
 
+    public void localValueNumbering()
+    {
+        LocalValueNumbering lvn = new LocalValueNumbering();
+        for (Instruction inst : instructions)
+        {
+            //inst.localValueNumbering(lvn);
+        }
+    }
+
     public void addToInterferenceGraph(InterferenceGraph graph)
     {
         Set<Value> liveSet = new HashSet<>();//liveOut;
@@ -98,16 +107,26 @@ public class BasicBlock {
 
     public boolean uselessCodeElimination()
     {
-        ListIterator iterator = instructions.listIterator();
         boolean removed = false;
+        ListIterator<Instruction> iterator = instructions.listIterator();
         while (iterator.hasNext())
         {
-            Instruction inst = (Instruction) iterator.next();
+            Instruction inst = iterator.next();
             if (inst.checkRemove(iterator))
             {
                 removed = true;
             }
         }
+        ListIterator phiIterator = phiInstructions.listIterator();
+        while (phiIterator.hasNext())
+        {
+            Instruction inst = (Instruction) phiIterator.next();
+            if (inst.checkRemove(phiIterator))
+            {
+                removed = true;
+            }
+        }
+
         return removed;
     }
 
@@ -197,7 +216,6 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            values.add(reg);
             //reg.addDef(phi); // TODO
             incompletePhis.add(phi);
         }
@@ -216,11 +234,12 @@ public class BasicBlock {
             val = reg;
             Phi phi = new Phi(val, id);
             //reg.addDef(phi);    // TODO
-            values.add(reg);
+            //values.add(reg);
             phiInstructions.add(phi);
             writeVariable(id, val);
             addPhiOperands(id, type, phi);
         }
+        values.add(val);
         writeVariable(id, val);
         return val;
     }

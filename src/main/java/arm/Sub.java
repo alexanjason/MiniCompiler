@@ -43,9 +43,7 @@ public class Sub implements Instruction {
         }
         else
         {
-            Register newReg = new Register(new i32(), 5);
-            map.put(r1.getString(), newReg);
-            r1 = newReg;
+            System.err.println("sub r1 NOT IN GRAPH: " + r1.getString());
         }
 
         if (map.containsKey(r2.getString()))
@@ -61,10 +59,7 @@ public class Sub implements Instruction {
         }
         else
         {
-            Register newReg = new Register(new i32(), 5);
-            // TODO
-            map.put(r2.getString(), newReg);
-            r2 = newReg;
+            System.err.println("sub r2 NOT IN GRAPH: " + r2.getString());
         }
 
         if (Operand2 instanceof Local || Operand2 instanceof Register)
@@ -79,9 +74,7 @@ public class Sub implements Instruction {
                 Operand2 = spillReg;
                 // TODO add this to mapping?
             } else {
-                Register newReg = new Register(new i32(), 5);
-                map.put(Operand2.getString(), newReg);
-                Operand2 = newReg;
+                System.err.println("sub Operand2 NOT IN GRAPH: " + Operand2.getString());
             }
         }
     }

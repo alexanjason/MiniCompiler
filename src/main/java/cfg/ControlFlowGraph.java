@@ -74,6 +74,14 @@ public class ControlFlowGraph {
         BuildCFG();
     }
 
+    public void localValueNumbering()
+    {
+        for (BasicBlock b : nodeList)
+        {
+            b.localValueNumbering();
+        }
+    }
+
     public void uselessCodeElimination()
     {
         boolean guard = true;
@@ -212,7 +220,6 @@ public class ControlFlowGraph {
     public void propagateLiveOutSets()
     {
         boolean guard = true;
-        int count = 0;
 
         while(guard)
         {
@@ -247,9 +254,9 @@ public class ControlFlowGraph {
                     guard = true;
                 }
                 n.liveOut = newLiveOut;
-                count ++;
             }
         }
+
 
         for (BasicBlock n : nodeList)
         {
@@ -261,6 +268,7 @@ public class ControlFlowGraph {
             }
             System.out.println();
         }
+
     }
 
     public InterferenceGraph buildInterferenceGraph()

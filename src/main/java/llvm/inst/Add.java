@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.value.*;
 
@@ -20,6 +21,59 @@ public class Add implements Instruction {
         result.addDef(this);
         left.addUse(this);
         right.addUse(this);
+    }
+
+    public void localValueNumbering(LocalValueNumbering lvn)
+    {
+        if (lvn.isInMap(left.getId()))
+        {
+            left.getUses().remove(this);
+            left = lvn.getVal(left.getId());
+
+            left.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(left.getId(), left);
+        }
+
+        int leftNum = lvn.getNumbering(left.getId());
+
+        if (lvn.isInMap(right.getId()))
+        {
+            right.getUses().remove(this);
+            right = lvn.getVal(right.getId());
+
+            right.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(right.getId(), right);
+        }
+
+        int rightNum = lvn.getNumbering(right.getId());
+
+        String res1 = "+," + leftNum + "," + rightNum;
+        String res2 = "+," + rightNum + "," + leftNum;
+
+        if (lvn.isInMap(res1))
+        {
+            result.getUses().remove(this);
+            result = lvn.getVal(res1);
+            result.addUse(this);
+        }
+        else if (lvn.isInMap(res2))
+        {
+            result.getUses().remove(this);
+            result = lvn.getVal(res1);
+            result.addUse(this);
+        }
+        else
+        {
+            lvn.enterInMap(res1, result);
+            lvn.enterInMap(res2, result);
+        }
+
     }
 
     public boolean checkRemove(ListIterator list)
@@ -172,4 +226,5 @@ public class Add implements Instruction {
 
         return list;
     }
+
 }

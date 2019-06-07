@@ -34,9 +34,7 @@ public class Movge implements Instruction {
         }
         else
         {
-            Register newReg = new Register(new i32(), 5);
-            map.put(r1.getString(), newReg);
-            r1 = newReg;
+            System.err.println("movge r1 NOT IN GRAPH: " + r1.getString());
         }
 
         if (Operand2 instanceof Local || Operand2 instanceof Register)
@@ -51,9 +49,7 @@ public class Movge implements Instruction {
                 Operand2 = spillReg;
                 // TODO add this to mapping?
             } else {
-                Register newReg = new Register(new i32(), 5);
-                map.put(Operand2.getString(), newReg);
-                Operand2 = newReg;
+                System.err.println("movge Operand2 NOT IN GRAPH: " + Operand2.getString());
             }
         }
     }

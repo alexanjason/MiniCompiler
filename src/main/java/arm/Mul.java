@@ -49,9 +49,7 @@ public class Mul implements Instruction {
         }
         else
         {
-            Register newReg = new Register(new i32(), 5);
-            map.put(r1.getString(), newReg);
-            r1 = newReg;
+            System.err.println("mul r1 NOT IN GRAPH: " + r1.getString());
         }
 
         if (map.containsKey(r2.getString()))

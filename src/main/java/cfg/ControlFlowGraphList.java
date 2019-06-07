@@ -68,6 +68,14 @@ public class ControlFlowGraphList {
         }
     }
 
+    public void localValueNumbering()
+    {
+        for (ControlFlowGraph cfg : controlFlowGraphs)
+        {
+            cfg.localValueNumbering();
+        }
+    }
+
     private void printHelpers(PrintStream stream)
     {
         // TODO should this be more than just a string dump?

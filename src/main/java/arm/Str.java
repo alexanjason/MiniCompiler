@@ -39,9 +39,7 @@ public class Str implements Instruction {
         }
         else
         {
-            Register newReg = new Register(new i32(), 5);
-            map.put(r1.getString(), newReg);
-            r1 = newReg;
+            System.err.println("str r1 NOT IN GRAPH: " + r1.getString());
         }
 
         if (map.containsKey(r2.getString()))
@@ -57,10 +55,7 @@ public class Str implements Instruction {
         }
         else
         {
-            Register newReg = new Register(new i32(), 5);
-            // TODO
-            map.put(r2.getString(), newReg);
-            r2 = newReg;
+            System.err.println("str r2 NOT IN GRAPH: " + r2.getString());
         }
     }
 
