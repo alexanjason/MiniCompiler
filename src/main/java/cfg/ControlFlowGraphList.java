@@ -96,7 +96,18 @@ public class ControlFlowGraphList {
     private void printArmHelpers(PrintStream stream)
     {
         StringBuilder sb = new StringBuilder();
-        // TODO
+        sb.append(".PRINTLN_FMT:\n");
+        sb.append("\t.asciz\t\"%ld\\n\"\n");
+        sb.append("\t.align\t2\n");
+        sb.append(".PRINT_FMT:\n");
+        sb.append("\t.asciz\t\"%ld \"\n");
+        sb.append("\t.align\t2\n");
+        sb.append(".READ_FMT:\n");
+        sb.append("\t.asciz\t\"%ld\"\n");
+        sb.append("\t.comm\t.read_scratch,4,4\n");
+        sb.append("\t.global\t__aeabi_idiv\n");
+
+        stream.print(sb.toString());
     }
 
     public void print(PrintStream stream, boolean llvm)

@@ -71,8 +71,8 @@ public class Mov implements Instruction {
     public String getString()
     {
         // TODO make newlines instructions
-        //if (!(r1.getString().equals(Operand2.getString())))
-        //{
+        if (!(r1.getString().equals(Operand2.getString())))
+        {
             StringBuilder sb = new StringBuilder();
             sb.append("mov " + r1.getString() + ", ");
             if (Operand2 instanceof Immediate)
@@ -89,8 +89,8 @@ public class Mov implements Instruction {
             }
 
             return sb.toString();
-        //}
-        //return "";
+        }
+        return "";
     }
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)

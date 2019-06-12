@@ -77,7 +77,7 @@ public class FuncEnd implements Instruction{
 
         instList.add(new Pop(calleeSaved));
 
-        instList.add(new arm.Sub(sp, fp, new Immediate("4", new i32())));
+        //instList.add(new arm.Sub(sp, fp, new Immediate("4", new i32())));
 
         List<String> list = new ArrayList<>();
         list.add("fp");

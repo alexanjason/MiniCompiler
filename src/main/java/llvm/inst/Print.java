@@ -2,8 +2,11 @@ package llvm.inst;
 
 import arm.Bl;
 import arm.Mov;
+import arm.Movt;
+import arm.Movw;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
+import llvm.type.i32;
 import llvm.value.*;
 
 import java.util.*;
@@ -66,8 +69,16 @@ public class Print implements Instruction {
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
-        list.add(new Mov(new Register(val.getType(), 0), val));
-        list.add(new Bl("print"));
+        list.add(new Mov(new Register(val.getType(), 1), val));
+        Immediate print_fmt_lower = new Immediate("#:lower16:.PRINT_FMT", new i32());
+        Immediate print_fmt_upper = new Immediate("#:upper16:.PRINT_FMT", new i32());
+
+        Register r0 = new Register(new i32(), 0);
+
+        list.add(new Movw(r0, print_fmt_lower));
+        list.add(new Movt(r0, print_fmt_upper));
+
+        list.add(new Bl("printf"));
         return list;
     }
 

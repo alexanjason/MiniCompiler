@@ -1,10 +1,10 @@
 package llvm.inst;
 
-import arm.Bl;
-import arm.Mov;
+import arm.*;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.Type;
+import llvm.type.i32;
 import llvm.value.*;
 
 import java.util.*;
@@ -106,9 +106,40 @@ public class Call implements Instruction {
             //System.out.println("i: " + i + " paramVal " + paramVals.get(i).getString());
             list.add(new Mov(new Register(paramTypes.get(i), i), paramVals.get(i)));
         }
-        list.add(new Bl(name));
+
         Register r = (Register) result;
-        list.add(new Mov(r, new Register(result.getType(), 0)));
+
+        // TODO hack
+        if (name.equals("read_util"))
+        {
+            Immediate read_scratch_lower = new Immediate("#:lower16:.read_scratch", new i32());
+            Immediate read_scratch_upper = new Immediate("#:upper16:.read_scratch", new i32());
+            Immediate read_fmt_lower = new Immediate("#:lower16:.READ_FMT", new i32());
+            Immediate read_fmt_upper = new Immediate("#:upper16:.READ_FMT", new i32());
+
+            Register r1 = new Register(new i32(), 1);
+            Register r0 = new Register(new i32(), 0);
+
+            list.add(new Movw(r1, read_scratch_lower));
+            list.add(new Movt(r1, read_scratch_upper));
+
+            list.add(new Movw(r0, read_fmt_lower));
+            list.add(new Movt(r0, read_fmt_upper));
+
+            list.add(new Bl("scanf"));
+
+
+            list.add(new Movw(r, read_scratch_lower));
+            list.add(new Movt(r, read_scratch_upper));
+
+            list.add(new Ldr(r, r));
+
+        }
+        else
+        {
+            list.add(new Bl(name));
+            list.add(new Mov(r, new Register(result.getType(), 0)));
+        }
 
         return list;
     }

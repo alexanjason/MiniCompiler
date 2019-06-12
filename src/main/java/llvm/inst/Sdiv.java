@@ -1,7 +1,10 @@
 package llvm.inst;
 
+import arm.Bl;
+import arm.Mov;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
+import llvm.type.i32;
 import llvm.value.*;
 
 import java.util.*;
@@ -224,8 +227,14 @@ public class Sdiv implements Instruction {
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
-        Register r1 = (Register) result;
 
+        list.add(new Mov(new Register(new i32(), 0), left));
+        list.add(new Mov(new Register(new i32(), 1), right));
+
+        list.add(new Bl("__aeabi_idiv"));
+        Register r = (Register) result;
+        list.add(new Mov(r, new Register(result.getType(), 0)));
+        /*
         Register r3;
         boolean rightLocal = false;
         if (right instanceof Immediate)
@@ -284,6 +293,7 @@ public class Sdiv implements Instruction {
             System.err.println("Sdiv left error");
             System.err.println(left.getType().getString() + " " + left.getString());
         }
+        */
 
         return list;
     }

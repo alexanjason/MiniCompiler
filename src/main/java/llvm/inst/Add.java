@@ -95,6 +95,7 @@ public class Add implements Instruction {
         if (result.isMarked())
         {
             list.remove();
+            // TODO update?
             return true;
         }
         return false;
