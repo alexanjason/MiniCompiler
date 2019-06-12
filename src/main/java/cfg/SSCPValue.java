@@ -104,6 +104,10 @@ public interface SSCPValue
             {
                 return bool;
             }
+            if (isNull)
+            {
+                return null;
+            }
             else
             {
                 return constant;

@@ -48,7 +48,8 @@ public class Getelementptr implements Instruction {
         if (base == v)
         {
             base.getUses().remove(this);
-            base = constant;
+            Immediate newImm = new Immediate(constant.getId(), base.getType());
+            base = newImm;
         }
     }
 

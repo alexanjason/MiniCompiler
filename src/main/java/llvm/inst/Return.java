@@ -37,7 +37,8 @@ public class Return implements Instruction {
         if (value == v)
         {
             value.getUses().remove(this);
-            value = constant;
+            Immediate newImm = new Immediate(constant.getId(), value.getType());
+            value = newImm;
         }
     }
 

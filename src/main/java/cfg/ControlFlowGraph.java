@@ -200,6 +200,10 @@ public class ControlFlowGraph {
                 {
                     constant = new Immediate(Integer.toString((Integer)c), new i32());
                 }
+                else if (c == null)
+                {
+                     constant = new Immediate("null", new i32());
+                }
                 else
                 {
                     constant = null;
