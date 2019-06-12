@@ -7,6 +7,7 @@ import ast.prog.SymbolTableList;
 import ast.stmt.*;
 import llvm.inst.*;
 import llvm.type.*;
+import llvm.type.Void;
 import llvm.value.*;
 
 import java.util.ArrayList;
@@ -259,7 +260,17 @@ public class StatementBuilder {
         }
         else
         {
-            currentBlock.writeVariable("_retval_", retExpVal);
+            System.err.println("retval " + retExpVal.getString() + " type " + retExpVal.getType().getString());
+            if (retExpVal.getType() instanceof Void)
+            {
+                Type returnType = converter.convertType(retType);
+                Value actRet = new Immediate("null", returnType);
+                currentBlock.writeVariable("_retval_", actRet);
+            }
+            else
+            {
+                currentBlock.writeVariable("_retval_", retExpVal);
+            }
         }
 
         currentBlock.addInstruction(new BrUncond(exitNode.label));

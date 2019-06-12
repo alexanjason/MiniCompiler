@@ -20,7 +20,6 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void BenchMarkishTopics()
     {
         String name = "BenchMarkishTopics";
-        // TODO while loop multiple of same phi instruction
         runTest(folder, name);
     }
 
@@ -28,6 +27,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void bert()
     {
         String name = "bert";
+        // TODO expected 3 actual null
         runTest(folder, name);
     }
 
@@ -63,6 +63,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void Fibonacci()
     {
         String name = "Fibonacci";
+        // TODO conditional error
         runTest(folder, name);
     }
 
@@ -84,6 +85,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void hanoi_benchmark()
     {
         String name = "hanoi_benchmark";
+        // TODO expected 1 actual null
         runTest(folder, name);
     }
 
@@ -91,6 +93,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void killerBubbles()
     {
         String name = "killerBubbles";
+        // TODO expected 1 actual null
         runTest(folder, name);
     }
 
@@ -112,6 +115,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void OptimizationBenchmark()
     {
         String name = "OptimizationBenchmark";
+        // TODO 32 bit overflow?
         runTest(folder, name);
     }
 
@@ -133,6 +137,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void stats()
     {
         String name = "stats";
+        // TODO 32 bit overflow?
         runTest(folder, name);
     }
 

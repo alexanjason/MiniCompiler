@@ -442,10 +442,9 @@ public class ControlFlowGraph {
                 entryNode.successorList.add(exitNode);
             }
 
-
-
             if (type instanceof Void)
             {
+                System.out.println("CFG 447 " + function.getName());
                 exitNode.addInstruction(new FuncEnd(function.getName()));
 
                 // TODO mindless hack
@@ -461,7 +460,9 @@ public class ControlFlowGraph {
 
             if (!stackBased && !(type instanceof Void))
             {
+                System.out.println("463 " + function.getName() + " " + type.getString());
                 Value ret = exitNode.readVariable("_retval_", type);
+                System.out.println("ret " + ret.getString() + " type " + type.getString());
                 exitNode.addInstruction(new Return(ret));
                 exitNode.addInstruction(new FuncEnd(function.getName()));
                 exitNode.seal();
