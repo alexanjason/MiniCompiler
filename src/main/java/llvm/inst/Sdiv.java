@@ -140,7 +140,7 @@ public class Sdiv implements Instruction {
 
             if (right instanceof Immediate)
             {
-                sscpRight = new SSCPValue.Constant(Integer.parseInt(left.getId()));
+                sscpRight = new SSCPValue.Constant(Integer.parseInt(right.getId()));
             }
             else
             {
@@ -155,7 +155,13 @@ public class Sdiv implements Instruction {
             {
                 int l = (int)((SSCPValue.Constant) sscpLeft).getConst();
                 int r = (int)((SSCPValue.Constant) sscpRight).getConst();
-                newResult = new SSCPValue.Constant(l / r);
+                if (r == 0)
+                {
+                    newResult = new SSCPValue.Bottom();
+                }
+                else {
+                    newResult = new SSCPValue.Constant(l / r);
+                }
             }
             else
             {

@@ -56,11 +56,13 @@ public class Call implements Instruction {
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
         //System.err.println("sscpinit call " + name);
+        map.put(result, new SSCPValue.Bottom());
+        workList.add(result);
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval call");
+        //map.put(result, new SSCPValue.Bottom());
     }
 
     public void sscpReplace(Value v, Immediate constant)

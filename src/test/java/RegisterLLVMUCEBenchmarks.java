@@ -4,16 +4,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import static junit.framework.TestCase.fail;
-
-public class RegisterLLVMSSCPBenchmarks extends TestUtils {
+public class RegisterLLVMUCEBenchmarks extends TestUtils {
 
     @Before
     public void setUp()
     {
         stack = false;
         llvm = true;
-        sscp = true;
+        sscp = false;
+        uce = true;
     }
 
     @Rule
@@ -72,8 +71,8 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void GeneralFunctAndOptimize()
     {
         String name = "GeneralFunctAndOptimize";
-        fail("TODO");
-        //runTest(folder, name);
+        //fail("TODO");
+        runTest(folder, name);
     }
 
     @Test
@@ -101,8 +100,7 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void mile1()
     {
         String name = "mile1";
-        fail("TODO");
-        //runTest(folder, name);
+        runTest(folder, name);
     }
 
     @Test
@@ -116,16 +114,14 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void OptimizationBenchmark()
     {
         String name = "OptimizationBenchmark";
-        fail("TODO");
-        //runTest(folder, name);
+        runTest(folder, name);
     }
 
     @Test
     public void primes()
     {
         String name = "primes";
-        //runTest(folder, name);
-        fail("TODO");
+        runTest(folder, name);
     }
 
     @Test
@@ -139,8 +135,7 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void stats()
     {
         String name = "stats";
-        fail("TODO");
-        //runTest(folder, name);
+        runTest(folder, name);
     }
 
     @Test

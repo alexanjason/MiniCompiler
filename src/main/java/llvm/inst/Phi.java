@@ -81,6 +81,10 @@ public class Phi implements Instruction {
             {
                 sscpVal2 = new SSCPValue.Constant(false);
             }
+            else if (v.getId().equals("null"))
+            {
+                sscpVal2 = new SSCPValue.Constant("null");
+            }
             else
             {
                 sscpVal2 = new SSCPValue.Constant(Integer.parseInt(v.getId()));
@@ -113,27 +117,32 @@ public class Phi implements Instruction {
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
         SSCPValue oldRes = map.get(result);
-        SSCPValue newRes = new SSCPValue.Top();
+        SSCPValue newRes = oldRes;//new SSCPValue.Top();
 
-        boolean hacky = false;
+        //boolean hacky = false;
 
         for (PhiEntry entry : entryList)
         {
             Value v = entry.value;
+            SSCPValue oldnew = newRes;
             newRes = meet(newRes, v, map);
+            //System.out.println(result.getString() + " = " + oldnew.getString() + " and " + v.getString() + " " + "-> meets at " + newRes.getString());
+            /*
             if (v == result)
             {
                 hacky = true;
             }
+            */
         }
 
-        if (oldRes != newRes)
+        if (!(oldRes.getString().equals(newRes.getString())))
         {
-            if (!hacky)
-            {
+            //System.out.println("oldRes: " + oldRes.getString() + " newRes: " + newRes.getString());
+            //if (!hacky)
+            //{
                 workList.add(result);
-            }
-            System.err.println("adding " + result.getString() + " to worklist");
+            //}
+            //System.err.println("adding " + result.getString() + " to worklist");
             map.put(result, newRes);
         }
     }

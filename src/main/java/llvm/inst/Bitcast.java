@@ -46,7 +46,9 @@ public class Bitcast implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit bitcast. result: " + result.getString() + "val: " + val.getString());
+        map.put(result, new SSCPValue.Bottom());
+        workList.add(result);
+        //System.err.println("sscpinit bitcast. result: " + result.getString() + "val: " + val.getString());
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)

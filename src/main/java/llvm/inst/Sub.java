@@ -136,7 +136,7 @@ public class Sub implements Instruction {
 
             if (right instanceof Immediate)
             {
-                sscpRight = new SSCPValue.Constant(Integer.parseInt(left.getId()));
+                sscpRight = new SSCPValue.Constant(Integer.parseInt(right.getId()));
             }
             else
             {

@@ -15,6 +15,8 @@ public class TestUtils {
     boolean stack;
     boolean llvm;
     boolean sscp;
+    boolean uce;
+    boolean lvn;
 
     File runCompiler(TemporaryFolder folder, String name, String dest)
     {
@@ -33,6 +35,8 @@ public class TestUtils {
         if (stack) { numArgs++; }
         if (llvm) { numArgs++; }
         if (sscp) { numArgs++; }
+        if (uce) { numArgs++; }
+        if (lvn) { numArgs++; }
 
         String[] args = new String[numArgs];
         args[0] = dest + name + ".mini";
@@ -50,6 +54,16 @@ public class TestUtils {
         if (sscp)
         {
             args[i] = "-sscp";
+            i++;
+        }
+        if (uce)
+        {
+            args[i] = "-uce";
+            i++;
+        }
+        if (lvn)
+        {
+            args[i] = "-lvn";
             i++;
         }
 

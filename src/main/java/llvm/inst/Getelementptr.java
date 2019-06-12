@@ -35,7 +35,9 @@ public class Getelementptr implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit getelementptr");
+        //System.err.println("sscpinit getelementptr");
+        map.put(result, new SSCPValue.Bottom());
+        workList.add(result);
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)

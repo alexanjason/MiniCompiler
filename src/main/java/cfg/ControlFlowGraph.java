@@ -115,13 +115,16 @@ public class ControlFlowGraph {
             // TODO hacky
             if (v instanceof Global)
             {
+                System.err.println(v.getString() + " global");
                 sscpMap.put(v, new SSCPValue.Bottom());
                 workList.add(v);
             }
             else if (v instanceof Local)
             {
+                System.err.println(v.getString() + " local");
                 if (((Local)v).isParam())
                 {
+                    System.err.println(v.getString() + " param");
                     // TODO so much duplicate code in llvm instructions
                     sscpMap.put(v, new SSCPValue.Bottom());
                     workList.add(v);
@@ -129,6 +132,7 @@ public class ControlFlowGraph {
                 else
                 {
                     // TODO hacky and possibly incorrect
+                    /*
                     if (v.getDef() == null)
                     {
                         sscpMap.put(v, new SSCPValue.Top());
@@ -139,6 +143,7 @@ public class ControlFlowGraph {
                         System.out.println(v.getString());
                         v.getDef().print(System.out);
                     }
+                    */
                 }
             }
             else
@@ -153,6 +158,14 @@ public class ControlFlowGraph {
                     v.getDef().sscpInit(sscpMap, workList);
                 }
             }
+            /*
+            System.out.println(v.getString() + " vvv ");
+
+            for (Value vs : sscpMap.keySet())
+            {
+                System.out.println(vs.getString() + " -> " + sscpMap.get(vs).getString());
+            }
+            */
         }
 
         //Iterator iterator = workList.iterator();

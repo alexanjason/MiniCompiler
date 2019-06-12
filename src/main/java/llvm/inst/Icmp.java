@@ -95,7 +95,13 @@ public class Icmp implements Instruction {
 
             if (op2 instanceof Immediate)
             {
-                sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
+                if (op2.getId().equals("null"))
+                {
+                    sscpRight = new SSCPValue.Constant("null");
+                }
+                else {
+                    sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
+                }
             }
             else
             {
@@ -155,6 +161,7 @@ public class Icmp implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
+        System.out.println("sscpInit Icmp " + op1.getId() + "  " + op2.getId());
         if ((op1 instanceof Immediate) && (op2 instanceof Immediate))
         {
             int leftImm = Integer.parseInt(op1.getId());
@@ -198,6 +205,7 @@ public class Icmp implements Instruction {
         {
             if (((Local)op1).isParam())
             {
+                System.out.println("param " + op1.getId());
                 map.put(result, new SSCPValue.Bottom());
                 workList.add(result);
             }
