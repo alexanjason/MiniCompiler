@@ -14,6 +14,7 @@ public class StackLocation implements Value {
     Instruction def;
     List<Instruction> uses;
     boolean marked;
+    int offset;
 
     public StackLocation(Type type)
     {
@@ -22,6 +23,14 @@ public class StackLocation implements Value {
         this.type = type;
         this.uses = new ArrayList<>();
         this.marked = false;
+        this.offset = -1;
+    }
+
+    // TODO make this a seperate arm type
+    public StackLocation(int offset)
+    {
+        // - offset from fp
+        this.offset = offset;
     }
 
     public void checkUseless()
@@ -64,7 +73,13 @@ public class StackLocation implements Value {
 
     public String getString()
     {
-        return ("%u" + this.id);
+        if (offset == -1) {
+            return ("%u" + this.id);
+        }
+        else
+        {
+            return "fp, #-" + this.offset;
+        }
     }
 
     public Type getType()

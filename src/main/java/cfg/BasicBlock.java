@@ -1,5 +1,7 @@
 package cfg;
 
+import llvm.inst.FuncEnd;
+import llvm.inst.FuncStart;
 import llvm.inst.Instruction;
 import llvm.inst.Phi;
 import llvm.type.Type;
@@ -87,7 +89,8 @@ public class BasicBlock {
     {
         Set<Value> liveSet = new HashSet<>();//liveOut;
         liveSet.addAll(liveOut);
-        System.out.println(this.label.getString() + ":");
+
+        //System.out.println(this.label.getString() + ":");
         for (int i = armInstructions.size() - 1; i >= 0; i--)
         //for (arm.Instruction i : armInstructions)
         {
@@ -96,12 +99,14 @@ public class BasicBlock {
             armInstructions.get(i).addToInterferenceGraph(liveSet, graph);
             //i.addToInterferenceGraph(liveSet, graph);
 
+            /*
             System.out.print("\tLive: ");
             for (Value v : liveSet)
             {
                 System.out.print(v.getString() + " ");
             }
             System.out.println();
+            */
         }
     }
 
@@ -130,11 +135,14 @@ public class BasicBlock {
         return removed;
     }
 
-    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    public void replaceRegs(Map<String, Register> map, Map<String, Integer> spillMap)
     {
-        for (arm.Instruction inst : armInstructions)
+        ListIterator<arm.Instruction> instIterator = armInstructions.listIterator();
+        //for (arm.Instruction inst : armInstructions)
+        while (instIterator.hasNext())
         {
-            inst.replaceRegs(map, spillSet);
+            arm.Instruction inst = instIterator.next();
+            inst.replaceRegs(instIterator, map, spillMap);
         }
     }
 
@@ -150,15 +158,20 @@ public class BasicBlock {
     {
         for (Instruction inst : instructions)
         {
-            List<arm.Instruction> armInstList = inst.getArm();
-            for (arm.Instruction armInst : armInstList)
+            if (!(inst instanceof FuncEnd) && !(inst instanceof FuncStart))
             {
-                armInstructions.add(armInst);
-                armInst.addToGenAndKill(genSet, killSet);
+                List<arm.Instruction> armInstList = inst.getArm();
+
+                for (arm.Instruction armInst : armInstList)
+                {
+                    armInstructions.add(armInst);
+                    armInst.addToGenAndKill(genSet, killSet);
+                }
             }
         }
 
 
+        /*
         System.out.println(this.label.getString() + ":");
         System.out.print("\tgenSet: ");
         for (Value v : genSet)
@@ -171,6 +184,7 @@ public class BasicBlock {
             System.out.print(v.getString() + " ");
         }
         System.out.println();
+        */
 
     }
 
@@ -188,6 +202,11 @@ public class BasicBlock {
     public void addArmInstruction(arm.Instruction inst)
     {
         armInstructions.add(inst);
+    }
+
+    public void addArmInstructionToBeginning(arm.Instruction inst)
+    {
+        armInstructions.add(0, inst);
     }
 
     public void writeVariable(String id, Value value)

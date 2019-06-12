@@ -5,23 +5,23 @@ import arm.Push;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
-import llvm.value.*;
+import llvm.value.Immediate;
+import llvm.value.Local;
+import llvm.value.Register;
+import llvm.value.Value;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
-public class FuncStart implements Instruction{
+public class ParamMov implements Instruction {
 
-    //List<String> params;
-    int spills;
+    List<String> params;
 
-    public FuncStart()
+    public ParamMov(List<String> list)
     {
-
-    }
-
-    public void updateSpills(int spills)
-    {
-        this.spills = spills;
+        params = list;
     }
 
     public String getString()
@@ -62,33 +62,7 @@ public class FuncStart implements Instruction{
         // TODO this is a hack
 
         List<arm.Instruction> instList = new ArrayList<>();
-        List<String> list = new ArrayList<>();
-        list.add("fp");
-        list.add("lr");
-        instList.add(new arm.Push(list));
 
-        // TODO this is bizarre
-        Register fp = new Register(new i32(), 11); // TODO
-        Register sp = new Register(new i32(), 13);
-        Value imm = new Immediate("4", new i32());
-
-        instList.add(new arm.Add(fp, sp, imm));
-
-        List<String> calleeSaved = new ArrayList<>();
-        calleeSaved.add("r4");
-        calleeSaved.add("r5");
-        calleeSaved.add("r6");
-        calleeSaved.add("r7");
-        calleeSaved.add("r8");
-        calleeSaved.add("r9");
-        calleeSaved.add("r10");
-
-        instList.add(new Push(calleeSaved));
-
-        System.err.println("this.spills*4 " + this.spills*4);
-        instList.add(new arm.Sub(sp, sp, new Immediate(Integer.toString(this.spills*4), new i32())));
-
-        /*
         int i = 0;
         for (String s : params)
         {
@@ -96,7 +70,6 @@ public class FuncStart implements Instruction{
             i++;
         }
         // TODO more than 3 params
-        */
 
         return instList;
     }

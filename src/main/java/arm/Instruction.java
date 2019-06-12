@@ -5,6 +5,7 @@ import llvm.value.Register;
 import llvm.value.Value;
 
 import java.io.PrintStream;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +22,6 @@ public interface Instruction {
 
     void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph);
 
-    void replaceRegs(Map<String, Register> map, Set<String> spillSet);
+    void replaceRegs(ListIterator<Instruction> instList, Map<String, Register> map, Map<String, Integer> spillMap);
 
 }

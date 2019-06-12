@@ -2,11 +2,9 @@ package arm;
 
 import cfg.InterferenceGraph;
 import llvm.type.i32;
-import llvm.value.Immediate;
-import llvm.value.Local;
-import llvm.value.Register;
-import llvm.value.Value;
+import llvm.value.*;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,21 +19,11 @@ public class Movle implements Instruction {
         Operand2 = operand2;
     }
 
-    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    public void replaceRegs(ListIterator<Instruction> instList, Map<String, Register> map, Map<String, Integer> spillMap)
     {
-        if (map.containsKey(r1.getString()))
-        {
-            r1 = map.get(r1.getString());
-        }
-        else if (spillSet.contains(r1.getString()))
-        {
-            // TODO can r1 spill?
-            System.err.println("movle r1 spilled " + r1.getString());
-        }
-        else
-        {
-            System.err.println("movle r1 NOT IN GRAPH: " + r1.getString());
-        }
+
+        Register r9 = new Register(new i32(), 9);
+        Register r10 = new Register(new i32(), 10);
 
         if (Operand2 instanceof Local || Operand2 instanceof Register)
         {
@@ -43,14 +31,31 @@ public class Movle implements Instruction {
             {
                 Operand2 = map.get(Operand2.getString());
             }
-            else if (spillSet.contains(Operand2.getString())) {
-                Register spillReg = new Register(new i32(), 10);
-                map.put(Operand2.getString(), spillReg);
-                Operand2 = spillReg;
-                // TODO add this to mapping?
+            else if (spillMap.containsKey(Operand2.getString())) {
+                instList.previous();
+                int offset = spillMap.get(Operand2.getString());
+                instList.add(new Ldr(r10, new StackLocation(offset*4)));
+                instList.next();
+                Operand2 = r10;
             } else {
-                System.err.println("movle Operand2 NOT IN GRAPH: " + Operand2.getString());
+                System.err.println("Operand2 NOT IN GRAPH: " + Operand2.getString());
             }
+        }
+
+        if (map.containsKey(r1.getString()))
+        {
+            r1 = map.get(r1.getString());
+        }
+        else if (spillMap.containsKey(r1.getString()))
+        {
+            int offset = spillMap.get(r1.getString());
+            instList.add(new Str(r9, new StackLocation(offset*4)));
+            //instList.next();
+            r1 = r9;
+        }
+        else
+        {
+            System.err.println("r1 NOT IN GRAPH: " + r1.getString());
         }
     }
 
@@ -90,19 +95,13 @@ public class Movle implements Instruction {
         // remove inst target from live
         liveSet.remove(r1);
 
+        //add vertex for r1
+        graph.addVertex(r1);
+
         // add an edge from inst target to each element of live
-        if (liveSet.size() > 0)
-        {
-            System.out.print("\tadding edge from " + r1.getString() + " to ");
-        }
         for (Value v : liveSet)
         {
             graph.addEdge(r1, v);
-            System.out.print(v.getString() + " ");
-        }
-        if (liveSet.size() > 0)
-        {
-            System.out.println();
         }
 
         // r1 in liveset

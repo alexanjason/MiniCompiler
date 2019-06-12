@@ -1,9 +1,13 @@
 package arm;
 
 import cfg.InterferenceGraph;
+import llvm.type.i32;
+import llvm.value.Local;
 import llvm.value.Register;
+import llvm.value.StackLocation;
 import llvm.value.Value;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +25,7 @@ public class Size implements Instruction {
         return ".size " + name + ", .-" + name;
     }
 
-    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    public void replaceRegs(ListIterator<Instruction> instList, Map<String, Register> map, Map<String, Integer> spillMap)
     {
     }
 

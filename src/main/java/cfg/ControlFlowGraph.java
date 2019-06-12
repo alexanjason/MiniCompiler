@@ -53,7 +53,8 @@ public class ControlFlowGraph {
 
         // TODO put this retval business in a class? Value?
 
-        entryNode.addInstruction(new FuncStart(function.getParamNames()));
+        entryNode.addInstruction(new FuncStart());
+        entryNode.addInstruction(new ParamMov(function.getParamNames()));
 
         if (!(type instanceof Void))
         {
@@ -228,10 +229,10 @@ public class ControlFlowGraph {
             for (BasicBlock n : nodeList)
             {
                 Set<Value> newLiveOut = new HashSet<>();
-                System.err.println("Block n: " + n.label.getString());
+                //System.err.println("Block n: " + n.label.getString());
                 for (BasicBlock m : n.successorList)
                 {
-                    System.err.println("Block m: " + m.label.getString());
+                    //System.err.println("Block m: " + m.label.getString());
                     Set<Value> temp = new HashSet<>();//m.liveOut.clone(); // TODO clone
                     temp.addAll(m.liveOut);
                     Set<Value> all = m.genSet;
@@ -258,6 +259,7 @@ public class ControlFlowGraph {
         }
 
 
+        /*
         for (BasicBlock n : nodeList)
         {
             System.out.println(n.label.getString() + ":");
@@ -268,6 +270,7 @@ public class ControlFlowGraph {
             }
             System.out.println();
         }
+        */
 
     }
 
@@ -276,6 +279,7 @@ public class ControlFlowGraph {
         InterferenceGraph graph = new InterferenceGraph();
         for (BasicBlock b : nodeList)
         {
+            System.out.println("**Label " + b.label.getString());
             b.addToInterferenceGraph(graph);
         }
         return graph;
@@ -302,12 +306,51 @@ public class ControlFlowGraph {
         InterferenceGraph interferenceGraph = buildInterferenceGraph();
         interferenceGraph.regAlloc();
 
-        interferenceGraph.printGraph();
-        interferenceGraph.printMap();
+        //interferenceGraph.printGraph();
+        //interferenceGraph.printMap();
+        System.out.println(function.getName() + " NUM SPILLS: " + interferenceGraph.spillCount);
+        FuncStart f = (FuncStart) entryNode.instructions.get(0);
+        f.updateSpills(interferenceGraph.spillCount);
+
+        ListIterator<arm.Instruction> armInsts = f.getArm().listIterator();
+        while (armInsts.hasNext())
+        {
+            armInsts.next();
+        }
+        while (armInsts.hasPrevious())
+        {
+            arm.Instruction inst = armInsts.previous();
+            entryNode.addArmInstructionToBeginning(inst);
+        }
+
+
+        System.err.println("spill map");
+        for (String s : interferenceGraph.spillMap.keySet())
+        {
+            System.out.println(s + " -> " + interferenceGraph.spillMap.get(s)*4);
+        }
+        //System.out.println("exit block " + exitNode.label.getString());
+        //FuncEnd e;
+        //FuncEnd e = (FuncEnd) exitNode.instructions.get(exitNode.instructions.size()-2);
+        for (Instruction i : exitNode.instructions)
+        {
+            if (i instanceof FuncEnd)
+            {
+                FuncEnd e = (FuncEnd) i;
+                e.updateSpills(interferenceGraph.spillCount);
+                ListIterator<arm.Instruction> armEInsts = e.getArm().listIterator();
+                while (armEInsts.hasNext())
+                {
+                    exitNode.addArmInstruction(armEInsts.next());
+                }
+            }
+        }
+
 
         for (BasicBlock b : nodeList)
         {
-            b.replaceRegs(interferenceGraph.regMappings, interferenceGraph.spillSet);
+
+            b.replaceRegs(interferenceGraph.regMappings, interferenceGraph.spillMap);
         }
 
     }

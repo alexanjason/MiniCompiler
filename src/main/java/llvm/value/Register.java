@@ -27,6 +27,7 @@ public class Register implements Value {
         this.marked = false;
     }
 
+    // TODO make this a seperate arm type
     public Register(Type type, int num)
     {
         this.type = type;

@@ -34,8 +34,8 @@ public interface Instruction {
         {
             immStr = "0";
         }
-        Immediate immlower = new Immediate("lower16: " + immStr, new i32());
-        Immediate immupper = new Immediate("upper16: " + immStr, new i32());
+        Immediate immlower = new Immediate("#" + immStr, new i32());
+        Immediate immupper = new Immediate("#" + immStr, new i32());
         list.add(new Movw(temp, immlower));
         list.add(new Movt(temp, immupper));
         return temp;

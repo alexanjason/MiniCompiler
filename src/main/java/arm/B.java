@@ -5,6 +5,7 @@ import cfg.Label;
 import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class B implements Instruction {
         this.label = label;
     }
 
-    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    public void replaceRegs(ListIterator<Instruction> instList, Map<String, Register> map, Map<String, Integer> spillMap)
     {
     }
 

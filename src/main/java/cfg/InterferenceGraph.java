@@ -13,7 +13,10 @@ public class InterferenceGraph {
     private Set<Register> registerSet;
 
     public Map<String, Register> regMappings;
-    public Set<String> spillSet;
+    //public Set<String> spillSet;
+    public Map<String, Integer> spillMap;
+
+    int spillCount;
 
     public InterferenceGraph()
     {
@@ -29,7 +32,8 @@ public class InterferenceGraph {
         // r0-r3 function calls r9-r10 spill regs
 
         regMappings = new HashMap<>();
-        spillSet = new HashSet<>();
+        //spillSet = new HashSet<>();
+        spillMap = new HashMap<>();
 
         // TODO hackiest of hacks
         for (int i = 0; i <=3; i++)
@@ -65,7 +69,7 @@ public class InterferenceGraph {
         }
     }
 
-    private ValueVertex addVertex(Value v)
+    public ValueVertex addVertex(Value v)
     {
         ValueVertex vertex = new ValueVertex(v);
         //System.out.println("adding to graph " + v.getString());
@@ -84,7 +88,7 @@ public class InterferenceGraph {
     {
         // TODO sloppy
         if (!((s1 instanceof Register && ((Register)s1).isReal()) || (s2 instanceof Register && ((Register)s2).isReal()))) {
-            System.out.println("addEdge: from " + s1.getString() + " to " + s2.getString());
+            //System.out.println("addEdge: from " + s1.getString() + " to " + s2.getString());
 
             ValueVertex v1 = addVertex(s1);
             ValueVertex v2 = addVertex(s2);
@@ -149,7 +153,7 @@ public class InterferenceGraph {
             ValueVertex colorV = stack.pop();
             String vStr = colorV.v.getString();
             // TODO dumb
-            if (!(vStr.equals("r0") || vStr.equals("r1") || vStr.equals("r2") || vStr.equals("r3")))
+            if (!(vStr.equals("r0") || vStr.equals("r1") || vStr.equals("r2") || vStr.equals("r3") || vStr.equals("r11") || vStr.equals("r13") || vStr.equals("r12")))
             {
                 if (colorV.color(registerSet))
                 {
@@ -157,7 +161,9 @@ public class InterferenceGraph {
                 }
                 else
                 {
-                    spillSet.add(colorV.v.getString());
+                    //spillSet.add(colorV.v.getString());
+                    spillMap.put(colorV.v.getString(), spillCount);
+                    spillCount++;
                 }
             }
         }

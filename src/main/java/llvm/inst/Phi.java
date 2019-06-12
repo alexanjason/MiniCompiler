@@ -115,15 +115,24 @@ public class Phi implements Instruction {
         SSCPValue oldRes = map.get(result);
         SSCPValue newRes = new SSCPValue.Top();
 
+        boolean hacky = false;
+
         for (PhiEntry entry : entryList)
         {
             Value v = entry.value;
             newRes = meet(newRes, v, map);
+            if (v == result)
+            {
+                hacky = true;
+            }
         }
 
         if (oldRes != newRes)
         {
-            workList.add(result);
+            if (!hacky)
+            {
+                workList.add(result);
+            }
             System.err.println("adding " + result.getString() + " to worklist");
             map.put(result, newRes);
         }
@@ -170,8 +179,17 @@ public class Phi implements Instruction {
         }
         else if (imm != null)
         {
-            int immV = Integer.parseInt(imm.getId());
-            map.put(result, new SSCPValue.Constant(immV));
+            SSCPValue sscpConst;
+            if (imm.getId().equals("null"))
+            {
+                sscpConst = new SSCPValue.Constant("null");
+            }
+            else
+            {
+                int immV = Integer.parseInt(imm.getId());
+                sscpConst = new SSCPValue.Constant(immV);
+            }
+            map.put(result, sscpConst);
             workList.add(result);
             return;
         }

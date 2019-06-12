@@ -1,4 +1,4 @@
-/*
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -143,9 +143,9 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void TicTac()
     {
         String name = "TicTac";
-        fail("infinite");
+        //fail("infinite");
         // TODO infinite
-        //runTest(folder, name);
+        runTest(folder, name);
     }
 
     @Test
@@ -155,4 +155,3 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
         runTest(folder, name);
     }
 }
-*/

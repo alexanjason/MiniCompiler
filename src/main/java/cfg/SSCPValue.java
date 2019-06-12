@@ -63,6 +63,7 @@ public interface SSCPValue
         private int constant;
         private boolean bool;
         private boolean isBool;
+        private boolean isNull;
 
         public Constant(int c)
         {
@@ -76,11 +77,20 @@ public interface SSCPValue
             isBool = true;
         }
 
+        public Constant(String s)
+        {
+            isNull = true;
+        }
+
         public String getString()
         {
             if (isBool)
             {
                 return Boolean.toString(this.bool);
+            }
+            else if (isNull)
+            {
+                return "null";
             }
             else
             {

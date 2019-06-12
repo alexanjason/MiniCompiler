@@ -93,6 +93,12 @@ public class ControlFlowGraphList {
         stream.print(sb.toString());
     }
 
+    private void printArmHelpers(PrintStream stream)
+    {
+        StringBuilder sb = new StringBuilder();
+        // TODO
+    }
+
     public void print(PrintStream stream, boolean llvm)
     {
         printHeader(stream, llvm);
@@ -114,6 +120,10 @@ public class ControlFlowGraphList {
         if (llvm)
         {
             printHelpers(stream);
+        }
+        else
+        {
+            printArmHelpers(stream);
         }
     }
 

@@ -6,6 +6,7 @@ import llvm.value.Local;
 import llvm.value.Register;
 import llvm.value.Value;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class Bl implements Instruction {
         this.name = name;
     }
 
-    public void replaceRegs(Map<String, Register> map, Set<String> spillSet)
+    public void replaceRegs(ListIterator<Instruction> instList, Map<String, Register> map, Map<String, Integer> spillMap)
     {
     }
 
@@ -33,6 +34,7 @@ public class Bl implements Instruction {
 
     public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
+
         Register r0 = new Register(new i32(), 0);
         Register r1 = new Register(new i32(), 0);
         Register r2 = new Register(new i32(), 0);
