@@ -260,7 +260,6 @@ public class StatementBuilder {
         }
         else
         {
-            System.err.println("retval " + retExpVal.getString() + " type " + retExpVal.getType().getString());
             if (retExpVal.getType() instanceof Void)
             {
                 Type returnType = converter.convertType(retType);
