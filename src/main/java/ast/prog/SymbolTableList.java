@@ -111,9 +111,6 @@ public class SymbolTableList {
         this.newScope();
         this.addDecls(prog.decls, Scope.GLOBAL);
 
-        //TODO Local  declarations  and  parameters  may  hide  global  declarations
-        // (and  functions),  but  a  local  may  not redeclare a parameter.
-
         boolean hasMain = false;
         for (Function func : prog.funcs)
         {
@@ -124,9 +121,7 @@ public class SymbolTableList {
             }
 
             list.getFirst().put(func.name, new SymbolEntry(new FunctionType(paramList, func.retType), Scope.GLOBAL));
-            //TODO Program execution begins in the function named main that takes
-            // no arguments and that returns an int. Every valid program must have
-            // such a function
+
             if (func.name.equals("main"))
             {
                 hasMain = true;

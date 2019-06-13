@@ -14,7 +14,6 @@ public class FuncStart implements Instruction{
 
     public FuncStart()
     {
-
     }
 
     public void updateSpills(int spills)
@@ -29,12 +28,10 @@ public class FuncStart implements Instruction{
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit funcend");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval funcstart");
     }
 
     public void sscpReplace(Value v, Immediate constant)
@@ -57,16 +54,13 @@ public class FuncStart implements Instruction{
     @Override
     public List<arm.Instruction> getArm()
     {
-        // TODO this is a hack
-
         List<arm.Instruction> instList = new ArrayList<>();
         List<String> list = new ArrayList<>();
         list.add("fp");
         list.add("lr");
         instList.add(new arm.Push(list));
 
-        // TODO this is bizarre
-        Register fp = new Register(new i32(), 11); // TODO
+        Register fp = new Register(new i32(), 11);
         Register sp = new Register(new i32(), 13);
         Value imm = new Immediate("4", new i32());
 

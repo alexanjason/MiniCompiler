@@ -1,7 +1,6 @@
 package llvm.inst;
 
 import arm.Pop;
-import arm.Push;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
@@ -31,12 +30,10 @@ public class FuncEnd implements Instruction{
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit funcend");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval funcend");
     }
 
     public void replace(Value oldV, Value newV)
@@ -61,7 +58,6 @@ public class FuncEnd implements Instruction{
     {
         List<arm.Instruction> instList = new ArrayList<>();
 
-        Register fp = new Register(new i32(), 11); // TODO
         Register sp = new Register(new i32(), 13);
 
         instList.add(new arm.Add(sp, sp, new Immediate(Integer.toString(offset*4), new i32())));
@@ -76,8 +72,6 @@ public class FuncEnd implements Instruction{
         calleeSaved.add("r10");
 
         instList.add(new Pop(calleeSaved));
-
-        //instList.add(new arm.Sub(sp, fp, new Immediate("4", new i32())));
 
         List<String> list = new ArrayList<>();
         list.add("fp");

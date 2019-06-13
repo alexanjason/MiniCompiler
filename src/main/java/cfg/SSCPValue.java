@@ -125,7 +125,7 @@ public interface SSCPValue
                 return false;
             }
 
-            return ((Constant)o).getConst().equals(this.getConst()); // TODO?
+            return ((Constant)o).getConst().equals(this.getConst());
         }
     }
 }

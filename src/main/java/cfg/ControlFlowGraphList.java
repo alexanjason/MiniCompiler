@@ -78,7 +78,6 @@ public class ControlFlowGraphList {
 
     private void printHelpers(PrintStream stream)
     {
-        // TODO should this be more than just a string dump?
         StringBuilder sb = new StringBuilder();
         sb.append("declare i8* @malloc(i32)\n");
         sb.append("declare void @free(i8*)\n");

@@ -179,7 +179,6 @@ public class BasicBlock {
         localMappings.put(id, value);
     }
 
-    // TODO pass type through for creating phi instructions?
     public Value readVariable(String id, Type type)
     {
         if (localMappings.containsKey(id))

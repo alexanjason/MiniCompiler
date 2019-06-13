@@ -3,7 +3,6 @@ package llvm.inst;
 import arm.Mov;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
-import llvm.type.i32;
 import llvm.value.*;
 
 import java.util.*;
@@ -18,7 +17,6 @@ public class Return implements Instruction {
     {
         this.value = value;
 
-        // TODO ???
         value.addUse(this);
     }
 
@@ -57,7 +55,6 @@ public class Return implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval return");
     }
 
     public String getString()

@@ -80,7 +80,6 @@ public class Cmp implements Instruction {
         {
             sb.append(Operand2.getString());
         }
-        //sb.append(Operand2.getString());
         return sb.toString();
     }
 

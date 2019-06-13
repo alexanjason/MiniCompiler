@@ -79,7 +79,6 @@ public class MiniCompiler
          {
             outFile = splitStr[0] + ".s";
          }
-         //System.out.println(llvmFile);
 
          PrintStream fStream = null;
          try

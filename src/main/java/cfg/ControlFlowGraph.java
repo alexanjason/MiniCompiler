@@ -261,8 +261,6 @@ public class ControlFlowGraph {
         {
             b.firstPass();
         }
-
-        //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     public void regAlloc()

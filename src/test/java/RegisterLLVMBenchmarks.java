@@ -27,7 +27,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void bert()
     {
         String name = "bert";
-        // TODO expected 3 actual null
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -63,7 +63,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void Fibonacci()
     {
         String name = "Fibonacci";
-        // TODO conditional error
+        // TODO conditional CFG error
         runTest(folder, name);
     }
 
@@ -93,7 +93,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void killerBubbles()
     {
         String name = "killerBubbles";
-        // TODO expected 1 actual null
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -115,7 +115,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void OptimizationBenchmark()
     {
         String name = "OptimizationBenchmark";
-        // TODO 32 bit overflow?
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -137,7 +137,7 @@ public class RegisterLLVMBenchmarks extends TestUtils {
     public void stats()
     {
         String name = "stats";
-        // TODO 32 bit overflow?
+        // works on pi server
         runTest(folder, name);
     }
 

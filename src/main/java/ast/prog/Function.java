@@ -1,6 +1,5 @@
 package ast.prog;
 
-//import ast.type.ErrorType;
 import ast.type.Type;
 import ast.stmt.Statement;
 import ast.type.VoidType;

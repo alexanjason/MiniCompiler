@@ -39,28 +39,14 @@ public class Sub implements Instruction {
 
     public void localValueNumbering(LocalValueNumbering lvn)
     {
-        if (lvn.isInMap(left.getId()))
-        {
-            //left.getUses().remove(this);
-            //left = lvn.getVal(left.getId());
-
-            //left.addUse(this);
-        }
-        else
+        if (!(lvn.isInMap(left.getId())))
         {
             lvn.enterInMap(left.getId(), left);
         }
 
         int leftNum = lvn.getNumbering(left.getId());
 
-        if (lvn.isInMap(right.getId()))
-        {
-            //right.getUses().remove(this);
-            //right = lvn.getVal(right.getId());
-
-            //right.addUse(this);
-        }
-        else
+        if (!(lvn.isInMap(right.getId())))
         {
             lvn.enterInMap(right.getId(), right);
         }
@@ -71,9 +57,7 @@ public class Sub implements Instruction {
 
         if (lvn.isInMap(res1))
         {
-            //result.getUses().remove(this);
             Value lvnVal = lvn.getVal(res1);
-            //result.addUse(this);
             List<Instruction> list = new ArrayList<>(result.getUses());
             for (Instruction inst: list)
             {

@@ -34,6 +34,5 @@ public class NewExpression
 
       System.err.println("NewExpression 26");
       return null;
-      //return new ErrorType();
    }
 }

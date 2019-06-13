@@ -2,7 +2,6 @@ package ast.exp;
 
 import ast.prog.StructTable;
 import ast.prog.SymbolTableList;
-//import ast.type.ErrorType;
 import ast.type.NullType;
 import ast.type.Type;
 
@@ -33,7 +32,6 @@ public class IdentifierExpression
       }
       System.err.println("IdentifierExpression 31");
       return null;
-      //return new ErrorType();
    }
 
    public String getId()

@@ -105,7 +105,6 @@ public class BinaryExpression
 
       System.err.println("BinaryExpression 102");
       return null;
-      //return new ErrorType();
    }
 
    public static BinaryExpression create(int lineNum, String opStr,

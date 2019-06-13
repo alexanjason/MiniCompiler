@@ -14,7 +14,6 @@ import java.util.*;
 public class Print implements Instruction {
 
     Value val;
-    //Type type;
 
     public Print(Value val)
     {
@@ -35,7 +34,6 @@ public class Print implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval print");
     }
 
     public void sscpReplace(Value v, Immediate constant)

@@ -72,7 +72,6 @@ public class RegisterLLVMLVNBenchmarks extends TestUtils {
     public void GeneralFunctAndOptimize()
     {
         String name = "GeneralFunctAndOptimize";
-        //fail("TODO");
         runTest(folder, name);
     }
 
@@ -143,8 +142,6 @@ public class RegisterLLVMLVNBenchmarks extends TestUtils {
     public void TicTac()
     {
         String name = "TicTac";
-        //fail("infinite");
-        // TODO infinite
         runTest(folder, name);
     }
 

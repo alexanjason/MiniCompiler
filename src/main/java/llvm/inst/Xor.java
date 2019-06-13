@@ -44,28 +44,14 @@ public class Xor implements Instruction {
 
     public void localValueNumbering(LocalValueNumbering lvn)
     {
-        if (lvn.isInMap(op1.getId()))
-        {
-            //op1.getUses().remove(this);
-            //op1 = lvn.getVal(op1.getId());
-
-            //op1.addUse(this);
-        }
-        else
+        if (!(lvn.isInMap(op1.getId())))
         {
             lvn.enterInMap(op1.getId(), op1);
         }
 
         int leftNum = lvn.getNumbering(op1.getId());
 
-        if (lvn.isInMap(op2.getId()))
-        {
-            //op2.getUses().remove(this);
-            //op2 = lvn.getVal(op2.getId());
-
-            //op2.addUse(this);
-        }
-        else
+        if (!(lvn.isInMap(op2.getId())))
         {
             lvn.enterInMap(op2.getId(), op2);
         }
@@ -77,9 +63,7 @@ public class Xor implements Instruction {
 
         if (lvn.isInMap(res1))
         {
-            //result.getUses().remove(this);
             Value lvnVal = lvn.getVal(res1);
-            //result.addUse(this);
             List<Instruction> list = new ArrayList<>(result.getUses());
             for (Instruction inst: list)
             {
@@ -129,7 +113,6 @@ public class Xor implements Instruction {
 
             if (op1 instanceof Immediate)
             {
-                //sscpLeft = new SSCPValue.Constant(Integer.parseInt(op1.getId()));
                 sscpLeft = new SSCPValue.Constant(Boolean.parseBoolean(op1.getId()));
             }
             else
@@ -139,7 +122,6 @@ public class Xor implements Instruction {
 
             if (op2 instanceof Immediate)
             {
-                //sscpRight = new SSCPValue.Constant(Integer.parseInt(op2.getId()));
                 sscpRight = new SSCPValue.Constant(Boolean.parseBoolean(op2.getId()));
             }
             else
@@ -221,7 +203,7 @@ public class Xor implements Instruction {
         }
         else
         {
-            // TODO stack location???
+            // TODO stack location
             r2 = (Register) op1;
         }
 

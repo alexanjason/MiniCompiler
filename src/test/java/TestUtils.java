@@ -67,7 +67,6 @@ public class TestUtils {
             i++;
         }
 
-        //String[] args = {dest + name + ".mini", "-stack", "-llvm"};
         mini.main(args);
 
         String file;

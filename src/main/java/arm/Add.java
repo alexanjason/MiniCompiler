@@ -1,7 +1,6 @@
 package arm;
 
 import cfg.InterferenceGraph;
-import cfg.LocalValueNumbering;
 import llvm.type.i32;
 import llvm.value.*;
 

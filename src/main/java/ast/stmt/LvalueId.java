@@ -34,7 +34,5 @@ public class LvalueId
 
       System.err.println("LValueId 28");
       return null;
-      //return new ErrorType();
-
    }
 }

@@ -141,8 +141,6 @@ public class Or implements Instruction {
                 sscpRight = map.get(op2);
             }
 
-            //System.err.println("OR: sscpLeft: " + sscpLeft.getString() + " sscpRight: " + sscpRight.getString());
-
             if (sscpLeft instanceof SSCPValue.Bottom || sscpRight instanceof SSCPValue.Bottom)
             {
                 newResult = new SSCPValue.Bottom();
@@ -222,7 +220,7 @@ public class Or implements Instruction {
         }
         else
         {
-            // TODO stack location???
+            // TODO stack location
             r2 = (Register) op1;
         }
 

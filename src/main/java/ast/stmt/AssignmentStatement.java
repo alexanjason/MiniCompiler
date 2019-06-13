@@ -2,7 +2,6 @@ package ast.stmt;
 import ast.prog.StructTable;
 import ast.prog.SymbolTableList;
 import ast.exp.Expression;
-//import ast.type.ErrorType;
 import ast.type.Type;
 
 public class AssignmentStatement

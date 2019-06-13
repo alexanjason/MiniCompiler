@@ -29,7 +29,6 @@ public class Immediate implements Value {
 
     public void addUse(Instruction use)
     {
-        //System.err.println("addUse immediate");
     }
 
     public void checkUseless()

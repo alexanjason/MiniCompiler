@@ -16,9 +16,6 @@ public class Move implements Instruction {
     {
         this.result = result;
         this.ptr = ptr;
-
-        //result.addDef(this);
-        //ptr.addUse(this);
     }
 
     public Move(Local result, Value ptr)
@@ -56,12 +53,10 @@ public class Move implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval move");
     }
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit move. pointer: " + ptr.getString());
     }
 
     public String getString()

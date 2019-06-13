@@ -29,6 +29,7 @@ public class RegisterLLVMUCEBenchmarks extends TestUtils {
     public void bert()
     {
         String name = "bert";
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -71,7 +72,6 @@ public class RegisterLLVMUCEBenchmarks extends TestUtils {
     public void GeneralFunctAndOptimize()
     {
         String name = "GeneralFunctAndOptimize";
-        //fail("TODO");
         runTest(folder, name);
     }
 
@@ -93,6 +93,7 @@ public class RegisterLLVMUCEBenchmarks extends TestUtils {
     public void killerBubbles()
     {
         String name = "killerBubbles";
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -114,6 +115,7 @@ public class RegisterLLVMUCEBenchmarks extends TestUtils {
     public void OptimizationBenchmark()
     {
         String name = "OptimizationBenchmark";
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -135,6 +137,7 @@ public class RegisterLLVMUCEBenchmarks extends TestUtils {
     public void stats()
     {
         String name = "stats";
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -142,8 +145,6 @@ public class RegisterLLVMUCEBenchmarks extends TestUtils {
     public void TicTac()
     {
         String name = "TicTac";
-        //fail("infinite");
-        // TODO infinite
         runTest(folder, name);
     }
 

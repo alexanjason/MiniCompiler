@@ -234,8 +234,6 @@ public class Icmp implements Instruction {
 
         list.add(new Mov(resultReg, new Immediate("0", new i32())));
 
-        //System.out.println("Icmp -> op1 " + op1.getString());
-
         if (op1 instanceof Immediate)
         {
             Register op1Reg = ImmediateToRegister((Immediate)op1, list);

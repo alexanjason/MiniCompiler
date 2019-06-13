@@ -69,28 +69,14 @@ public class And implements Instruction {
 
     public void localValueNumbering(LocalValueNumbering lvn)
     {
-        if (lvn.isInMap(op1.getId()))
-        {
-            //op1.getUses().remove(this);
-            //op1 = lvn.getVal(op1.getId());
-
-            //op1.addUse(this);
-        }
-        else
+        if (!(lvn.isInMap(op1.getId())))
         {
             lvn.enterInMap(op1.getId(), op1);
         }
 
         int leftNum = lvn.getNumbering(op1.getId());
 
-        if (lvn.isInMap(op2.getId()))
-        {
-            //op2.getUses().remove(this);
-            //op2 = lvn.getVal(op2.getId());
-
-            //op2.addUse(this);
-        }
-        else
+        if (!(lvn.isInMap(op2.getId())))
         {
             lvn.enterInMap(op2.getId(), op2);
         }
@@ -102,9 +88,7 @@ public class And implements Instruction {
 
         if (lvn.isInMap(res1))
         {
-            //result.getUses().remove(this);
             Value lvnVal = lvn.getVal(res1);
-            //result.addUse(this);
             for (Instruction inst: result.getUses())
             {
                 inst.replace(result, lvnVal);
@@ -218,7 +202,7 @@ public class And implements Instruction {
         }
         else
         {
-            // TODO stack location???
+            // TODO stack location
             r2 = (Register) op1;
         }
 

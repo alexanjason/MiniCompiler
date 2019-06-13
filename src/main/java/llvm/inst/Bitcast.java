@@ -48,12 +48,10 @@ public class Bitcast implements Instruction {
     {
         map.put(result, new SSCPValue.Bottom());
         workList.add(result);
-        //System.err.println("sscpinit bitcast. result: " + result.getString() + "val: " + val.getString());
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval allocate");
     }
 
     public void sscpReplace(Value v, Immediate constant)
@@ -78,6 +76,4 @@ public class Bitcast implements Instruction {
         list.add(new Mov(r, val));
         return list;
     }
-
-
 }

@@ -10,20 +10,13 @@ public class Program
    protected static StructTable structTable;
    protected static SymbolTableList symbolTables;
 
-   public Program(List<TypeDeclaration> types, List<Declaration> decls,
-      List<Function> funcs)
+   public Program(List<TypeDeclaration> types, List<Declaration> decls, List<Function> funcs)
    {
       this.types = types;
       this.decls = decls;
       this.funcs = funcs;
       structTable = new StructTable(this);
       symbolTables = new SymbolTableList(this);
-      // TODO Redeclarations of the same sort of identifier are not allowed, i.e.,
-      //  there cannot be two global variables with the same name, two formal paramters
-      //  for a function with the same name, two variables local to a function
-      //  with the same name, two functions with the same name, two structure
-      //  declarations with the same name,or two fields within a structure with the
-      //  same name.
    }
 
    public List<Function> getFuncs()

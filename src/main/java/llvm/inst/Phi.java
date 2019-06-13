@@ -11,7 +11,6 @@ import llvm.value.*;
 
 import java.util.*;
 
-
 public class Phi implements Instruction {
 
     Value result;
@@ -111,7 +110,6 @@ public class Phi implements Instruction {
         {
             return new SSCPValue.Top();
         }
-
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
@@ -248,8 +246,6 @@ public class Phi implements Instruction {
 
     public List<arm.Instruction> getArm()
     {
-        // nah
-        // TODO dumb
         return new ArrayList<>();
     }
 

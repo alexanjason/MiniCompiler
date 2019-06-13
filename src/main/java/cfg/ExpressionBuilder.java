@@ -47,7 +47,6 @@ public class ExpressionBuilder {
             }
             else
             {
-                // TODO ahhhhhhhhhhhhhh
                 result = new Register(pointer.getType());
             }
             values.add(result);
@@ -72,17 +71,14 @@ public class ExpressionBuilder {
         if (scope == Scope.PARAM)
         {
             val = new Local("_P_" + id, type);
-            //return new Local("_P_" + id, type);
         }
         else if (scope == Scope.GLOBAL)
         {
             val = new Global(id, type);
-            //return new Global(id, type);
         }
         else
         {
             val = new Local(id, type);
-            //return new Local(id, type);
         }
         values.add(val);
         return val;
@@ -372,12 +368,11 @@ public class ExpressionBuilder {
         Type type = converter.convertType(new StructType(-1, exp.getId()));
 
         List<Value> paramVals = new ArrayList<>();
-        // TODO convert bit size to whatever malloc takes
         paramVals.add(new Immediate(Integer.toString(type.getSize()), type));
         List<Type> paramTypes = new ArrayList<>();
         paramTypes.add(new i32());
 
-        Value ptr; // TODO ptr type?
+        Value ptr;
         Value result;
         if (stackBased)
         {
@@ -446,7 +441,6 @@ public class ExpressionBuilder {
         }
         else if (exp instanceof NullExpression)
         {
-            // TODO
             return new Immediate("null", new Void());
         }
         else if (exp instanceof ReadExpression)
@@ -465,8 +459,6 @@ public class ExpressionBuilder {
             List<Value> emptyValList = new ArrayList<>();
             List<Type> emptyTypeList = new ArrayList<>();
             currentBlock.addInstruction(new Call(result,"read_util", emptyTypeList, emptyValList));
-            //currentBlock.addInstruction(new Read());
-            //currentBlock.addInstruction(new Load(result, new Global(".read_scratch", new i32())));
             return result;
         }
         else if (exp instanceof TrueExpression)

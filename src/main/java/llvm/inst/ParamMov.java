@@ -1,7 +1,6 @@
 package llvm.inst;
 
 import arm.Mov;
-import arm.Push;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
 import llvm.type.i32;
@@ -31,12 +30,10 @@ public class ParamMov implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit funcend");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval funcstart");
     }
 
     public void sscpReplace(Value v, Immediate constant)

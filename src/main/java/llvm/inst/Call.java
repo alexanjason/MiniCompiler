@@ -13,7 +13,6 @@ public class Call implements Instruction {
 
     Value result;
     String name;
-    // TODO should be list of parameter values?
     List<Type> paramTypes;
     List<Value> paramVals;
 
@@ -24,7 +23,6 @@ public class Call implements Instruction {
         this.paramTypes = paramTypes;
         this.paramVals = paramVals;
 
-        // TODO ????
         result.addDef(this);
         for (Value v : paramVals)
         {
@@ -55,14 +53,12 @@ public class Call implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit call " + name);
         map.put(result, new SSCPValue.Bottom());
         workList.add(result);
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //map.put(result, new SSCPValue.Bottom());
     }
 
     public void sscpReplace(Value v, Immediate constant)
@@ -103,7 +99,6 @@ public class Call implements Instruction {
         for (int i = 0; i < paramVals.size(); i++)
         {
             // TODO does stack based still put args into regs?
-            //System.out.println("i: " + i + " paramVal " + paramVals.get(i).getString());
             list.add(new Mov(new Register(paramTypes.get(i), i), paramVals.get(i)));
         }
 

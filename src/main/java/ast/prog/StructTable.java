@@ -1,7 +1,5 @@
 package ast.prog;
 
-import ast.type.Type;
-
 import java.util.HashMap;
 
 public class StructTable {

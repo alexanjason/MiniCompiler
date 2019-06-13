@@ -35,14 +35,12 @@ public class Getelementptr implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit getelementptr");
         map.put(result, new SSCPValue.Bottom());
         workList.add(result);
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval getelementptr");
     }
 
     public void sscpReplace(Value v, Immediate constant)
@@ -80,10 +78,7 @@ public class Getelementptr implements Instruction {
     {
         List<arm.Instruction> list = new ArrayList<>();
 
-        //System.out.println("getelementptr -> result: " + result.getString() + " base: " + base.getString());
-
         Register resultReg = (Register) result;
-        //Register baseReg = (Register) base;
 
         if (base instanceof Register)
         {

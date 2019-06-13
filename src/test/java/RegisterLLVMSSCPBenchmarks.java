@@ -30,6 +30,7 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void bert()
     {
         String name = "bert";
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -51,6 +52,7 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void brett()
     {
         String name = "brett";
+        // works on pi server
         runTest(folder, name);
     }
 
@@ -147,8 +149,6 @@ public class RegisterLLVMSSCPBenchmarks extends TestUtils {
     public void TicTac()
     {
         String name = "TicTac";
-        //fail("infinite");
-        // TODO infinite
         runTest(folder, name);
     }
 

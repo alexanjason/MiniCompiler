@@ -1,6 +1,5 @@
 package llvm.value;
 
-import ast.exp.IntegerExpression;
 import llvm.inst.Instruction;
 import llvm.type.Type;
 
@@ -22,7 +21,6 @@ public class Register implements Value {
     {
         this.type = type;
         this.id = increment++;
-        //this.def = def;
         this.uses = new ArrayList<>();
         this.marked = false;
     }

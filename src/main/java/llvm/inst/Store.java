@@ -48,7 +48,6 @@ public class Store implements Instruction {
 
     public boolean checkRemove(ListIterator list)
     {
-        // TODO ?
         if (ptr.isMarked())
         {
             list.remove();
@@ -66,19 +65,15 @@ public class Store implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        // TODO def?
-        //System.err.println("sscpinit store");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval store");
     }
 
     public List<arm.Instruction> getArm()
     {
         List<arm.Instruction> list = new ArrayList<>();
-        //System.out.println("store value: " + value.getString() + " ptr: " + ptr.getString());
 
         Register ptrReg = (Register) ptr;
         if (value instanceof Immediate)

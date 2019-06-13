@@ -1,10 +1,7 @@
 package arm;
 
 import cfg.InterferenceGraph;
-import llvm.type.i32;
-import llvm.value.Local;
 import llvm.value.Register;
-import llvm.value.StackLocation;
 import llvm.value.Value;
 
 import java.util.ListIterator;

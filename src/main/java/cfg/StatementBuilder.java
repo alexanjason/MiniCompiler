@@ -76,7 +76,6 @@ public class StatementBuilder {
         }
         else
         {
-            // TODO this is a serious hack lol
             currentBlock.writeVariable(lvalLoc.getId(), sourceLoc);
         }
 
@@ -119,7 +118,6 @@ public class StatementBuilder {
         {
             LvalueId valId = (LvalueId) lVal;
             String id = valId.getId();
-            //return getLocalFromId(id);
 
             if (stackBased)
             {
@@ -128,7 +126,6 @@ public class StatementBuilder {
             else
             {
                 Type type = converter.convertType(symbolTableList.typeOf(id));
-                //return currentBlock.readVariable(id, type);
                 Value local = new Local(id, type);
                 values.add(local);
                 return local;
@@ -150,7 +147,6 @@ public class StatementBuilder {
         }
         values.add(result);
 
-        // TODO reuse call? issue: free has no result
         currentBlock.addInstruction(new Bitcast(val, result));
         currentBlock.addInstruction(new Free(result));
         return currentBlock;
@@ -159,7 +155,6 @@ public class StatementBuilder {
     private BasicBlock AddPrintLnStmt(PrintLnStatement pStmt, BasicBlock currentBlock)
     {
         Value expVal = expBuilder.AddExpression(pStmt.getExpression(), currentBlock);
-        // TODO implement PrintLn better
         currentBlock.addInstruction(new PrintLn(expVal, new i32()));
         return currentBlock;
     }
@@ -167,7 +162,6 @@ public class StatementBuilder {
     private BasicBlock AddPrintStmt(PrintStatement pStmt, BasicBlock currentBlock)
     {
         Value expVal = expBuilder.AddExpression(pStmt.getExpression(), currentBlock);
-        // TODO implement Print better
         currentBlock.addInstruction(new Print(expVal));
         return currentBlock;
     }
@@ -213,7 +207,6 @@ public class StatementBuilder {
         }
         else if (stmt instanceof ReturnEmptyStatement)
         {
-            // TODO sloppy
             if (!stackBased)
             {
                 exitNode.seal();
@@ -222,7 +215,6 @@ public class StatementBuilder {
         }
         else if (stmt instanceof ReturnStatement)
         {
-            // TODO sloppy
             if (!stackBased)
             {
                 exitNode.seal();
@@ -279,7 +271,6 @@ public class StatementBuilder {
 
     private BasicBlock AddConditionalStmt(ConditionalStatement stmt, BasicBlock currentBlock)
     {
-
         // Create predecessor list for entry blocks
         List<BasicBlock> entryPreds = new ArrayList<>();
         entryPreds.add(currentBlock);
@@ -360,7 +351,6 @@ public class StatementBuilder {
                 elseExit.addInstruction(new BrUncond(exitBlock.label));
                 elseExit.successorList.add(exitBlock);
                 retBlock = exitBlock;
-                // TODO is there a case where exitBlock won't be in nodelist?
             }
         }
         else
@@ -370,8 +360,6 @@ public class StatementBuilder {
             elseEntry.successorList.add(retBlock);
         }
 
-        //exitBlock.predecessorList.add(elseExit); // TODO ?
-        //exitBlock.predecessorList.add(thenExit); // TODO ?
         exitBlock.seal();
 
         return retBlock;
@@ -413,7 +401,7 @@ public class StatementBuilder {
         falseNode.predecessorList.add(trueExitNode);
         if (!(trueEntryNode.predecessorList.contains(trueExitNode)))
         {
-            trueEntryNode.predecessorList.add(trueExitNode); // TODO adding same pred multiple times
+            trueEntryNode.predecessorList.add(trueExitNode);
         }
 
 
@@ -436,7 +424,6 @@ public class StatementBuilder {
         trueExitNode.successorList.add(trueEntryNode);
         trueExitNode.successorList.add(falseNode);
 
-        // TODO is this where to seal?
         trueEntryNode.seal();
         trueExitNode.seal();
 

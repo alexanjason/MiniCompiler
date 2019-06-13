@@ -5,7 +5,6 @@ import llvm.type.Type;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class Global implements Value {
 
@@ -39,13 +38,11 @@ public class Global implements Value {
     public void addDef(Instruction def)
     {
         this.def = def;
-        //System.err.println("addDef global");
     }
 
     public void addUse(Instruction use)
     {
         this.uses.add(use);
-        //System.err.println("addUse global");
     }
 
     public Instruction getDef()

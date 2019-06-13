@@ -79,8 +79,6 @@ public class Zext implements Instruction {
                 sscpIn = map.get(inValue);
             }
 
-            //System.out.println(outValue.getString() + " sscpIn " + sscpIn.getString());
-
             if (sscpIn instanceof SSCPValue.Bottom)
             {
                 newResult = new SSCPValue.Bottom();
@@ -96,7 +94,6 @@ public class Zext implements Instruction {
                 {
                     newResult = new SSCPValue.Constant(0);
                 }
-                //newResult = sscpIn; // TODO ??
             }
             else
             {
@@ -106,7 +103,6 @@ public class Zext implements Instruction {
             if (oldResult != newResult)
             {
                 map.put(outValue, newResult);
-                //System.out.println(outValue.getString() + " put as " + newResult.getString());
                 workList.add(outValue);
             }
         }
@@ -126,7 +122,6 @@ public class Zext implements Instruction {
             {
                 val = new SSCPValue.Constant(0);
             }
-            //SSCPValue val = new SSCPValue.Constant(leftImm);
 
             map.put(outValue, val);
             workList.add(outValue);

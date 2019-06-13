@@ -48,7 +48,6 @@ public class BrCond implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval brcond");
     }
 
     public void sscpReplace(Value v, Immediate constant)

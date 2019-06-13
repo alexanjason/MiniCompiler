@@ -22,7 +22,6 @@ public class CallVoid implements Instruction {
         this.paramTypes = paramTypes;
         this.paramVals = paramVals;
 
-        // TODO ????
         for (Value v : paramVals)
         {
             v.addUse(this);
@@ -52,12 +51,10 @@ public class CallVoid implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscpinit call void");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval callvoid");
     }
 
     public void sscpReplace(Value v, Immediate constant)

@@ -19,8 +19,6 @@ public class Allocate implements Instruction {
     {
         this.name = name;
         this.type = type;
-
-        // TODO def or use?
     }
 
     public void replace(Value oldV, Value newV)
@@ -38,17 +36,14 @@ public class Allocate implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        //System.err.println("sscpEval allocate");
     }
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        //System.err.println("sscp init allocate");
     }
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        //System.err.println("sscpReplace allocate");
     }
 
     public String getString()
@@ -58,7 +53,6 @@ public class Allocate implements Instruction {
 
     public List<arm.Instruction> getArm()
     {
-        // TODO mov or no instruction?
         return new ArrayList<>();
     }
 }
