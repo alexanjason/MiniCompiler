@@ -1,5 +1,6 @@
 package llvm.inst;
 
+import arm.Mov;
 import arm.Movt;
 import arm.Movw;
 import cfg.LocalValueNumbering;
@@ -28,7 +29,9 @@ public interface Instruction {
 
     default Register ImmediateToRegister(Immediate immVal, List<arm.Instruction> list)
     {
+
         Register temp = new Register(new i32());
+        /*
         String immStr = immVal.getString();
         if (immStr.equals("null"))
         {
@@ -38,6 +41,8 @@ public interface Instruction {
         Immediate immupper = new Immediate("#" + immStr, new i32());
         list.add(new Movw(temp, immlower));
         list.add(new Movt(temp, immupper));
+        */
+        list.add(new Mov(temp, immVal));
         return temp;
     }
 

@@ -3,7 +3,7 @@
 Command Line Options:
 -llvm		Generate LLVM file instead of ARM32 file
 -stack 		Stack-Based instead of Register-Based
--regAlloc	Replace virtual registers with real registers
+-regalloc	Replace virtual registers with real registers
 -uce		Run LLVM level Useless Code Elimination Optimization
 -sscp 		Run LLVM level Simple Sparse Constant Propagation Optimization
 -lvn 		Run LLVM level Local Value Numbering Optimization

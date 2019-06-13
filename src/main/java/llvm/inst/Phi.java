@@ -117,32 +117,17 @@ public class Phi implements Instruction {
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
         SSCPValue oldRes = map.get(result);
-        SSCPValue newRes = oldRes;//new SSCPValue.Top();
-
-        //boolean hacky = false;
+        SSCPValue newRes = new SSCPValue.Top();
 
         for (PhiEntry entry : entryList)
         {
             Value v = entry.value;
-            SSCPValue oldnew = newRes;
             newRes = meet(newRes, v, map);
-            //System.out.println(result.getString() + " = " + oldnew.getString() + " and " + v.getString() + " " + "-> meets at " + newRes.getString());
-            /*
-            if (v == result)
-            {
-                hacky = true;
-            }
-            */
         }
 
         if (!(oldRes.getString().equals(newRes.getString())))
         {
-            //System.out.println("oldRes: " + oldRes.getString() + " newRes: " + newRes.getString());
-            //if (!hacky)
-            //{
-                workList.add(result);
-            //}
-            //System.err.println("adding " + result.getString() + " to worklist");
+            workList.add(result);
             map.put(result, newRes);
         }
     }
@@ -270,18 +255,31 @@ public class Phi implements Instruction {
 
     public void propagate(BasicBlock curBlock, List<BasicBlock> predList)
     {
+        //System.err.println("current block " + curBlock.getLabelId());
         // propagate up to predecessors
+        Local phi = new Local("_phi" + increment, new i32());
+        increment++;
         for (PhiEntry entry : entryList)
         {
+            //System.out.println("entry: " + entry.value.getString());
             for (BasicBlock b : predList)
             {
                 if (b.getLabelId() == entry.label.getId())
                 {
-                    Local phi = new Local("_phi" + increment, new i32());
-                    increment++;
+                    //Local phi = new Local("_phi" + increment, new i32());
+                    //increment++;
 
                     Instruction prevMove = new Move(phi, entry.value);
-                    b.addInstructionAtEnd(prevMove);
+                    if (b.getLabelId() == curBlock.getLabelId())
+                    {
+                        //System.out.println("We in current block");
+                        curBlock.addInstructionAtEnd(prevMove);
+                    }
+                    else {
+                        b.addInstructionAtEnd(prevMove);
+                    }
+                    //System.out.println("adding arm inst to " + b.getLabelId() +  " " + prevMove.getString());
+
 
                     arm.Instruction mov;
                     if (result instanceof Local)
@@ -298,6 +296,7 @@ public class Phi implements Instruction {
                         mov = null;
                         System.err.println("phi inst get arm PANIC");
                     }
+                    //System.out.println("adding arm inst to current block: " + mov.getString());
                     curBlock.addArmInstruction(mov);
                 }
             }

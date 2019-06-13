@@ -83,6 +83,10 @@ public class Mov implements Instruction {
             {
                 sb.append("0");
             }
+            else if (Operand2.getString().equals("true"))
+            {
+                sb.append("1");
+            }
             else
             {
                 sb.append(Operand2.getString());

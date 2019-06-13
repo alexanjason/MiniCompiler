@@ -294,6 +294,7 @@ public class ControlFlowGraph {
     public InterferenceGraph buildInterferenceGraph()
     {
         InterferenceGraph graph = new InterferenceGraph();
+
         for (BasicBlock b : nodeList)
         {
             System.out.println("**Label " + b.label.getString());

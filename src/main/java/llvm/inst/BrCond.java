@@ -70,6 +70,10 @@ public class BrCond implements Instruction {
     {
         List<arm.Instruction> list = new ArrayList<>();
         Register r = (Register) cond;
+
+        System.out.println("hi " + this.getString());
+        System.err.println("hi " + r.getString());
+
         list.add(new Cmp(r, new Immediate("1", cond.getType())));
         list.add(new Beq(ifTrue));
         list.add(new B(ifFalse));

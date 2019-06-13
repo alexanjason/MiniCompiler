@@ -66,7 +66,7 @@ public class Move implements Instruction {
 
     public String getString()
     {
-        return "";
+        return "fake move " + result.getString() + " " + ptr.getString();
     }
 
     public List<arm.Instruction> getArm()

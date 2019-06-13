@@ -25,7 +25,7 @@ public class InterferenceGraph {
         registerSet = new HashSet<>();
 
         // available registers
-        for (int i = 4; i <= 8; i++)
+        for (int i = 4; i <= 10; i++)
         {
             registerSet.add(new Register(new i32(), i));
         }
@@ -154,6 +154,8 @@ public class InterferenceGraph {
             String vStr = colorV.v.getString();
             // TODO dumb
             if (!(vStr.equals("r0") || vStr.equals("r1") || vStr.equals("r2") || vStr.equals("r3") || vStr.equals("r11") || vStr.equals("r13") || vStr.equals("r12")))
+            //if (!(vStr.equals("r11") || vStr.equals("r13") || vStr.equals("r12")))
+
             {
                 if (colorV.color(registerSet))
                 {
@@ -161,8 +163,9 @@ public class InterferenceGraph {
                 }
                 else
                 {
+                    System.err.println("*SPILLED");
                     //spillSet.add(colorV.v.getString());
-                    spillMap.put(colorV.v.getString(), spillCount);
+                    spillMap.put(colorV.v.getString(), spillCount+9);
                     spillCount++;
                 }
             }
@@ -170,6 +173,7 @@ public class InterferenceGraph {
 
         // "real" registers
         // TODO this is unnecessary?
+
         /*
         for (int i = 0; i <= 3; i++)
         {
@@ -177,6 +181,7 @@ public class InterferenceGraph {
             colorV.color(new Register(new i32(), i));
         }
         */
+
 
     }
 }

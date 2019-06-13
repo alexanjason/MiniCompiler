@@ -30,15 +30,44 @@ public class Bl implements Instruction {
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
     {
+        // TODO
+        Register r0 = new Register(new i32(), 0);
+        Register r1 = new Register(new i32(), 1);
+        Register r2 = new Register(new i32(), 2);
+        Register r3 = new Register(new i32(), 3);
+
+        // add each source not in kill set to gen set
+        if (!(killSet.contains(r0)))
+        {
+            genSet.add(r0);
+        }
+        if (!(killSet.contains(r1)))
+        {
+            genSet.add(r1);
+        }
+        if (!(killSet.contains(r2)))
+        {
+            genSet.add(r2);
+        }
+        if (!(killSet.contains(r3)))
+        {
+            genSet.add(r3);
+        }
+
+        // add target to kill set
+        killSet.add(r0);
+        killSet.add(r1);
+        killSet.add(r2);
+        killSet.add(r3);
     }
 
     public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
 
         Register r0 = new Register(new i32(), 0);
-        Register r1 = new Register(new i32(), 0);
-        Register r2 = new Register(new i32(), 0);
-        Register r3 = new Register(new i32(), 0);
+        Register r1 = new Register(new i32(), 1);
+        Register r2 = new Register(new i32(), 2);
+        Register r3 = new Register(new i32(), 3);
 
         // remove inst target from live
         liveSet.remove(r0);
@@ -75,6 +104,5 @@ public class Bl implements Instruction {
         {
             graph.addEdge(r3, v);
         }
-
     }
 }

@@ -1,9 +1,6 @@
 package cfg;
 
-import llvm.inst.FuncEnd;
-import llvm.inst.FuncStart;
-import llvm.inst.Instruction;
-import llvm.inst.Phi;
+import llvm.inst.*;
 import llvm.type.Type;
 import llvm.value.Immediate;
 import llvm.value.Register;
@@ -162,6 +159,11 @@ public class BasicBlock {
             {
                 List<arm.Instruction> armInstList = inst.getArm();
 
+                if (inst instanceof Move)
+                {
+                    System.out.println("*** MOVE " + inst.getString());
+                }
+
                 for (arm.Instruction armInst : armInstList)
                 {
                     armInstructions.add(armInst);
@@ -197,6 +199,14 @@ public class BasicBlock {
     {
         int size = instructions.size();
         instructions.add(size - 1, inst);
+
+        for (Instruction i : instructions)
+        {
+            if (i instanceof Move)
+            {
+                System.err.print(i.getString());
+            }
+        }
     }
 
     public void addArmInstruction(arm.Instruction inst)
