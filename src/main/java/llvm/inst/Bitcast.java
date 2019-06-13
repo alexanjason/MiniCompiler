@@ -53,7 +53,7 @@ public class Bitcast implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval allocate");
+        //System.err.println("sscpEval allocate");
     }
 
     public void sscpReplace(Value v, Immediate constant)

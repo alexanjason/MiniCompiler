@@ -76,7 +76,6 @@ public class StatementBuilder {
         }
         else
         {
-            //System.out.println("writing: " + lvalLoc.getId() + " to " + currentBlock.label.getString() + " : " + sourceLoc.getString());
             // TODO this is a serious hack lol
             currentBlock.writeVariable(lvalLoc.getId(), sourceLoc);
         }

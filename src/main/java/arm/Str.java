@@ -38,8 +38,6 @@ public class Str implements Instruction {
     {
 
         Register r9 = new Register(new i32(), 9);
-        Register r10 = new Register(new i32(), 10);
-
         if (map.containsKey(r2.getString()))
         {
             r2 = map.get(r2.getString());
@@ -65,7 +63,6 @@ public class Str implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
         }
         else

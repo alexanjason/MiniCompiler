@@ -67,12 +67,12 @@ public class Store implements Instruction {
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
         // TODO def?
-        System.err.println("sscpinit store");
+        //System.err.println("sscpinit store");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval store");
+        //System.err.println("sscpEval store");
     }
 
     public List<arm.Instruction> getArm()

@@ -115,16 +115,13 @@ public class ControlFlowGraph {
             // TODO hacky
             if (v instanceof Global)
             {
-                System.err.println(v.getString() + " global");
                 sscpMap.put(v, new SSCPValue.Bottom());
                 workList.add(v);
             }
             else if (v instanceof Local)
             {
-                System.err.println(v.getString() + " local");
                 if (((Local)v).isParam())
                 {
-                    System.err.println(v.getString() + " param");
                     // TODO so much duplicate code in llvm instructions
                     sscpMap.put(v, new SSCPValue.Bottom());
                     workList.add(v);
@@ -158,45 +155,20 @@ public class ControlFlowGraph {
                     v.getDef().sscpInit(sscpMap, workList);
                 }
             }
-            /*
-            System.out.println(v.getString() + " vvv ");
-
-            for (Value vs : sscpMap.keySet())
-            {
-                System.out.println(vs.getString() + " -> " + sscpMap.get(vs).getString());
-            }
-            */
         }
 
-        //Iterator iterator = workList.iterator();
         while (workList.size() != 0) {
-
-            System.err.print("WORKLIST: ");
-            for (Value v : workList)
-            {
-                System.out.print(v.getString() + " ");
-            }
-            System.out.println();
 
             ListIterator<Value> iterator = workList.listIterator();
 
             while (iterator.hasNext()) {
                 Value r = iterator.next();
-                //System.err.println("removing " + r.getString() + " from worklist");
                 iterator.remove();
 
-
                 for (Instruction inst : r.getUses()) {
-                    //System.err.println("use: " + inst.getString());
                     inst.sscpEval(sscpMap, iterator);
                 }
             }
-        }
-
-        System.out.println("SSCP MAPPINGS: ");
-        for (Value v : sscpMap.keySet())
-        {
-            System.out.println(v.getString() + " -> " + sscpMap.get(v).getString());
         }
 
         for (Value v : sscpMap.keySet())
@@ -222,14 +194,10 @@ public class ControlFlowGraph {
                     constant = null;
                     System.err.println("PANIC sscp constant to immediate " + c.toString());
                 }
-                //ListIterator<Instruction> iterator = v.getUses().listIterator();
-                //while (iterator.hasNext())
                 List<Instruction> list = new ArrayList<>(v.getUses());
                 for (Instruction inst : list)
                 {
                     inst.sscpReplace(v, constant);
-                    //Instruction inst = iterator.next();
-                    //inst.sscpReplace(v, constant, iterator);
                 }
             }
         }
@@ -246,21 +214,17 @@ public class ControlFlowGraph {
             for (BasicBlock n : nodeList)
             {
                 Set<Value> newLiveOut = new HashSet<>();
-                //System.err.println("Block n: " + n.label.getString());
                 for (BasicBlock m : n.successorList)
                 {
-                    //System.err.println("Block m: " + m.label.getString());
-                    Set<Value> temp = new HashSet<>();//m.liveOut.clone(); // TODO clone
+                    Set<Value> temp = new HashSet<>();
                     temp.addAll(m.liveOut);
                     Set<Value> all = m.genSet;
-                    System.err.println(m.genSet);
 
                     // LiveOut(m) - Kill(m)
                     temp.removeAll(m.killSet);
 
                     // Gen(m) U (LiveOut(m) - Kill(m))
                     temp.addAll(all);
-                    //all.addAll(temp);
 
                     // LiveOut(n) = Union all m : Gen(m) U (LiveOut(m) - Kill(m))
                     newLiveOut.addAll(temp);
@@ -274,21 +238,6 @@ public class ControlFlowGraph {
                 n.liveOut = newLiveOut;
             }
         }
-
-
-        /*
-        for (BasicBlock n : nodeList)
-        {
-            System.out.println(n.label.getString() + ":");
-            System.out.print("\tliveOut: ");
-            for (Value v : n.liveOut)
-            {
-                System.out.print(v.getString() + " ");
-            }
-            System.out.println();
-        }
-        */
-
     }
 
     public InterferenceGraph buildInterferenceGraph()
@@ -297,7 +246,6 @@ public class ControlFlowGraph {
 
         for (BasicBlock b : nodeList)
         {
-            System.out.println("**Label " + b.label.getString());
             b.addToInterferenceGraph(graph);
         }
         return graph;
@@ -324,9 +272,6 @@ public class ControlFlowGraph {
         InterferenceGraph interferenceGraph = buildInterferenceGraph();
         interferenceGraph.regAlloc();
 
-        //interferenceGraph.printGraph();
-        //interferenceGraph.printMap();
-        System.out.println(function.getName() + " NUM SPILLS: " + interferenceGraph.spillCount);
         FuncStart f = (FuncStart) entryNode.instructions.get(0);
         f.updateSpills(interferenceGraph.spillCount);
 
@@ -341,15 +286,6 @@ public class ControlFlowGraph {
             entryNode.addArmInstructionToBeginning(inst);
         }
 
-
-        System.err.println("spill map");
-        for (String s : interferenceGraph.spillMap.keySet())
-        {
-            System.out.println(s + " -> " + interferenceGraph.spillMap.get(s)*4);
-        }
-        //System.out.println("exit block " + exitNode.label.getString());
-        //FuncEnd e;
-        //FuncEnd e = (FuncEnd) exitNode.instructions.get(exitNode.instructions.size()-2);
         for (Instruction i : exitNode.instructions)
         {
             if (i instanceof FuncEnd)
@@ -364,13 +300,10 @@ public class ControlFlowGraph {
             }
         }
 
-
         for (BasicBlock b : nodeList)
         {
-
             b.replaceRegs(interferenceGraph.regMappings, interferenceGraph.spillMap);
         }
-
     }
 
     private void BuildCFG()

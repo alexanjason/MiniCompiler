@@ -24,7 +24,7 @@ public class Sub implements Instruction {
     public Sub(Register r1, Local r2, Value operand2)
     {
         this.r1 = r1;
-        this.r2 = r2; // TODO sus
+        this.r2 = r2;
         Operand2 = operand2;
     }
 

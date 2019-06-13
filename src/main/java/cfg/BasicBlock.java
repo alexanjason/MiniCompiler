@@ -24,13 +24,13 @@ public class BasicBlock {
     List<Instruction> instructions;
 
     // Gen Set
-    Set<Value> genSet;  // TODO Value or Register?
+    Set<Value> genSet;
 
     // Kill Set
-    Set<Value> killSet; // TODO Value or Register?
+    Set<Value> killSet;
 
     // LiveOut Set
-    Set<Value> liveOut; // TODO Value or Register?
+    Set<Value> liveOut;
 
     // Local mappings for register-based SSA
     private HashMap<String, Value> localMappings;
@@ -49,7 +49,7 @@ public class BasicBlock {
 
     BasicBlock(List<BasicBlock> predList, boolean stackBased, List<Value> values)
     {
-        label = new Label(); // TODO
+        label = new Label();
 
         successorList = new ArrayList<>();
         predecessorList = predList;
@@ -84,26 +84,12 @@ public class BasicBlock {
 
     public void addToInterferenceGraph(InterferenceGraph graph)
     {
-        Set<Value> liveSet = new HashSet<>();//liveOut;
+        Set<Value> liveSet = new HashSet<>();
         liveSet.addAll(liveOut);
 
-        //System.out.println(this.label.getString() + ":");
         for (int i = armInstructions.size() - 1; i >= 0; i--)
-        //for (arm.Instruction i : armInstructions)
         {
-            armInstructions.get(i).print(System.err);
-
             armInstructions.get(i).addToInterferenceGraph(liveSet, graph);
-            //i.addToInterferenceGraph(liveSet, graph);
-
-            /*
-            System.out.print("\tLive: ");
-            for (Value v : liveSet)
-            {
-                System.out.print(v.getString() + " ");
-            }
-            System.out.println();
-            */
         }
     }
 
@@ -135,7 +121,6 @@ public class BasicBlock {
     public void replaceRegs(Map<String, Register> map, Map<String, Integer> spillMap)
     {
         ListIterator<arm.Instruction> instIterator = armInstructions.listIterator();
-        //for (arm.Instruction inst : armInstructions)
         while (instIterator.hasNext())
         {
             arm.Instruction inst = instIterator.next();
@@ -159,11 +144,6 @@ public class BasicBlock {
             {
                 List<arm.Instruction> armInstList = inst.getArm();
 
-                if (inst instanceof Move)
-                {
-                    System.out.println("*** MOVE " + inst.getString());
-                }
-
                 for (arm.Instruction armInst : armInstList)
                 {
                     armInstructions.add(armInst);
@@ -171,23 +151,6 @@ public class BasicBlock {
                 }
             }
         }
-
-
-        /*
-        System.out.println(this.label.getString() + ":");
-        System.out.print("\tgenSet: ");
-        for (Value v : genSet)
-        {
-            System.out.print(v.getString() + " ");
-        }
-        System.out.print("\n\tkillSet: ");
-        for (Value v : killSet)
-        {
-            System.out.print(v.getString() + " ");
-        }
-        System.out.println();
-        */
-
     }
 
     public int getLabelId()
@@ -199,14 +162,6 @@ public class BasicBlock {
     {
         int size = instructions.size();
         instructions.add(size - 1, inst);
-
-        for (Instruction i : instructions)
-        {
-            if (i instanceof Move)
-            {
-                System.err.print(i.getString());
-            }
-        }
     }
 
     public void addArmInstruction(arm.Instruction inst)
@@ -245,7 +200,6 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            //reg.addDef(phi); // TODO
             incompletePhis.add(phi);
         }
         else if (predecessorList.size() == 0)
@@ -262,8 +216,6 @@ public class BasicBlock {
             Register reg = new Register(type);
             val = reg;
             Phi phi = new Phi(val, id);
-            //reg.addDef(phi);    // TODO
-            //values.add(reg);
             phiInstructions.add(phi);
             writeVariable(id, val);
             addPhiOperands(id, type, phi);
@@ -275,10 +227,9 @@ public class BasicBlock {
 
     private void addPhiOperands(String id, Type type, Phi inst)
     {
-        Phi phi = (Phi) inst;
         for (BasicBlock pred : predecessorList)
         {
-            phi.addEntry(pred.readVariable(id, type), pred.label);
+            inst.addEntry(pred.readVariable(id, type), pred.label);
         }
     }
 
@@ -309,12 +260,6 @@ public class BasicBlock {
 
     public void print(PrintStream stream, boolean llvm)
     {
-        /*
-        if (!stackBased) {
-            printMappings();
-        }
-        */
-
         // TODO debug to get rid of empty blocks so this isn't necessary
         if (instructions.size() != 0)
         {
@@ -351,5 +296,4 @@ public class BasicBlock {
     {
         instructions.add(inst);
     }
-
 }

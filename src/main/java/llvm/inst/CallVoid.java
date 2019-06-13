@@ -52,12 +52,12 @@ public class CallVoid implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit call void");
+        //System.err.println("sscpinit call void");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval callvoid");
+        //System.err.println("sscpEval callvoid");
     }
 
     public void sscpReplace(Value v, Immediate constant)

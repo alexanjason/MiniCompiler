@@ -30,7 +30,6 @@ public class Bl implements Instruction {
 
     public void addToGenAndKill(Set<Value> genSet, Set<Value> killSet)
     {
-        // TODO
         Register r0 = new Register(new i32(), 0);
         Register r1 = new Register(new i32(), 1);
         Register r2 = new Register(new i32(), 2);

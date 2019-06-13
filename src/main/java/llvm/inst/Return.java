@@ -57,7 +57,7 @@ public class Return implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval return");
+        //System.err.println("sscpEval return");
     }
 
     public String getString()

@@ -50,7 +50,6 @@ public class Movle implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
         }
         else
@@ -104,12 +103,7 @@ public class Movle implements Instruction {
             graph.addEdge(r1, v);
         }
 
-        // r1 in liveset
         liveSet.add(r1);
-
-        // everywhere source load prior
-        // if target store after
-        // copy inst to another list
 
         // add each source in inst to live
         if ((Operand2 instanceof Register) || (Operand2 instanceof Local))

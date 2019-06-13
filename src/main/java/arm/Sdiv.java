@@ -14,8 +14,8 @@ import java.util.Set;
 public class Sdiv implements Instruction {
 
     Register r1;
-    Value r2; // TODO sus
-    Value r3; // TODO sus
+    Value r2;
+    Value r3;
 
     public Sdiv(Register r1, Register r2, Register r3)
     {
@@ -93,7 +93,6 @@ public class Sdiv implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
         }
         else

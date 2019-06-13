@@ -31,12 +31,12 @@ public class FuncEnd implements Instruction{
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit funcend");
+        //System.err.println("sscpinit funcend");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval funcend");
+        //System.err.println("sscpEval funcend");
     }
 
     public void replace(Value oldV, Value newV)

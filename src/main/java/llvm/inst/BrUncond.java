@@ -37,12 +37,12 @@ public class BrUncond implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit bruncon");
+        //System.err.println("sscpinit bruncon");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval bruncond");
+        //System.err.println("sscpEval bruncond");
     }
 
     public void sscpReplace(Value v, Immediate constant)

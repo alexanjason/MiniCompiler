@@ -10,10 +10,10 @@ Command Line Options:
 
 Notes:
 * generated LLVM is compliant with version 10.0.0 (MacOSX compatible)
-* If run on MacOSX, some benchmarks have 32 bit number overflow issues(OptimizationBenchmark, hanoi_benchmark, killerBubbles, bert, stats)
+* If run on MacOSX, some benchmarks have 32 bit number overflow issues (OptimizationBenchmark, hanoi_benchmark, killerBubbles, bert, stats)
 * Fibonacci benchmark has a branch to an empty block we didn't have time to debug
 * SSCP has a bug where Phi instructions that reference each other cause problems (SSCP works for: BenchMarkishTopics, binaryConverter, programBreaker, biggest, mixed, hailstone, fact_sum)
-* Regalloc generates an ARM32 file that can be assembled with Clang but the output when ran still has bugs
+* Regalloc works on hailstone benchmark
 
 How to run:
 
