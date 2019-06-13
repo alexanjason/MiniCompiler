@@ -27,15 +27,15 @@ public class Mul implements Instruction {
     public Mul(Register r1, Local r2, Register r3)
     {
         this.r1 = r1;
-        this.r2 = r2; // TODO sus
+        this.r2 = r2;
         this.r3 = r3;
     }
 
     public Mul(Register r1, Local r2, Local r3)
     {
         this.r1 = r1;
-        this.r2 = r2; // TODO sus
-        this.r3 = r3; // TODO sus
+        this.r2 = r2;
+        this.r3 = r3;
     }
 
     public void replaceRegs(ListIterator<Instruction> instList, Map<String, Register> map, Map<String, Integer> spillMap)
@@ -86,7 +86,6 @@ public class Mul implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
         }
         else

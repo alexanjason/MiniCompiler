@@ -53,7 +53,6 @@ public class Eor implements Instruction {
                 instList.previous();
                 int offset = spillMap.get(Operand2.getString());
                 instList.add(new Ldr(r10, new StackLocation(offset*4)));
-                //instList.next();
                 Operand2 = r10;
             } else {
                 System.err.println("eor operand2 NOT IN GRAPH: " + Operand2.getString());

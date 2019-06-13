@@ -45,11 +45,6 @@ public class Add implements Instruction {
             instList.add(new Ldr(r9, new StackLocation(offset*4)));
             instList.next();
             r2 = r9;
-            //Register spillReg = new Register(new i32(), 9);
-            //map.put(r2.getString(), spillReg);
-            //r2 = spillReg;
-
-            // TODO add this to mapping?
         }
         else
         {
@@ -63,12 +58,6 @@ public class Add implements Instruction {
                 Operand2 = map.get(Operand2.getString());
             }
             else if (spillMap.containsKey(Operand2.getString())) {
-                /*
-                Register spillReg = new Register(new i32(), 10);
-                map.put(Operand2.getString(), spillReg);
-                Operand2 = spillReg;
-                // TODO add this to mapping?
-                */
                 instList.previous();
                 int offset = spillMap.get(Operand2.getString());
                 instList.add(new Ldr(r10, new StackLocation(offset*4)));
@@ -87,9 +76,7 @@ public class Add implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
-            //System.err.println("Add r1 spilled: " + r1.getString());
         }
         else
         {

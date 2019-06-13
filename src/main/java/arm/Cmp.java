@@ -56,7 +56,6 @@ public class Cmp implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
         }
         else
@@ -102,17 +101,6 @@ public class Cmp implements Instruction {
 
     public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
-        // remove inst target from live
-        /*
-        liveSet.remove(r1);
-
-        // add an edge from inst target to each element of live
-        for (Value v : liveSet)
-        {
-            graph.addEdge(r1, v);
-        }
-        */
-
         // add each source in inst to live
         if ((Operand2 instanceof Register) || (Operand2 instanceof Local))
         {

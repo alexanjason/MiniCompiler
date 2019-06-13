@@ -48,7 +48,6 @@ public class Mov implements Instruction {
             }
         }
 
-        System.out.println("mov r1: " + r1.getString());
         if (map.containsKey(r1.getString()))
         {
 
@@ -58,9 +57,7 @@ public class Mov implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
-            //map.put(r1.getString(), r9);
         }
         else
         {
@@ -113,21 +110,10 @@ public class Mov implements Instruction {
 
     public void addToInterferenceGraph(Set<Value> liveSet, InterferenceGraph graph)
     {
-        /*
-        System.out.println("mov\tr1: " + r1.getString() + "\t Operand2: " + Operand2.getString());
-        System.out.print("Live: ");
-        for (Value v : liveSet)
-        {
-            System.out.print(v.getString() + " ");
-        }
-        System.out.println();
-        */
-
         // remove inst target from live
         liveSet.remove(r1);
 
         //add vertex for r1
-        System.out.println("ADDING " + r1.getString() + " TO GRAPH");
         graph.addVertex(r1);
 
 

@@ -133,22 +133,16 @@ public class Add implements Instruction {
 
             if (left instanceof Immediate)
             {
-                System.out.println(result.getString() + " add left immediate " + left.getString());
                 sscpLeft = new SSCPValue.Constant(Integer.parseInt(left.getId()));
             }
             else
             {
-                System.out.println(result.getString() + " add left not immediate " + left.getString());
                 sscpLeft = map.get(left);
-                System.out.println("sscpLeft wtf " + sscpLeft.getString());
-
             }
 
             if (right instanceof Immediate)
             {
                 sscpRight = new SSCPValue.Constant(Integer.parseInt(right.getId()));
-                //System.out.println(result.getString() + " add left immediate " + right.getString());
-
             }
             else
             {
@@ -164,7 +158,6 @@ public class Add implements Instruction {
                 int l = (int)((SSCPValue.Constant) sscpLeft).getConst();
                 int r = (int)((SSCPValue.Constant) sscpRight).getConst();
                 newResult = new SSCPValue.Constant(l + r);
-                System.out.println("l " + l  + " r " + r);
             }
             else
             {
@@ -173,9 +166,6 @@ public class Add implements Instruction {
 
             if (oldResult != newResult)
             {
-                System.err.println("ADD: " + result.getString() + " " + newResult.getString());
-                System.out.println("sscpLeft " + sscpLeft.getString());
-                System.out.println("sscpRight " + sscpLeft.getString());
                 map.put(result, newResult);
                 workList.add(result);
             }

@@ -255,31 +255,23 @@ public class Phi implements Instruction {
 
     public void propagate(BasicBlock curBlock, List<BasicBlock> predList)
     {
-        //System.err.println("current block " + curBlock.getLabelId());
         // propagate up to predecessors
         Local phi = new Local("_phi" + increment, new i32());
         increment++;
         for (PhiEntry entry : entryList)
         {
-            //System.out.println("entry: " + entry.value.getString());
             for (BasicBlock b : predList)
             {
                 if (b.getLabelId() == entry.label.getId())
                 {
-                    //Local phi = new Local("_phi" + increment, new i32());
-                    //increment++;
-
                     Instruction prevMove = new Move(phi, entry.value);
                     if (b.getLabelId() == curBlock.getLabelId())
                     {
-                        //System.out.println("We in current block");
                         curBlock.addInstructionAtEnd(prevMove);
                     }
                     else {
                         b.addInstructionAtEnd(prevMove);
                     }
-                    //System.out.println("adding arm inst to " + b.getLabelId() +  " " + prevMove.getString());
-
 
                     arm.Instruction mov;
                     if (result instanceof Local)
@@ -296,7 +288,6 @@ public class Phi implements Instruction {
                         mov = null;
                         System.err.println("phi inst get arm PANIC");
                     }
-                    //System.out.println("adding arm inst to current block: " + mov.getString());
                     curBlock.addArmInstruction(mov);
                 }
             }

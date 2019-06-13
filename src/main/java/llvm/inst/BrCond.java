@@ -48,7 +48,7 @@ public class BrCond implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval brcond");
+        //System.err.println("sscpEval brcond");
     }
 
     public void sscpReplace(Value v, Immediate constant)
@@ -70,9 +70,6 @@ public class BrCond implements Instruction {
     {
         List<arm.Instruction> list = new ArrayList<>();
         Register r = (Register) cond;
-
-        System.out.println("hi " + this.getString());
-        System.err.println("hi " + r.getString());
 
         list.add(new Cmp(r, new Immediate("1", cond.getType())));
         list.add(new Beq(ifTrue));

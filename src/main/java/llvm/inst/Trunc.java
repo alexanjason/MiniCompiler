@@ -82,8 +82,6 @@ public class Trunc implements Instruction {
             }
             else if (sscpIn instanceof SSCPValue.Constant)
             {
-                //newResult = sscpIn; // TODO ??
-                System.out.println("trunc eval " + this.getString() + " -> " + sscpIn.getString());
                 int bool = (int)((SSCPValue.Constant) sscpIn).getConst();
                 if (bool == 0)
                 {

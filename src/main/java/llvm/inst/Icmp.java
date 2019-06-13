@@ -161,7 +161,6 @@ public class Icmp implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.out.println("sscpInit Icmp " + op1.getId() + "  " + op2.getId());
         if ((op1 instanceof Immediate) && (op2 instanceof Immediate))
         {
             int leftImm = Integer.parseInt(op1.getId());

@@ -42,7 +42,7 @@ public class Getelementptr implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval getelementptr");
+        //System.err.println("sscpEval getelementptr");
     }
 
     public void sscpReplace(Value v, Immediate constant)

@@ -13,7 +13,6 @@ public class InterferenceGraph {
     private Set<Register> registerSet;
 
     public Map<String, Register> regMappings;
-    //public Set<String> spillSet;
     public Map<String, Integer> spillMap;
 
     int spillCount;
@@ -32,7 +31,6 @@ public class InterferenceGraph {
         // r0-r3 function calls r9-r10 spill regs
 
         regMappings = new HashMap<>();
-        //spillSet = new HashSet<>();
         spillMap = new HashMap<>();
 
         // TODO hackiest of hacks
@@ -72,7 +70,6 @@ public class InterferenceGraph {
     public ValueVertex addVertex(Value v)
     {
         ValueVertex vertex = new ValueVertex(v);
-        //System.out.println("adding to graph " + v.getString());
         ValueVertex newVert = map.putIfAbsent(v.getString(), vertex);
         if (newVert == null)
         {
@@ -88,24 +85,18 @@ public class InterferenceGraph {
     {
         // TODO sloppy
         if (!((s1 instanceof Register && ((Register)s1).isReal()) || (s2 instanceof Register && ((Register)s2).isReal()))) {
-            //System.out.println("addEdge: from " + s1.getString() + " to " + s2.getString());
 
             ValueVertex v1 = addVertex(s1);
             ValueVertex v2 = addVertex(s2);
 
             v1.addEdge(v2);
             v2.addEdge(v1);
-
-            //System.out.println("add edge from " + v1.v.getString() + " to " + v2.v.getString());
-
-            //v1.adjList.putIfAbsent(s2.getString(), s2);
-            //v2.adjList.putIfAbsent(s1.getString(), s1);
         }
     }
 
     public void regAlloc()
     {
-        printGraph();
+        //printGraph();
         deconstruct();
         color();
     }
@@ -121,13 +112,9 @@ public class InterferenceGraph {
 
         // remove virtual registers
         Iterator<String> keys = map.keySet().iterator();
-        //for (String s : keys)
-        //for (int i = 0; i < map.keySet().size(); i++)
         while (keys.hasNext())
         {
             String s = keys.next();
-            //map.remove(s);
-            //System.out.println("removeNode " + s);
             removeNode(s);
             keys.remove();
         }
@@ -154,8 +141,6 @@ public class InterferenceGraph {
             String vStr = colorV.v.getString();
             // TODO dumb
             if (!(vStr.equals("r0") || vStr.equals("r1") || vStr.equals("r2") || vStr.equals("r3") || vStr.equals("r11") || vStr.equals("r13") || vStr.equals("r12")))
-            //if (!(vStr.equals("r11") || vStr.equals("r13") || vStr.equals("r12")))
-
             {
                 if (colorV.color(registerSet))
                 {
@@ -163,25 +148,11 @@ public class InterferenceGraph {
                 }
                 else
                 {
-                    System.err.println("*SPILLED");
-                    //spillSet.add(colorV.v.getString());
+                    //System.err.println("*SPILLED");
                     spillMap.put(colorV.v.getString(), spillCount+9);
                     spillCount++;
                 }
             }
         }
-
-        // "real" registers
-        // TODO this is unnecessary?
-
-        /*
-        for (int i = 0; i <= 3; i++)
-        {
-            ValueVertex colorV = stack.pop();
-            colorV.color(new Register(new i32(), i));
-        }
-        */
-
-
     }
 }

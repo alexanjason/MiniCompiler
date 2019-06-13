@@ -1,6 +1,5 @@
 package llvm.inst;
 
-import arm.Mov;
 import arm.Push;
 import cfg.LocalValueNumbering;
 import cfg.SSCPValue;
@@ -11,7 +10,6 @@ import java.util.*;
 
 public class FuncStart implements Instruction{
 
-    //List<String> params;
     int spills;
 
     public FuncStart()
@@ -31,12 +29,12 @@ public class FuncStart implements Instruction{
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit funcend");
+        //System.err.println("sscpinit funcend");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval funcstart");
+        //System.err.println("sscpEval funcstart");
     }
 
     public void sscpReplace(Value v, Immediate constant)
@@ -85,18 +83,7 @@ public class FuncStart implements Instruction{
 
         instList.add(new Push(calleeSaved));
 
-        System.err.println("this.spills*4 " + this.spills*4);
         instList.add(new arm.Sub(sp, sp, new Immediate(Integer.toString(this.spills*4), new i32())));
-
-        /*
-        int i = 0;
-        for (String s : params)
-        {
-            instList.add(new Mov(new Local(s, new i32()), new Register(new i32(), i)));
-            i++;
-        }
-        // TODO more than 3 params
-        */
 
         return instList;
     }

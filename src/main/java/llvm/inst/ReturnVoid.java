@@ -39,7 +39,7 @@ public class ReturnVoid implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEvalreturnvoid");
+        //System.err.println("sscpEvalreturnvoid");
     }
 
     public List<arm.Instruction> getArm()

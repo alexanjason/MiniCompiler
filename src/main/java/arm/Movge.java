@@ -50,7 +50,6 @@ public class Movge implements Instruction {
         {
             int offset = spillMap.get(r1.getString());
             instList.add(new Str(r9, new StackLocation(offset*4)));
-            //instList.next();
             r1 = r9;
         }
         else

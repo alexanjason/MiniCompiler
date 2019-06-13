@@ -38,17 +38,17 @@ public class Allocate implements Instruction {
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval allocate");
+        //System.err.println("sscpEval allocate");
     }
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscp init allocate");
+        //System.err.println("sscp init allocate");
     }
 
     public void sscpReplace(Value v, Immediate constant)
     {
-        System.err.println("sscpReplace allocate");
+        //System.err.println("sscpReplace allocate");
     }
 
     public String getString()

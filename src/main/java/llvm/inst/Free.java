@@ -45,12 +45,12 @@ public class Free implements Instruction {
 
     public void sscpInit(Map<Value, SSCPValue> map, List<Value> workList)
     {
-        System.err.println("sscpinit free");
+        //System.err.println("sscpinit free");
     }
 
     public void sscpEval(Map<Value, SSCPValue> map, ListIterator<Value> workList)
     {
-        System.err.println("sscpEval free");
+        //System.err.println("sscpEval free");
     }
 
     public void sscpReplace(Value v, Immediate constant)
